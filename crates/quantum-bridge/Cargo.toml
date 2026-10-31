@@ -5,7 +5,7 @@ edition = "2021"
 description = "Hardver-igazolt kvantumhid: 2 qubit + 3 kulon meres (A, f, phi)"
 license = "MIT"
 
-# A `D:\codex` munkaterulo workspace-e ne kapja el ezt a crate-et.
+# This crate is standalone; it does not depend on any external workspace.
 [workspace]
 
 [dependencies]

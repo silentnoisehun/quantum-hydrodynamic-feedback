@@ -10,6 +10,11 @@ A kovetkezok a javított számok; a korabbi értékek (2,766 / 8,444 / 0,4355 / 
 már nem szerepelnek. A pontos értékek: max |Δ| density 2,780; 16-mod energia
 9,420; H/Hmax 0,5268; TV 0,3730; klasszikus kontroll 968/1000 + 5 másik mód.
 A CHANGELOG 0.2.1 bejegyzése a változások listáját tartalmazza.
+
+Kiegészítés (2026-10-31, post-review, lokal damping baseline):
+- 3-szigma shot-szám: ~492 000 / ~481 job (volt: 248 294 -> 242x)
+- (1−0.3865)^6 = 5.3% (volt: 0.3865^6 = 5.2%)
+- cargo test: 30 teszt (12 + 18) (volt: 160 passed)
 ===
 
 0. A KEZDO ALLAPOT (a bemeretes before)

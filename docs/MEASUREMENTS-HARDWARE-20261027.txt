@@ -10,6 +10,11 @@ klasszikus kontroll 968/1000 + 5 mod) felulirojak a korabbi ertekeket
 (0,4355, 0,2960, "1000/1000 egyetlen mod"). A 16-modos hardveres argmax
 0/6 = 0,00%-ot ad (a quantums ut nem reprodukálta a Brain nyertes modot).
 A CHANGELOG 0.2.1 bejegyzése a változások listáját tartalmazza.
+
+Kiegészítés (2026-10-31, post-review):
+- 3-szigma shot-szám: ~492 000 / ~481 job (volt: 248 294 -> 242x)
+- (1−0.3865)^6 = 5.3% (volt: 0.3865^6 = 5.2%)
+- cargo test: 30 teszt (12 + 18) (volt: 160 passed)
 ===
 
 A hurok protokollja (Mate):

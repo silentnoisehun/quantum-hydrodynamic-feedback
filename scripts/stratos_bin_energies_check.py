@@ -4,8 +4,13 @@
 # es a `get_mode_energies` a `hexagonal_lattice(16, 6.0)` pontokon,
 # SULY NELKUL osszegezi a |psi|^2-t, majd normalizal.
 import struct, math, random, json, os
+from pathlib import Path
 
-BIN = r"D:\All_Skills\claude-logic\stratos.bin"
+# Default to external/claude-logic/stratos.bin relative to repo root
+# Override with STRATOS_BIN_PATH environment variable
+BIN = os.environ.get("STRATOS_BIN_PATH") or str(
+    Path(__file__).parent.parent / "external" / "claude-logic" / "stratos.bin"
+)
 MODE_NAMES = ["Brain","Logic","Memory","Creativity","Heart","Intuition","Focus","Empathy",
               "Analysis","Synthesis","Ethics","Play","Dream","Social","Survival","Transcendence"]
 

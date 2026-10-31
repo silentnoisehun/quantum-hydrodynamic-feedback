@@ -97,7 +97,7 @@ This paper reports the \emph{complete measured record}: 91 QPU iterations on \te
 
 \paragraph{Quantum-classical loops.} Variational algorithms (VQE, QAOA) iterate parameter updates classically \cite{Peruzzo2014, Farhi2014}. Quantum kernels embed data in Hilbert space \cite{Havlicek2019}. Our loop differs: the quantum subroutine \emph{measures} a wavepacket $(A,f,\varphi)$ injected by classical dynamics, and the decoded values \emph{perturb} the fluid --- a dynamical coupling, not optimization.
 
-\paragraph{Gross-Pitaevskii in cognition.} GPE models appear in Bose-Einstein condensates \cite{Pitaevskii2003} and neural field theories \cite{Coombes2005}. Fluid STRATOS implements 16 modes on a 2D lattice with conserved density (max $|\Delta| = 2.780$, coherence $0.452$ after 1000 steps \cite{QOI-gpe}).
+\paragraph{Gross-Pitaevskii in cognition.} GPE models appear in Bose-Einstein condensates \cite{Pitaevskii2003} and neural field theories \cite{Coombes2005}. Fluid STRATOS implements 16 modes on a 2D lattice with density redistribution (max $|\Delta| = 2.780$, coherence $0.452$ after 500 steps \cite{QOI-gpe}).
 
 \paragraph{Hardware-validated quantum memory.} Quantum RAM proposals \cite{Giovannetti2008} remain theoretical. QAM grounds $\psi(t)$ in measured $T_2$ and anchor protocols, with classical Microscope Memory providing durable, queryable storage.
 
@@ -215,7 +215,7 @@ $c$ mean & 0.9350 \\
 $c$ drift & +0.0361 \\
 Mode diversity & 7 modes (\#0: 27, \#7: 10, \#6: 9, \#15: 9, \#14: 6, \#1: 4, \#2: 3) \\
 Classical control modes & 1 dominant (968/1000) + 5 others \\
-TV distance (quantum vs uniform) & 0.3730 \\
+TV distance (quantum vs classical) & 0.3730 \\
 \bottomrule
 \end{tabular}
 \end{table}

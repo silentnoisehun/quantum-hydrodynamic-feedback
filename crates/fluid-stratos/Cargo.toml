@@ -5,7 +5,7 @@ edition = "2021"
 description = "Gross-Pitaevskii folyadékmotor 16 kognitív módra, valodi split-step Fourier kinetikus lepespel"
 license = "MIT"
 
-# A `D:\codex` munkaterulo workspace-e ne kapja el ezt a crate-et.
+# This crate is standalone; it does not depend on any external workspace.
 [workspace]
 
 [dependencies]

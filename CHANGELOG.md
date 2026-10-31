@@ -86,8 +86,10 @@ protocol. The report states this as measured, not as an estimate.
   modes with a **real split-step Fourier** kinetic step (row + column
   transforms). The previous implementation used a phase rotation in index
   space with no transform at all, which made the density distribution
-  mathematically invariant (measured: max |Δ| = 1.275e-13 over 500 steps).
-  After the fix: max |Δ| = **2.780**, a 2.2e13× improvement.
+  mathematically invariant (measured: max |Δ| = O(1e-13) over 500 steps, γ=0).
+  After the fix with local damping (γ=0.002): max |Δ| = **2.780**, a 79×
+  improvement over the γ=0 baseline (the uniform decay would be a no-op after
+  renormalization).
 - Three regression tests that **fail on the pre-fix code**:
   the density distribution must move, the 16 mode energies must change,
   and the normalization must hold across FFT steps.
