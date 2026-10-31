@@ -1,4 +1,4 @@
-bridge-cli: E:\mm-target-qoi\debug\bridge-cli.exe
+bridge-cli: <workdir>/bridge-cli.exe
 python.exe : qiskit_runtime_service._discover_account:WARNING:2026-10-27 01:37:30,182: Loading account with the given t
 oken. A saved account will not be used.
 At line:10 char:1
@@ -22,7 +22,7 @@ A KVANTUM-KLASSZIKUS HUROK VALÓDI HARDVEREN — ibm_fez
 kvóta előtte: 362 mp (limit 600 mp)
 ! a session nem elérhető ezen a csomagon: RequestsApiError
   → job mód: minden iteráció külön sorba áll. A várakozást mérjük.
-C:\Users\mater\.minimax\sessions\mvs_4be75a039e3e4dd2a6a370720f28065c\workspace\qoi-repo\scripts\quantum_loop_hardware.
+<workdir>\scripts\quantum_loop_hardware.
 py:336: DeprecationWarning: The SamplerV2 class is deprecated as of qiskit-ibm-runtime 0.50.0 and will be removed no so
 oner than 3 months after the release date. `qiskit_ibm_runtime.executor_sampler.Sampler` provides a new Sampler impleme
 ntation that runs all the pre- and post-processing in the client side. The top-level `qiskit_ibm_runtime.Sampler` impor

@@ -35,13 +35,13 @@ de egyetlen hivas). A dead-code QUANTUM reteg + az 5 hardver-meres repo
 
 Miert lett a launchpad a kulcs: a hope-cli/src/fluid_stratos/mod.rs
 Default = Self::new(64) -- a 64-es racs a launchpad merete.
-A launchpad renderer: D:\codex\Hope Wave protocol Studio\crates\
+A launchpad renderer: <workdir>\Hope Wave protocol Studio\crates\
   studio-bridge\src\launchpad.rs (38.7 KB, GRID_LED_COUNT = 64)
 
 --------------------------------------------------------------------------------
 1. A HOLT-KOD TENY: A QUANTUM RETEG NEM FUT
 --------------------------------------------------------------------------------
-MERES (grep, D:\All_Skills\claude-logic\src\main.rs):
+MERES (grep, <workdir>\claude-logic\src\main.rs):
   "mod quantum;"  -> 1 talalat, sor 17
   QuantumCircuit / encode_energies / measure -> 0 hivas
 
@@ -58,7 +58,7 @@ MERES (grep, D:\All_Skills\claude-logic\src\main.rs):
 --------------------------------------------------------------------------------
 2. A KVANTUMHID-SZIMULACIO: A REPRODUKCIO A GEPES KODDAL
 --------------------------------------------------------------------------------
-Bemenet: a valós STRATOS allapot, D:\All_Skills\claude-logic\stratos.bin
+Bemenet: a valós STRATOS allapot, <workdir>\claude-logic\stratos.bin
   - 32x32 racs, 16 kognitiv mod, 1024 komplex pont
   - a stratos-probe a SAJAT stratos.rs-t include-olta (nincs atiras)
   - a stratos.bin SHA256 a probe UTAN: 1396489976FAA8CD (változatlan)
@@ -126,14 +126,14 @@ A GITHUB repok (Fluid-STRATOS, Hope-Genome): HTTP 404 -> private vagy
 torolt. A SAJAT Python implementacio nem auditalhato.
 
 DE a gepen VAN:
-  D:\codex\tudat\crates\hyper-spine\src\stratos\gpe.rs (13 574 B)
-  D:\codex\tudat\crates\hyper-spine\src\stratos\gpe_parallel.rs (12 831 B)
-  D:\codex\tudat\crates\hyper-spine\src\stratos\adaptive_landscape.rs (8 085 B)
-  D:\codex\tudat\crates\hyper-spine\src\stratos\emotimem.rs (10 363 B)
-  D:\codex\tudat\crates\hyper-spine\src\stratos\resonance_bridge.rs (12 942 B)
-  D:\codex\hope-cli\src\fluid_stratos\mod.rs (13 247 B)  <- Default = new(64)
-  D:\codex\hope-cli\src\stratos\gpe.rs (11 B) -> URES
-  D:\codex\hope-cli\src\stratos\landscape.rs (70 B) -> URES
+  <workdir>\tudat\crates\hyper-spine\src\stratos\gpe.rs (13 574 B)
+  <workdir>\tudat\crates\hyper-spine\src\stratos\gpe_parallel.rs (12 831 B)
+  <workdir>\tudat\crates\hyper-spine\src\stratos\adaptive_landscape.rs (8 085 B)
+  <workdir>\tudat\crates\hyper-spine\src\stratos\emotimem.rs (10 363 B)
+  <workdir>\tudat\crates\hyper-spine\src\stratos\resonance_bridge.rs (12 942 B)
+  <workdir>\hope-cli\src\fluid_stratos\mod.rs (13 247 B)  <- Default = new(64)
+  <workdir>\hope-cli\src\stratos\gpe.rs (11 B) -> URES
+  <workdir>\hope-cli\src\stratos\landscape.rs (70 B) -> URES
 
 A gpe.rs parametrai EGYEZNEK a paper A.2 tablarzataval:
   grid 128x128, domain 20.0, dt 0.005, g -1.0, trap 0.1, well_depth 2.0,

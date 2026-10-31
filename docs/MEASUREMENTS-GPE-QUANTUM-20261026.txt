@@ -1,7 +1,7 @@
 ================================================================================
 MERT-JELEN-VILAGOS: GPE FFT-JAVITAS + QUANTUM RETEG + KVANTUM-KLASSZIKUS HUROK
 Datum: 2026-10-26
-Szerzo: Mavis (MiniMax Code runtime), D:\codex
+Szerzo: Mavis (MiniMax Code runtime), <workdir>
 ================================================================================
 
 === ERRATUM (2026-10-31, post-external-review) ===
@@ -322,5 +322,5 @@ iteracio, 10 loves, Bell c = 0,949, a GPE valodi 2D FFT-vel (numpy).
 
 ================================================================================
 MERT-JELEN-VILAGOS-FLUID-STRATOS-20261026.txt ELOTT (a korábbi jelentés)
-ugyanitt: D:\codex\quantum-lab\
+ugyanitt: <workdir>\quantum-lab\
 ================================================================================

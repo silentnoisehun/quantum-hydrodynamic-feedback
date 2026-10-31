@@ -61,6 +61,8 @@ jobs:
         run: python scripts/gpe_fft_measurement.py
       - name: "the raw measurement summary"
         run: python scripts/summarize_hardware_run.py
+      - name: "hygiene check (no personal paths)"
+        run: python scripts/check_hygiene.py
 
   paper:
     name: "Build paper PDF"

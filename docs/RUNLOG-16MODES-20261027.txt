@@ -26,7 +26,7 @@ bit-sorrend önellenőrzés: X q[1] -> 0x2 (várt 0x2) ✓
   OK
 
 [2/3] a hardver-minőség (Bell-referencia)
-C:\Users\mater\.minimax\sessions\mvs_4be75a039e3e4dd2a6a370720f28065c\workspace\qoi-repo\scripts\hardware_measure.py:21
+<workdir>\scripts\hardware_measure.py:21
 9: DeprecationWarning: The SamplerV2 class is deprecated as of qiskit-ibm-runtime 0.50.0 and will be removed no sooner 
 than 3 months after the release date. `qiskit_ibm_runtime.executor_sampler.Sampler` provides a new Sampler implementati
 on that runs all the pre- and post-processing in the client side. The top-level `qiskit_ibm_runtime.Sampler` import wil
