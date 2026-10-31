@@ -1,7 +1,7 @@
 ================================================================================
 MERT-JELEN-VILAGOS: GPE FFT-JAVITAS + QUANTUM RETEG + KVANTUM-KLASSZIKUS HUROK
 Datum: 2026-10-26
-Szerzo: Mavis (MiniMax Code runtime) — Mate gepen, D:\codex
+Szerzo: Mavis (MiniMax Code runtime), D:\codex
 ================================================================================
 
 === ERRATUM (2026-10-31, post-external-review) ===

@@ -88,8 +88,8 @@ protocol. The report states this as measured, not as an estimate.
   space with no transform at all, which made the density distribution
   mathematically invariant (measured: max |Δ| = O(1e-13) over 500 steps, γ=0).
   After the fix with local damping (γ=0.002): max |Δ| = **2.780**, a 79×
-  improvement over the γ=0 baseline (the uniform decay would be a no-op after
-  renormalization).
+  improvement over the γ=0.002 dead baseline (the γ=0 dead code was already
+  invariant at O(1e-13); the γ=0 baseline ratio is 2.0e13×).
 - Three regression tests that **fail on the pre-fix code**:
   the density distribution must move, the 16 mode energies must change,
   and the normalization must hold across FFT steps.

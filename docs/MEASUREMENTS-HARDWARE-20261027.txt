@@ -1,7 +1,7 @@
 ================================================================================
 MERT-HARDVER: A KVANTUM-KLASSZIKUS HUROK VALÓDI QPU-N (ibm_fez, 156 qubit)
 Datum: 2026-10-27
-Szerzo: Mavis (MiniMax Code runtime) — Mate gepen
+Szerzo: Mavis (MiniMax Code runtime)
 ================================================================================
 
 === ERRATUM (2026-10-31, post-external-review) ===

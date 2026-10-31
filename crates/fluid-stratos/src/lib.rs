@@ -13,8 +13,8 @@
 //!   a max/mean 1112.84 (a folyadék egyetlen pontba koncentrált)
 //!
 //! Mért bizonyíték a javítás után (γ=0.002, lokális veszteség):
-//!   a sűrűség-eloszlás max |Δ| = 2.780  (79× javulás a γ=0 baseline-on)
-//!   a 16 mód energiája max |Δ| = 9.420  (5.3e3× javulás a γ=0 baseline-on)
+//!   a sűrűség-eloszlás max |Δ| = 2.780  (79× a γ=0.002 dead baseline-hoz, 2.0e13× a γ=0-hoz)
+//!   a 16 mód energiája max |Δ| = 9.420  (4.3e3× a γ=0.002 dead baseline-hoz, 5.3e14× a γ=0-hoz)
 //!   a max/mean 1112.84 → 7.31 (a folyadék kiterjedt)
 //!   a koherencia 1.000000 → 0.452 (a jelző életre kelt)
 //!
