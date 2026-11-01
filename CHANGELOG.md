@@ -67,14 +67,25 @@ support. Four of them did not hold, and this release removes them.
 
 ### CI
 
+- **The byte-identity gate on the CPU measurement was wrong, and the CI
+  itself proved it.** Run 41300523065 failed on the Linux runner while the
+  same commit was byte identical on Windows. The measured cause is the
+  floating point noise of the coherence values, about 1e-13 relative; the
+  mode sequences, the histograms and every metric derived from them were
+  identical. The smallest decision margin over the 1000 iterations is
+  1.4e-4 (quantum branch) and 7.8e-4 (classical branch), so the mode
+  sequence is not close to a tie. `scripts/check_cpu_result.py` replaces
+  the `git diff --exit-code` with the rule that matches the measurement:
+  integers exactly, floats within a relative tolerance of 1e-9.
+  `scripts/test_check_cpu_result.py` proves that the gate fires, by
+  injecting a changed mode sequence, a changed histogram, a changed
+  integer metric, a float outside the tolerance and a changed key set.
 - **The numpy version is pinned in the measurement job.** Measured on
-  2026-11-01 in isolated environments: the 1000 iteration simulation
-  produces a byte identical result under numpy 2.4.6 (what Python 3.11
-  resolves to) and numpy 2.5.4, but not under numpy 1.26.4 — numpy's
-  `Generator.binomial` stream differs between the 1.x and the 2.x line.
-  The CI gate compares the regenerated file with the committed one byte
-  by byte, so without the pin a numpy release could break the build for
-  a third party reason.
+  2026-11-01 in three isolated environments (numpy 1.26.4, 2.4.6 and
+  2.5.4, on Python 3.11 and 3.14): the mode sequences are identical in
+  all three, and only the coherence floats differ, by about 1e-13. The
+  pin keeps the committed file byte-stable, so a real change shows up as
+  a visible diff instead of a tolerance-sized one.
 
 ### Changed
 

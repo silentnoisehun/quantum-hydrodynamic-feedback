@@ -55,12 +55,11 @@ jobs:
           python-version: "3.11"
       - name: "install dependencies"
         # The numpy version is pinned on purpose. Measured 2026-11-01: the
-        # simulation output is byte identical under numpy 2.4.6 (what Python
-        # 3.11 resolves to) and numpy 2.5.4, but NOT under numpy 1.26.4 --
-        # numpy's Generator.binomial stream differs between the 1.x and the
-        # 2.x line. Without the pin, a numpy release could change the
-        # committed measurement file and the "git diff --exit-code" gate
-        # below would fail for a third party reason.
+        # mode sequences are IDENTICAL under numpy 1.26.4, 2.4.6 and 2.5.4;
+        # the only difference between them is the last bits of the coherence
+        # floats (about 1e-13 relative). The gate below tolerates that, but
+        # the pin also keeps the committed file byte-stable, so a real change
+        # shows up as a visible diff instead of a tolerance-sized one.
         run: pip install "numpy==2.4.6"
       - name: "the 10-shot mathematics"
         run: python scripts/quantum_10shot_math.py
@@ -72,8 +71,10 @@ jobs:
         run: python scripts/test_quantum_loop_sim.py
       - name: "the quantum-classical loop simulation (1000 iterations)"
         run: python scripts/quantum_loop_sim.py
+      - name: "the CPU result gate self-test (the gate must fire)"
+        run: python scripts/test_check_cpu_result.py
       - name: "the committed CPU result must match the regenerated one"
-        run: git diff --exit-code measurement_cpu/quantum-loop-results.json
+        run: python scripts/check_cpu_result.py
       - name: "hardware replay (the 2026-10-27 runs used the pre-fix solver)"
         run: python scripts/replay_hardware_log.py
       - name: "the regenerated loop summary must match the committed one"

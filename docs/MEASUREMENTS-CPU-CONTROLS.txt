@@ -473,3 +473,27 @@ KOVETKEZTETES
 
 A nyers adatok: measurement_cpu/control_comparison.json
 
+==============================================================================
+A CI-ELLENORZES SZABALYA (hogyan ellenorizheto a fenti modsor)
+==============================================================================
+
+  A CI minden futasakor ujra generalja a 1000 iteracios CPU merest, es
+  osszehasonlitja a commitolt measurement_cpu/quantum-loop-results.json
+  fajlal:
+
+    scripts/check_cpu_result.py       az ellenorzes maga
+    scripts/test_check_cpu_result.py  az ellenorzes ontesztje
+
+  A szabaly: a whole szamok - a modsorozatok, a hisztogramok, az egesz
+  metrikak - PONTOSAN egyeznek; a lebegypontos ertekek RELATIV 1e-9
+  belul. A lebegyponti kivetel nem koztetlen kozelites: a CI maga
+  mutatta meg (run 41300523065), hogy a Linux runneren a koherencia
+  ertekei kb. 1e-13 relativ elteresel kulonboznek a windowsos futas
+  ertekeitol, mikozben a modsorozatok VALTOZATLANOK voltak.
+
+  A dontes nem all hataron: a legkisebb dontesi res (a felso ketto mod
+  energia kulonbsege) 1000 iteracio alatt 1,4e-4 (kvantum ag) es
+  7,8e-4 (klasszikus ag), vagyis 11 nagysagrenddel nagyobb a
+  platformlebegypont-zajnal. Az onteszt belepett modsorvaltasra,
+  hisztogramvaltasra, egesz metrika valtasra, tul nagy lebegypont
+  elteresre es kulcsset-valtasra is non-zero kilepesi kodot var.
