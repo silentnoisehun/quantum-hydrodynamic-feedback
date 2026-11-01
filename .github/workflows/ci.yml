@@ -61,6 +61,10 @@ jobs:
         run: python scripts/gpe_fft_measurement.py
       - name: "the raw measurement summary"
         run: python scripts/summarize_hardware_run.py
+      - name: "hardware replay (the 2026-10-27 runs used the pre-fix solver)"
+        run: python scripts/replay_hardware_log.py
+      - name: "the regenerated loop summary must match the committed one"
+        run: git diff --exit-code measurement_raw/loop_summary_20261027T003737Z_replay.json
       - name: "hygiene gate self-test (leak detection vs false positives)"
         run: python scripts/test_check_hygiene.py
       - name: "hygiene gate end-to-end (reintroduced leak must fail the gate)"
