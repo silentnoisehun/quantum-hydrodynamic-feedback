@@ -305,14 +305,19 @@ def excite(psi, A, f, phi):
 # ------------------------------------------------------------------
 # A HUROK
 # ------------------------------------------------------------------
+def clip(value, bounds):
+    return min(max(value, bounds[0]), bounds[1])
+
 def run_loop_channel(channel, iters=ITERS, seed=SEED, solver=None,
-                     feedback_list=None, live=True):
+                     feedback_list=None, live=True, residual_list=None):
     """A hurok egy tetszleges visszacsatolasi csatornaval.
 
-    `channel(A, f, phi)` -> (A2, f2, ph2): a folyadékba visszacsatolt ertekek.
-    `feedback_list` esetén a csatorna helyett a MEGADOTT visszacsatolasokat
+    `channel(A, f, phi)` -> (A2, f2, ph2): a folyadekba visszacsatolt ertekek.
+    `feedback_list` esetben a csatorna helyett a MEGADOTT visszacsatolasokat
     hasznalja, sorrendben — igy jatszhato vissza egy hardveres futas a
-    nyers fajlokból.
+    nyers fajlokbol.
+    `residual_list` esetben a csatorna kimenethez ADJA a reziduumot
+    (a folyadek sajat A,f,phi + reziduum), majd vagja fizikailag.
     `solver` a hurok implementaciojanak modulja (a legacy solver is).
 
     Ez a fuggveny a scripts/control_comparison.py osszes agarja
@@ -326,6 +331,12 @@ def run_loop_channel(channel, iters=ITERS, seed=SEED, solver=None,
         A, f, phi, E = sol.extract(psi)
         if feedback_list is not None:
             A2, f2, ph2 = feedback_list[it]
+        elif residual_list is not None:
+            # a reziduumot HOZZAADJUK a folyadek sajat ertekeihoz
+            rA, rf, rphi = residual_list[it]
+            A2 = clip((A + rA), (0.0, 1.0))
+            f2 = clip((f + rf), (0.0, 15.0))
+            ph2 = clip((phi + rphi), (0.0, 1.0))
         else:
             A2, f2, ph2 = channel(A, f, phi)
         psi = sol.excite(psi, A2, f2, ph2)

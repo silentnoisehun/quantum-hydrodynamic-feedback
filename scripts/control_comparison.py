@@ -172,9 +172,9 @@ def true_residual_feedback(prefix, solver_name):
     f-skalan, a javitott solverrel.
 
     Az `ideal` ertekek a nyers fajlok `ideal` mezojeibol jonnek (ez az, amit
-    a QPU-nak elkuldunk: A es phi egyforman, f pedig `encoded.f % 0.5`).
+    a QPU-nak elkuldunk: A es phi egyforman, f pedig `abs(encoded.f - round(encoded.f))`).
     A 68 iteracios futasban nincs `ideal` mezo, ott az `encoded`-bol
-    szarmazik: ideal.A = encoded.A, ideal.f = encoded.f % 0.5,
+    szarmazik: ideal.A = encoded.A, ideal.f = abs(encoded.f - round(encoded.f)),
     ideal.phi = encoded.phi.
     A `decoded_raw` a mertes ertek a QPU-tol.
 
@@ -202,7 +202,7 @@ def true_residual_feedback(prefix, solver_name):
             enc = data["encoded"]
             ideal = {
                 "A": enc["A"],
-                "f": enc["f"] % 0.5,  # a 2-qubit dekodolas csak [0, 0.5]-on egyertelmu
+                "f": abs(enc["f"] - round(enc["f"])),  # a 2-qubit dekodolas csak [0, 0.5]-on egyertelmu
                 "phi": enc["phi"],
             }
         decoded_raw = data["decoded_raw"]
@@ -246,14 +246,19 @@ def run_task(task):
                                   solver=solver)
     elif kind == "hardware":
         if feedback_mode == "true_residual":
-            feedback = list(true_residual_feedback(prefix, solver_name))
+            residual = list(true_residual_feedback(prefix, solver_name))
+            if permute:
+                order = np.random.default_rng(noise_seed).permutation(len(residual))
+                residual = [residual[i] for i in order]
+            seq = q.run_loop_channel(None, iters=iters, seed=init_seed,
+                                      solver=solver, residual_list=residual)
         else:
             feedback = list(recorded_feedback(prefix, feedback_mode, solver_name))
-        if permute:
-            order = np.random.default_rng(noise_seed).permutation(len(feedback))
-            feedback = [feedback[i] for i in order]
-        seq = q.run_loop_channel(None, iters=iters, seed=init_seed,
-                                  solver=solver, feedback_list=feedback)
+            if permute:
+                order = np.random.default_rng(noise_seed).permutation(len(feedback))
+                feedback = [feedback[i] for i in order]
+            seq = q.run_loop_channel(None, iters=iters, seed=init_seed,
+                                      solver=solver, feedback_list=feedback)
     else:
         raise ValueError(f"ismeretlen ag: {kind}")
 
@@ -298,6 +303,12 @@ def build_tasks(seeds, init_seeds, solvers, init_noise_seeds):
                     tasks.append(("hardware", f"hardware_residual_{hw['prefix']}",
                                   0, None, iters, q.SEED, 0, solver_name,
                                   hw["prefix"], "true_residual", False, "fixed_init"))
+                # true_residual_permuted: a valodi reziduum permutalva (>=200)
+                if solver_name == "current":
+                    for s in range(seeds):
+                        tasks.append(("hardware", f"true_residual_permuted_{hw['prefix']}",
+                                      0, None, iters, q.SEED, s, solver_name,
+                                      hw["prefix"], "true_residual", True, "fixed_init"))
                 tasks.append(("hardware", f"hardware_rescaled_{hw['prefix']}",
                               0, None, iters, q.SEED, 0, solver_name,
                               hw["prefix"], hw["feedback"] + "_rescaled", False,
@@ -333,12 +344,21 @@ def build_tasks(seeds, init_seeds, solvers, init_noise_seeds):
                                       iters, init_seed, init_seed, solver_name,
                                       hw["prefix"], "true_residual", False,
                                       "varying_init"))
+                    # true_residual_permuted varying_init
+                    if solver_name == "current":
+                        for s in range(init_noise_seeds):
+                            tasks.append(("hardware",
+                                          f"true_residual_permuted_{hw['prefix']}",
+                                          0, None, iters, init_seed,
+                                          init_seed * 1000 + s, solver_name,
+                                          hw["prefix"], "true_residual", True,
+                                          "varying_init"))
                     tasks.append(("hardware",
                                   f"hardware_rescaled_{hw['prefix']}", 0, None,
                                   iters, init_seed, init_seed, solver_name,
                                   hw["prefix"], hw["feedback"] + "_rescaled",
                                   False, "varying_init"))
-                    for s in range(init_noise_seeds):
+                for s in range(init_noise_seeds):
                         tasks.append(("hardware",
                                       f"hardware_permuted_{hw['prefix']}",
                                       0, None, iters, init_seed,
@@ -446,6 +466,7 @@ def write_report(path, payload, params):
     add("  noise_1024shot_*         1024 loves, ahogy a hardver futott")
     add("  hardware_recorded_replay a hardveres nyers fajlok ROGZITETT visszacsatolasai")
     add("  hardware_residual        a VALODI reziduum: decoded_raw - ideal a javitott f-skalan")
+    add("  true_residual_permuted   a VALODI reziduum permutalva (magnitudó-illesztett komparátor)")
     add("  hardware_rescaled        ugyanaz a rogzitett visszacsatolas, de a JAVITOTT f-skalan (a dontest arm)")
     add("  hardware_permuted        ugyanazok a visszacsatolasok, %d permutalva" %
         params["seeds"])
@@ -470,6 +491,8 @@ def write_report(path, payload, params):
                          + [f"hardware_recorded_replay_{hw['prefix']}"
                             for hw in HARDWARE_RUNS if hw["length"] == iters]
                          + [f"hardware_residual_{hw['prefix']}"
+                            for hw in HARDWARE_RUNS if hw["length"] == iters]
+                         + [f"true_residual_permuted_{hw['prefix']}"
                             for hw in HARDWARE_RUNS if hw["length"] == iters]
                          + [f"hardware_rescaled_{hw['prefix']}"
                             for hw in HARDWARE_RUNS if hw["length"] == iters]
@@ -752,75 +775,61 @@ def main():
                 "percentile": placement,
             }
 
-    # ── a dontetest ──
-    conclusion = []
-    for solver_name in solvers:
-        for iters in LENGTHS:
-            for rnd in ROUNDS:
-                arms_here = arms[solver_name][str(iters)][rnd]
-                control = arms_here.get("classical")
-                if not control:
-                    continue
-                inside_all = True
-                for arm in NOISE_ARMS:
-                    noisy = arms_here.get(arm["id"])
-                    if not noisy:
-                        continue
-                    for key in METRIC_KEYS:
-                        cval = control["metrics"][key]["median"]
-                        band_v = noisy["metrics"][key]
-                        if not (band_v["p5"] <= cval <= band_v["p95"]):
-                            inside_all = False
-                conclusion.append(
-                    f"{solver_name} solver, {iters} iteracio, {rnd} kor: a "
-                    f"klasszikus kontroll "
-                    f"{'a zajos agak savjan BELUL van' if inside_all else 'a zajos agak savjan KIVUL van'}")
-
-    # ── hardveres reziduum arm ertekelese a QPU-RUN-DECISION-RULE.txt szerint ──
+    # ── a dontetest: a valodi reziduum permutalt savja a dontoeso komparator ──
     # M1 = distinct_modes, M2 = brain_ratio
-    # A hardveres reziduum a zajsavon KIVUL van, ha legalabb az egyik metrika
-    # (M1 vagy M2) KIVUL esik a zajos agak 5-95% savjan.
-    # A szabaly szerint: ha a hardver a zajsavon BELUL van -> NEM inditunk uj QPU futast.
+    # QPU-futás csak akkor indokolt, ha a VALODI sorrend (true_residual) M1 vagy M2
+    # erteke KIVUL esik a true_residual_permuted 5-95% savjan.
+    conclusion = []
     for solver_name in solvers:
         if solver_name != "current":
             continue  # a valodi reziduum csak a javitott solverrel van szamitva
         for iters in LENGTHS:
             for rnd in ROUNDS:
                 arms_here = arms[solver_name][str(iters)][rnd]
-                # Megtalaljuk a hardveres reziduum agakat
+                # Megtalaljuk a true_residual es true_residual_permuted agakat
                 hw_residual_arms = [aid for aid in arms_here.keys() if aid.startswith("hardware_residual_")]
+                hw_permuted_arms = [aid for aid in arms_here.keys() if aid.startswith("true_residual_permuted_")]
                 for hw_arm in hw_residual_arms:
                     hw_m = arms_here[hw_arm]["metrics"]
                     hw_distinct = hw_m["distinct_modes"]["median"]
                     hw_brain = hw_m["brain_ratio"]["median"]
                     
-                    # Ellenorizzuk minden zaj ag ellen
-                    outside_any = False
-                    for arm in NOISE_ARMS:
-                        noisy = arms_here.get(arm["id"])
-                        if not noisy:
-                            continue
-                        # M1: distinct_modes
-                        d_band = (noisy["metrics"]["distinct_modes"]["p5"], noisy["metrics"]["distinct_modes"]["p95"])
-                        d_out = hw_distinct < d_band[0] or hw_distinct > d_band[1]
-                        # M2: brain_ratio
-                        b_band = (noisy["metrics"]["brain_ratio"]["p5"], noisy["metrics"]["brain_ratio"]["p95"])
-                        b_out = hw_brain < b_band[0] or hw_brain > b_band[1]
-                        
-                        if d_out or b_out:
-                            outside_any = True
+                    # A dontoeso sav: true_residual_permuted
+                    # talaljuk meg a megfelelo permuted armot (ugyanaz a prefix)
+                    matching_perm = None
+                    for perm in hw_permuted_arms:
+                        for h in HARDWARE_RUNS:
+                            if h['prefix'] in hw_arm and h['prefix'] in perm:
+                                matching_perm = perm
+                                break
+                        if matching_perm:
+                            break
                     
-                    if outside_any:
+                    if not matching_perm or matching_perm not in arms_here:
+                        conclusion.append(
+                            f"HARDVERES REZIDUUM ({hw_arm}, {iters} iter, {rnd}): "
+                            f"NINCS megfelelo true_residual_permuted sav -> kimarad")
+                        continue
+                    
+                    perm_m = arms_here[matching_perm]["metrics"]
+                    d_band = (perm_m["distinct_modes"]["p5"], perm_m["distinct_modes"]["p95"])
+                    b_band = (perm_m["brain_ratio"]["p5"], perm_m["brain_ratio"]["p95"])
+                    d_out = hw_distinct < d_band[0] or hw_distinct > d_band[1]
+                    b_out = hw_brain < b_band[0] or hw_brain > b_band[1]
+                    
+                    if d_out or b_out:
                         conclusion.append(
                             f"HARDVERES REZIDUUM ({hw_arm}, {iters} iter, {rnd}): "
                             f"M1(distinct={hw_distinct}) vagy M2(brain={hw_brain:.4f}) "
-                            f"KIVUL esik a zajos agak savjan -> "
+                            f"KIVUL esik a true_residual_permuted savjan "
+                            f"(distinct_band={d_band}, brain_band={b_band}) -> "
                             f"SZABALY: uj QPU futas INDOKOLT")
                     else:
                         conclusion.append(
                             f"HARDVERES REZIDUUM ({hw_arm}, {iters} iter, {rnd}): "
                             f"M1(distinct={hw_distinct}) es M2(brain={hw_brain:.4f}) "
-                            f"BELUL van a zajos agak savjan -> "
+                            f"BELUL van a true_residual_permuted savjan "
+                            f"(distinct_band={d_band}, brain_band={b_band}) -> "
                             f"SZABALY: uj QPU futas NEM indokolt")
 
     payload = {

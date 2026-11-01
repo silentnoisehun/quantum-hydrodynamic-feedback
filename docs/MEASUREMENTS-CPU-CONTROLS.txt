@@ -21,6 +21,7 @@ AGAK
   noise_1024shot_*         1024 loves, ahogy a hardver futott
   hardware_recorded_replay a hardveres nyers fajlok ROGZITETT visszacsatolasai
   hardware_residual        a VALODI reziduum: decoded_raw - ideal a javitott f-skalan
+  true_residual_permuted   a VALODI reziduum permutalva (magnitudó-illesztett komparátor)
   hardware_rescaled        ugyanaz a rogzitett visszacsatolas, de a JAVITOTT f-skalan (a dontest arm)
   hardware_permuted        ugyanazok a visszacsatolasok, 10 permutalva
 
@@ -38,8 +39,10 @@ A JAVITOTT SOLVERREL
   noise_1024shot_floor                   2  [2, 2]              0.9500  [0.9000, 0.9500] 0.0716  [0.0716, 0.1172] 0.0048  [0.0048, 0.0207]
   hardware_recorded_replay_20261027T010656Z 3  [3, 3]              0.6500  [0.6500, 0.6500] 0.2853  [0.2853, 0.2853] 0.0319  [0.0319, 0.0319]
   hardware_recorded_replay_20261027T015558Z 2  [2, 2]              0.9000  [0.9000, 0.9000] 0.1172  [0.1172, 0.1172] 0.0082  [0.0082, 0.0082]
-  hardware_residual_20261027T010656Z     2  [2, 2]              0.2500  [0.2500, 0.2500] 0.2028  [0.2028, 0.2028] 0.0182  [0.0182, 0.0182]
-  hardware_residual_20261027T015558Z     2  [2, 2]              0.2500  [0.2500, 0.2500] 0.2028  [0.2028, 0.2028] 0.0182  [0.0182, 0.0182]
+  hardware_residual_20261027T010656Z     3  [3, 3]              0.5500  [0.5500, 0.5500] 0.3515  [0.3515, 0.3515] 0.0586  [0.0586, 0.0586]
+  hardware_residual_20261027T015558Z     3  [3, 3]              0.4500  [0.4500, 0.4500] 0.3849  [0.3849, 0.3849] 0.0566  [0.0566, 0.0566]
+  true_residual_permuted_20261027T010656Z 3  [3, 3]              0.4000  [0.2500, 0.5500] 0.3815  [0.2953, 0.3953] 0.0548  [0.0448, 0.0578]
+  true_residual_permuted_20261027T015558Z 3  [3, 3]              0.4500  [0.3000, 0.5000] 0.3849  [0.3714, 0.3953] 0.0570  [0.0454, 0.0671]
   hardware_rescaled_20261027T010656Z     3  [3, 3]              0.6500  [0.6500, 0.6500] 0.2853  [0.2853, 0.2853] 0.0319  [0.0319, 0.0319]
   hardware_rescaled_20261027T015558Z     2  [2, 2]              0.9000  [0.9000, 0.9000] 0.1172  [0.1172, 0.1172] 0.0082  [0.0082, 0.0082]
   hardware_permuted_20261027T010656Z     2  [1, 3]              0.8000  [0.7500, 0.9000] 0.1805  [-0.0000, 0.2210] 0.0240  [0.0000, 0.0285]
@@ -74,12 +77,12 @@ A JAVITOTT SOLVERREL
   noise_1024shot_floor                   1.5000  [1.0000, 2.0000] 0.9750  [0.9000, 1.0000] 0.0358  [-0.0000, 0.0716] 0.0024  [0.0000, 0.0048]
   hardware_recorded_replay_20261027T010656Z 3  [2, 3]              0.8000  [0.7000, 0.8500] 0.2210  [0.1525, 0.2805] 0.0228  [0.0136, 0.0285]
   hardware_recorded_replay_20261027T015558Z 2  [2, 3]              0.9500  [0.9000, 0.9500] 0.0716  [0.0716, 0.1422] 0.0048  [0.0048, 0.0100]
-  hardware_residual_20261027T010656Z     3  [2, 3]              0.5500  [0.2500, 0.7000] 0.3515  [0.0716, 0.3897] 0.0318  [0.0048, 0.0385]
-  hardware_residual_20261027T015558Z     3  [2, 3]              0.6500  [0.2500, 0.7000] 0.2892  [0.1805, 0.3602] 0.0389  [0.0182, 0.0404]
+  hardware_residual_20261027T010656Z     4  [3, 4]              0.6000  [0.3500, 0.6500] 0.3697  [0.3239, 0.3927] 0.0610  [0.0464, 0.0626]
+  hardware_residual_20261027T015558Z     3  [3, 3]              0.4000  [0.3500, 0.4500] 0.3644  [0.3048, 0.3782] 0.0542  [0.0286, 0.0594]
+  true_residual_permuted_20261027T010656Z 3  [3, 4]              0.5000  [0.3500, 0.6500] 0.3510  [0.3090, 0.3989] 0.0481  [0.0422, 0.0558]
+  true_residual_permuted_20261027T015558Z 3  [3, 3]              0.5250  [0.3500, 0.7500] 0.3679  [0.2305, 0.3897] 0.0423  [0.0185, 0.0552]
   hardware_rescaled_20261027T010656Z     3  [2, 3]              0.8000  [0.7000, 0.8500] 0.2210  [0.1525, 0.2805] 0.0228  [0.0136, 0.0285]
   hardware_rescaled_20261027T015558Z     2  [2, 3]              0.9500  [0.9000, 0.9500] 0.0716  [0.0716, 0.1422] 0.0048  [0.0048, 0.0100]
-  hardware_permuted_20261027T010656Z     3  [2, 3]              0.8500  [0.7500, 0.9500] 0.1869  [0.0716, 0.1869] 0.0136  [0.0048, 0.0261]
-  hardware_permuted_20261027T015558Z     2  [1, 2]              0.9500  [0.9000, 0.9500] 0.0716  [-0.0000, 0.0716] 0.0048  [0.0000, 0.0048]
 
   A klasszikus kontroll a zajos agak savjan belul van?
     noise_10shot_symmetric         distinct_modes kontroll=3.0000     sav=[1.0000, 3.0000]  Benne
@@ -109,7 +112,8 @@ A JAVITOTT SOLVERREL
   noise_10shot_floor                     4  [3, 6]              0.8235  [0.7353, 0.9118] 0.2380  [0.0753, 0.3088] 0.0533  [0.0192, 0.0782]
   noise_1024shot_floor                   2  [2, 2]              0.9853  [0.9706, 0.9853] 0.0276  [0.0276, 0.0479] 0.0018  [0.0018, 0.0174]
   hardware_recorded_replay_20261027T003737Z 2  [2, 2]              0.9412  [0.9412, 0.9412] 0.0807  [0.0807, 0.0807] 0.0170  [0.0170, 0.0170]
-  hardware_residual_20261027T003737Z     3  [3, 3]              0.4853  [0.4853, 0.4853] 0.3692  [0.3692, 0.3692] 0.0215  [0.0215, 0.0215]
+  hardware_residual_20261027T003737Z     6  [6, 6]              0.7206  [0.7206, 0.7206] 0.3638  [0.3638, 0.3638] 0.1069  [0.1069, 0.1069]
+  true_residual_permuted_20261027T003737Z 6  [5, 6]              0.6397  [0.5882, 0.6765] 0.4163  [0.3980, 0.4500] 0.0930  [0.0746, 0.1069]
   hardware_rescaled_20261027T003737Z     2  [2, 2]              0.9412  [0.9412, 0.9412] 0.0807  [0.0807, 0.0807] 0.0170  [0.0170, 0.0170]
   hardware_permuted_20261027T003737Z     2.5000  [1.0000, 3.0000] 0.9559  [0.8529, 1.0000] 0.0680  [-0.0000, 0.1679] 0.0112  [0.0000, 0.0401]
 
@@ -141,7 +145,8 @@ A JAVITOTT SOLVERREL
   noise_10shot_floor                     4  [1, 6]              0.8824  [0.7059, 0.9412] 0.1792  [-0.0000, 0.2484] 0.0222  [0.0000, 0.0541]
   noise_1024shot_floor                   1.5000  [1.0000, 2.0000] 0.9926  [0.9706, 1.0000] 0.0138  [-0.0000, 0.0276] 0.0009  [0.0000, 0.0018]
   hardware_recorded_replay_20261027T003737Z 2  [2, 3]              0.9706  [0.9412, 0.9706] 0.0552  [0.0276, 0.0552] 0.0036  [0.0018, 0.0036]
-  hardware_residual_20261027T003737Z     6  [3, 6]              0.6471  [0.5000, 0.6765] 0.4199  [0.2318, 0.4342] 0.0794  [0.0343, 0.0890]
+  hardware_residual_20261027T003737Z     6  [5, 6]              0.6618  [0.5441, 0.6765] 0.3807  [0.2955, 0.4651] 0.0895  [0.0599, 0.0947]
+  true_residual_permuted_20261027T003737Z 5.5000  [3.0000, 6.0000] 0.6765  [0.4853, 0.8235] 0.3855  [0.2084, 0.4777] 0.0856  [0.0361, 0.1080]
   hardware_rescaled_20261027T003737Z     2  [2, 3]              0.9706  [0.9412, 0.9706] 0.0552  [0.0276, 0.0552] 0.0036  [0.0018, 0.0036]
   hardware_permuted_20261027T003737Z     1.5000  [1.0000, 3.0000] 0.9926  [0.8529, 1.0000] 0.0138  [-0.0000, 0.0954] 0.0009  [0.0000, 0.0210]
 
@@ -182,27 +187,30 @@ A 'szazalek' a hardver merőszamanak helye a CPU-ag savjaban.
         hardware_recorded_replay_20261027T015558Z distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
         hardware_rescaled_20261027T010656Z     distinct_modes=100.0%  brain_ratio=100.0%  H_Hmax=100.0%  transient_H=100.0%
         hardware_rescaled_20261027T015558Z     distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
-        hardware_residual_20261027T010656Z     distinct_modes=100.0%  brain_ratio=100.0%  H_Hmax=100.0%  transient_H=100.0%
-        hardware_residual_20261027T015558Z     distinct_modes=100.0%  brain_ratio=100.0%  H_Hmax=100.0%  transient_H=100.0%
+        hardware_residual_20261027T010656Z     distinct_modes=100.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
+        hardware_residual_20261027T015558Z     distinct_modes=100.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
         noise_1024shot_floor                   distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
         noise_1024shot_symmetric               distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
         noise_10shot_floor                     distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=90.0%
         noise_10shot_symmetric                 distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        true_residual_permuted_20261027T010656Z distinct_modes=100.0%  brain_ratio=90.0%  H_Hmax=0.0%  transient_H=0.0%
+        true_residual_permuted_20261027T015558Z distinct_modes=90.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
       varying_init kor:
         classical                              distinct_modes=80.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=20.0%
         exact                                  distinct_modes=80.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=20.0%
-        hardware_permuted_20261027T010656Z     distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
-        hardware_permuted_20261027T015558Z     distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        hardware_permuted_20261027T003737Z     distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=90.0%
         hardware_recorded_replay_20261027T010656Z distinct_modes=80.0%  brain_ratio=0.0%  H_Hmax=80.0%  transient_H=80.0%
         hardware_recorded_replay_20261027T015558Z distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
         hardware_rescaled_20261027T010656Z     distinct_modes=80.0%  brain_ratio=0.0%  H_Hmax=80.0%  transient_H=80.0%
         hardware_rescaled_20261027T015558Z     distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
-        hardware_residual_20261027T010656Z     distinct_modes=100.0%  brain_ratio=60.0%  H_Hmax=40.0%  transient_H=60.0%
-        hardware_residual_20261027T015558Z     distinct_modes=80.0%  brain_ratio=60.0%  H_Hmax=40.0%  transient_H=40.0%
+        hardware_residual_20261027T010656Z     distinct_modes=40.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
+        hardware_residual_20261027T015558Z     distinct_modes=80.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=20.0%
         noise_1024shot_floor                   distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
         noise_1024shot_symmetric               distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=90.0%
         noise_10shot_floor                     distinct_modes=90.0%  brain_ratio=10.0%  H_Hmax=90.0%  transient_H=90.0%
         noise_10shot_symmetric                 distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=90.0%
+        true_residual_permuted_20261027T010656Z distinct_modes=80.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
+        true_residual_permuted_20261027T015558Z distinct_modes=90.0%  brain_ratio=60.0%  H_Hmax=30.0%  transient_H=40.0%
 
   20261027T015558Z  (20 iteracio, raw visszacsatolas)
     current solver:
@@ -216,27 +224,30 @@ A 'szazalek' a hardver merőszamanak helye a CPU-ag savjaban.
         hardware_recorded_replay_20261027T015558Z distinct_modes=100.0%  brain_ratio=100.0%  H_Hmax=100.0%  transient_H=100.0%
         hardware_rescaled_20261027T010656Z     distinct_modes=0.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
         hardware_rescaled_20261027T015558Z     distinct_modes=100.0%  brain_ratio=100.0%  H_Hmax=100.0%  transient_H=100.0%
-        hardware_residual_20261027T010656Z     distinct_modes=100.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
-        hardware_residual_20261027T015558Z     distinct_modes=100.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
+        hardware_residual_20261027T010656Z     distinct_modes=0.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
+        hardware_residual_20261027T015558Z     distinct_modes=0.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
         noise_1024shot_floor                   distinct_modes=100.0%  brain_ratio=30.0%  H_Hmax=100.0%  transient_H=70.0%
         noise_1024shot_symmetric               distinct_modes=70.0%  brain_ratio=90.0%  H_Hmax=70.0%  transient_H=30.0%
         noise_10shot_floor                     distinct_modes=40.0%  brain_ratio=80.0%  H_Hmax=30.0%  transient_H=30.0%
         noise_10shot_symmetric                 distinct_modes=90.0%  brain_ratio=60.0%  H_Hmax=70.0%  transient_H=50.0%
+        true_residual_permuted_20261027T010656Z distinct_modes=0.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
+        true_residual_permuted_20261027T015558Z distinct_modes=0.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
       varying_init kor:
         classical                              distinct_modes=0.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
         exact                                  distinct_modes=0.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
-        hardware_permuted_20261027T010656Z     distinct_modes=30.0%  brain_ratio=80.0%  H_Hmax=30.0%  transient_H=30.0%
-        hardware_permuted_20261027T015558Z     distinct_modes=100.0%  brain_ratio=10.0%  H_Hmax=100.0%  transient_H=90.0%
+        hardware_permuted_20261027T003737Z     distinct_modes=70.0%  brain_ratio=30.0%  H_Hmax=70.0%  transient_H=70.0%
         hardware_recorded_replay_20261027T010656Z distinct_modes=20.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
         hardware_recorded_replay_20261027T015558Z distinct_modes=60.0%  brain_ratio=40.0%  H_Hmax=60.0%  transient_H=60.0%
         hardware_rescaled_20261027T010656Z     distinct_modes=20.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
         hardware_rescaled_20261027T015558Z     distinct_modes=60.0%  brain_ratio=40.0%  H_Hmax=60.0%  transient_H=60.0%
-        hardware_residual_20261027T010656Z     distinct_modes=40.0%  brain_ratio=80.0%  H_Hmax=20.0%  transient_H=20.0%
-        hardware_residual_20261027T015558Z     distinct_modes=40.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
+        hardware_residual_20261027T010656Z     distinct_modes=0.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
+        hardware_residual_20261027T015558Z     distinct_modes=0.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
         noise_1024shot_floor                   distinct_modes=100.0%  brain_ratio=10.0%  H_Hmax=100.0%  transient_H=90.0%
         noise_1024shot_symmetric               distinct_modes=40.0%  brain_ratio=90.0%  H_Hmax=20.0%  transient_H=10.0%
         noise_10shot_floor                     distinct_modes=60.0%  brain_ratio=50.0%  H_Hmax=60.0%  transient_H=50.0%
         noise_10shot_symmetric                 distinct_modes=60.0%  brain_ratio=50.0%  H_Hmax=50.0%  transient_H=60.0%
+        true_residual_permuted_20261027T010656Z distinct_modes=0.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
+        true_residual_permuted_20261027T015558Z distinct_modes=0.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
 
   20261027T003737Z  (68 iteracio, corrected visszacsatolas)
     current solver:
@@ -252,6 +263,7 @@ A 'szazalek' a hardver merőszamanak helye a CPU-ag savjaban.
         noise_1024shot_symmetric               distinct_modes=0.0%  brain_ratio=90.0%  H_Hmax=10.0%  transient_H=10.0%
         noise_10shot_floor                     distinct_modes=0.0%  brain_ratio=90.0%  H_Hmax=10.0%  transient_H=0.0%
         noise_10shot_symmetric                 distinct_modes=20.0%  brain_ratio=70.0%  H_Hmax=30.0%  transient_H=10.0%
+        true_residual_permuted_20261027T003737Z distinct_modes=0.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
       varying_init kor:
         classical                              distinct_modes=0.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
         exact                                  distinct_modes=0.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
@@ -263,21 +275,18 @@ A 'szazalek' a hardver merőszamanak helye a CPU-ag savjaban.
         noise_1024shot_symmetric               distinct_modes=30.0%  brain_ratio=30.0%  H_Hmax=70.0%  transient_H=20.0%
         noise_10shot_floor                     distinct_modes=20.0%  brain_ratio=90.0%  H_Hmax=20.0%  transient_H=20.0%
         noise_10shot_symmetric                 distinct_modes=20.0%  brain_ratio=70.0%  H_Hmax=30.0%  transient_H=30.0%
+        true_residual_permuted_20261027T003737Z distinct_modes=0.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
 
 ==============================================================================
 KOVETKEZTETES
 ==============================================================================
 
-  current solver, 20 iteracio, fixed_init kor: a klasszikus kontroll a zajos agak savjan KIVUL van
-  current solver, 20 iteracio, varying_init kor: a klasszikus kontroll a zajos agak savjan KIVUL van
-  current solver, 68 iteracio, fixed_init kor: a klasszikus kontroll a zajos agak savjan KIVUL van
-  current solver, 68 iteracio, varying_init kor: a klasszikus kontroll a zajos agak savjan KIVUL van
-  HARDVERES REZIDUUM (hardware_residual_20261027T010656Z, 20 iter, fixed_init): M1(distinct=2.0) vagy M2(brain=0.2500) KIVUL esik a zajos agak savjan -> SZABALY: uj QPU futas INDOKOLT
-  HARDVERES REZIDUUM (hardware_residual_20261027T015558Z, 20 iter, fixed_init): M1(distinct=2.0) vagy M2(brain=0.2500) KIVUL esik a zajos agak savjan -> SZABALY: uj QPU futas INDOKOLT
-  HARDVERES REZIDUUM (hardware_residual_20261027T010656Z, 20 iter, varying_init): M1(distinct=3.0) vagy M2(brain=0.5500) KIVUL esik a zajos agak savjan -> SZABALY: uj QPU futas INDOKOLT
-  HARDVERES REZIDUUM (hardware_residual_20261027T015558Z, 20 iter, varying_init): M1(distinct=3.0) vagy M2(brain=0.6500) KIVUL esik a zajos agak savjan -> SZABALY: uj QPU futas INDOKOLT
-  HARDVERES REZIDUUM (hardware_residual_20261027T003737Z, 68 iter, fixed_init): M1(distinct=3.0) vagy M2(brain=0.4853) KIVUL esik a zajos agak savjan -> SZABALY: uj QPU futas INDOKOLT
-  HARDVERES REZIDUUM (hardware_residual_20261027T003737Z, 68 iter, varying_init): M1(distinct=6.0) vagy M2(brain=0.6471) KIVUL esik a zajos agak savjan -> SZABALY: uj QPU futas INDOKOLT
+  HARDVERES REZIDUUM (hardware_residual_20261027T010656Z, 20 iter, fixed_init): M1(distinct=3.0) es M2(brain=0.5500) BELUL van a true_residual_permuted savjan (distinct_band=(3.0, 3.0), brain_band=(0.25, 0.55)) -> SZABALY: uj QPU futas NEM indokolt
+  HARDVERES REZIDUUM (hardware_residual_20261027T015558Z, 20 iter, fixed_init): M1(distinct=3.0) es M2(brain=0.4500) BELUL van a true_residual_permuted savjan (distinct_band=(3.0, 3.0), brain_band=(0.3, 0.5)) -> SZABALY: uj QPU futas NEM indokolt
+  HARDVERES REZIDUUM (hardware_residual_20261027T010656Z, 20 iter, varying_init): M1(distinct=4.0) es M2(brain=0.6000) BELUL van a true_residual_permuted savjan (distinct_band=(3.0, 4.0), brain_band=(0.35, 0.65)) -> SZABALY: uj QPU futas NEM indokolt
+  HARDVERES REZIDUUM (hardware_residual_20261027T015558Z, 20 iter, varying_init): M1(distinct=3.0) es M2(brain=0.4000) BELUL van a true_residual_permuted savjan (distinct_band=(3.0, 3.0), brain_band=(0.35, 0.75)) -> SZABALY: uj QPU futas NEM indokolt
+  HARDVERES REZIDUUM (hardware_residual_20261027T003737Z, 68 iter, fixed_init): M1(distinct=6.0) vagy M2(brain=0.7206) KIVUL esik a true_residual_permuted savjan (distinct_band=(5.0, 6.0), brain_band=(0.5882352941176471, 0.6764705882352942)) -> SZABALY: uj QPU futas INDOKOLT
+  HARDVERES REZIDUUM (hardware_residual_20261027T003737Z, 68 iter, varying_init): M1(distinct=6.0) es M2(brain=0.6618) BELUL van a true_residual_permuted savjan (distinct_band=(3.0, 6.0), brain_band=(0.4852941176470588, 0.8235294117647058)) -> SZABALY: uj QPU futas NEM indokolt
 
 A nyers adatok: measurement_cpu/control_comparison.json
 

@@ -56,7 +56,15 @@ support. Four of them did not hold, and this release removes them.
   and `usage_after` metadata blocks are sanitised.
 - **Typo fixes in `docs/QPU-RUN-DECISION-RULE.txt`**: "f不加" → "f-korlataival";
   "pre-regisztrált" / "PRE-REGISZTRALT" → "előre rögzített" / "ELŐRE
-  ROGZITETT".
+  ROGZITETT"; `docs/MEASUREMENTS-GPE-QUANTUM-20261026.txt`: "不受" → "nem erinti".
+- **True residual now adds to fluid's own values instead of replacing
+  feedback** (`scripts/quantum_loop_sim.py`, `scripts/control_comparison.py`):
+  `run_loop_channel` accepts a `residual_list` that is added to the
+  fluid's current (A, f, phi) before clipping to physical ranges. This
+  correctly models the residual as an additive perturbation.
+- **`ideal.f` fallback uses `abs(encoded.f - round(encoded.f))`** instead of
+  `encoded.f % 0.5`. This matches the recorded `ideal.f` on all 20-iteration
+  runs (verified against the `ideal` field in raw files).
 
 ### Added
 
@@ -65,8 +73,13 @@ support. Four of them did not hold, and this release removes them.
   noise-free classical control, the noise-free quantum channel, the
   measured-`c` and the hardware-floor noise models at 10 and 1024 shots, and
   a replay of the hardware's own recorded feedback with ≥200 permutations.
-  200 noise seeds per branch, 30 varying initial states, both hardware run
-  lengths, and both the corrected and the pre-fix solver. Output in
+  **New in this release:** the **true residual arm** (`hardware_residual`)
+  computes `decoded_raw − ideal` per iteration on the corrected f-scale with
+  the corrected solver, added to the fluid's own values; and the **magnitude-
+  matched comparator** (`true_residual_permuted`) permutes the true residual
+  ≥200 times (fixed and varying initial states) to establish the decision
+  band. 200 noise seeds per branch, 30 varying initial states, both hardware
+  run lengths, and both the corrected and the pre-fix solver. Output in
   `measurement_cpu/control_comparison.json` and
   `docs/MEASUREMENTS-CPU-CONTROLS.txt`.
 - **`scripts/legacy/quantum_loop_sim_a72ead4.py`** and
@@ -122,12 +135,21 @@ support. Four of them did not hold, and this release removes them.
 ### Changed
 
 - **The claim about quantum feedback causing mode switching is
-  revised.** The control comparison now measures the true residual
-  (`decoded_raw − ideal` on corrected f-scale with corrected solver): the
-  true residual arm's M1 (distinct_modes) and M2 (brain_ratio) fall
-  outside the noise bands on all three hardware runs (both 20 and 68
-  iterations, fixed and varying initial states). Per
-  `docs/QPU-RUN-DECISION-RULE.txt`, a new QPU run is justified.
+  re-evaluated with the true residual and magnitude-matched comparator.**
+  The control comparison measures the true residual
+  (`decoded_raw − ideal` on corrected f-scale with corrected solver, added
+  to the fluid's own values) and compares it against the **magnitude-matched
+  comparator** (`true_residual_permuted`, the true residual permuted ≥200
+  times at fixed and varying initial states).
+  Results per `docs/QPU-RUN-DECISION-RULE.txt`:
+  - 20-iter runs (both fixed and varying init): M1/M2 fall INSIDE the
+    true_residual_permuted band → QPU run NOT justified.
+  - 68-iter fixed_init: M1=6, M2=0.7206 OUTSIDE the band → QPU run
+    justified.
+  - 68-iter varying_init: M1/M2 INSIDE the band → NOT justified.
+  Overall: the true residual does NOT consistently fall outside the
+  magnitude-matched noise band. A new QPU run is only conditionally
+  justified for the 68-iter fixed-init case.
 - **The paper's CPU figures are recomputed.** The amplitude fix changed
   them: the quantum branch's marginal concentration is 0.2198 against the
   classical branch's 0.0993 (was 0.5268), the total-variation distance is
@@ -146,6 +168,10 @@ support. Four of them did not hold, and this release removes them.
   is unambiguous only on [0, 0.5]; the two-qubit encoding carries no
   information beyond the one-qubit form; and A, f and φ are the same
   measurement, so the "phase" is a rotation angle, not a quantum phase.
+- **The QPU decision rule updated**: the decisive comparator is now the
+  `true_residual_permuted` band (magnitude-matched noise), not the
+  shot-noise arms. The rule, arm names, and metrics are documented in
+  `docs/QPU-RUN-DECISION-RULE.txt`.
 
 ### Measured
 
@@ -157,12 +183,19 @@ support. Four of them did not hold, and this release removes them.
   0.395), while every noisy branch concentrates on a single mode (Brain
   0.85–0.95, H/Hmax 0.07–0.19).
 - The **true residual** (`decoded_raw − ideal` on corrected f-scale with
-  corrected solver) for all three hardware runs falls **outside** the noise
-  bands on M1 (distinct_modes) and M2 (brain_ratio), both 20 and 68
-  iterations, fixed and varying initial states. The recorded feedback at
-  the hardware's original f-scale was outside the band; the recorded
-  feedback at the corrected f-scale (`hardware_rescaled`) is inside the
-  band — the multi-mode pattern was caused by the f-scale bug.
+  corrected solver, added to fluid's own values) compared against the
+  **magnitude-matched comparator** (`true_residual_permuted`, ≥200 permutations
+  of the true residual):
+  - 20-iter fixed_init: M1=3.0, M2=0.55 INSIDE band [3.0,3.0]×[0.25,0.55]
+  - 20-iter varying_init: M1=4.0/3.0, M2=0.60/0.40 INSIDE bands
+  - 68-iter fixed_init: M1=6.0, M2=0.7206 OUTSIDE band [5.0,6.0]×[0.588,0.676]
+  - 68-iter varying_init: M1=6.0, M2=0.6618 INSIDE band [3.0,6.0]×[0.485,0.824]
+  → The true residual does NOT consistently fall outside the magnitude-matched
+    noise band. Only 68-iter fixed_init is outside.
+  The recorded feedback at the hardware's original f-scale was outside the
+  shot-noise bands; the recorded feedback at the corrected f-scale
+  (`hardware_rescaled`) is inside the shot-noise bands — the multi-mode
+  pattern was caused by the f-scale bug.
 - The full git history (33 commits, 413 objects) was scanned for IBM API
   keys: none is present. No key rotation is required.
 

@@ -19,19 +19,24 @@ A PROBLEM, amit ez a szabaly kezel
       osszehasonlithato.
   Uj QPU-futast csak akkor indokolt, ha a CPU oldali kontroll
   (scripts/control_comparison.py) MEGMUTATJA, hogy a hardveres
-  viselkedes a zajos szimulacios savon kivul esik.
-  Ha a CPU kontroll szerint a hardveres viselkedes a ZAJOS SAVON BELUL
-  van, akkor az uj hardveres futas nem adna uj informaciot — a
-  megvalasz "a meresi zaj (nem a kvantum-csatorna) hozza a mod-mintazatot",
-  es ez CPU-n bizonyithato.
+  VALODI REZIDUUM (decoded_raw - ideal a javitott f-skalan, a javitott
+  solverrel) viselkedes a MAGNITUDO-ILLESZTETT KOMPARATOR savjan
+  kivul esik.
+  A dontoeso sav a `true_residual_permuted` ag (a valodi reziduum
+  permutalva, >=200 futas per hardveres futas, fixed_init es
+  varying_init). Ha a CPU kontroll szerint a hardveres valodi reziduum
+  a ZAJOS SAVON BELUL van, akkor az uj hardveres futas nem adna uj
+  informaciot — a megvalasz "a meresi zaj (nem a kvantum-csatorna)
+  hozza a mod-mintazatot", es ez CPU-n bizonyithato.
 
 --------------------------------------------------------------------------------
-1. A FIRTEK (A KULCS METRO SZAM) — ROZGZITETT, A FENTI DATUM ELOTT
+1. A FIRTEK (A KULCS METRO SZAM) — ELŐRE ROGZITETT, A FENTI DATUM ELOTT
 --------------------------------------------------------------------------------
 
-A FIRTEK: a hardveres reziduum-replay (az "d" ag) eredmenye a
-klasszikus-zaj sav ("c" ag) 5-95%-os savjan KILLOG-e a ROZGZITETT
-meroszamokon?
+A FIRTEK: a hardveres VALODI REZIDUUM (az "hardware_residual" ag)
+eredmenye a MAGNITUDO-ILLESZTETT KOMPARATOR sav (a
+`true_residual_permuted` ag) 5-95%-os savjan KIVUL esik-e a
+ROGZITETT meroszamokon?
 
 A ROZGZITETT MEROSZAMOK (ketto — nem lehet egyebbel megelgedni):
 
@@ -40,10 +45,10 @@ A ROZGZITETT MEROSZAMOK (ketto — nem lehet egyebbel megelgedni):
   M2  a BRAIN-ARANY (a 0. mods szazaleka)
 
 A sav forrasa: measurement_cpu/control_comparison.json, a
-scripts/control_comparison.py altal irt "classical" kontroll es a
-"noise_10shot_symmetric" / "noise_1024shot_symmetric" /
-"noise_10shot_floor" / "noise_1024shot_floor" zajagak savjai.
-A HARDVERES REZIDUUM-REPLAY ag neve: "hardware_residual_<a futas cimkeje>".
+scripts/control_comparison.py altal irt `true_residual_permuted`
+ag savjai (5-95%).
+A HARDVERES VALODI REZIDUUM ag neve: "hardware_residual_<a futas cimkeje>".
+A DONTEO KOMPARATOR ag neve: "true_residual_permuted_<a futas cimkeje>".
 
 A KIVETEL (a szabaly egyetlen kivétele, eloregisztralva):
   ha a CPU kontroll maga is bizonytalan (pl. a sav nincs rendben,

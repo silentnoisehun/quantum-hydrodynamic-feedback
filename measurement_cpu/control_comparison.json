@@ -852,13 +852,13 @@
      "hardware_residual_20261027T010656Z": {
       "count": 1,
       "mean_histogram": [
-       5.0,
+       11.0,
        0.0,
        0.0,
        0.0,
        0.0,
        0.0,
-       15.0,
+       3.0,
        0.0,
        0.0,
        0.0,
@@ -867,148 +867,148 @@
        0.0,
        0.0,
        0.0,
-       0.0
+       6.0
       ],
       "metrics": {
        "H_Hmax": {
-        "max": 0.2028195311147832,
-        "mean": 0.2028195311147832,
-        "median": 0.2028195311147832,
-        "min": 0.2028195311147832,
+        "max": 0.35150189482808214,
+        "mean": 0.35150189482808214,
+        "median": 0.35150189482808214,
+        "min": 0.35150189482808214,
         "n": 1,
-        "p5": 0.2028195311147832,
-        "p95": 0.2028195311147832
+        "p5": 0.35150189482808214,
+        "p95": 0.35150189482808214
        },
        "brain_ratio": {
-        "max": 0.25,
-        "mean": 0.25,
-        "median": 0.25,
-        "min": 0.25,
+        "max": 0.55,
+        "mean": 0.55,
+        "median": 0.55,
+        "min": 0.55,
         "n": 1,
-        "p5": 0.25,
-        "p95": 0.25
+        "p5": 0.55,
+        "p95": 0.55
        },
        "distinct_modes": {
-        "max": 2.0,
-        "mean": 2.0,
-        "median": 2.0,
-        "min": 2.0,
+        "max": 3.0,
+        "mean": 3.0,
+        "median": 3.0,
+        "min": 3.0,
         "n": 1,
-        "p5": 2.0,
-        "p95": 2.0
+        "p5": 3.0,
+        "p95": 3.0
        },
        "transient_H": {
-        "max": 0.018197460304383656,
-        "mean": 0.018197460304383656,
-        "median": 0.018197460304383656,
-        "min": 0.018197460304383656,
+        "max": 0.0585686616490063,
+        "mean": 0.0585686616490063,
+        "median": 0.0585686616490063,
+        "min": 0.0585686616490063,
         "n": 1,
-        "p5": 0.018197460304383656,
-        "p95": 0.018197460304383656
+        "p5": 0.0585686616490063,
+        "p95": 0.0585686616490063
        }
       },
       "runs": [
        {
-        "H_Hmax": 0.2028195311147832,
-        "brain_ratio": 0.25,
-        "distinct_modes": 2,
+        "H_Hmax": 0.35150189482808214,
+        "brain_ratio": 0.55,
+        "distinct_modes": 3,
         "init_seed": 20261026,
         "kind": "hardware",
         "noise_seed": 0,
         "prefix": "20261027T010656Z",
-        "transient_H": 0.018197460304383656,
-        "tv_to_classical": 0.45
+        "transient_H": 0.0585686616490063,
+        "tv_to_classical": 0.2
        }
       ],
       "tv_to_classical": {
-       "max": 0.45,
-       "mean": 0.45,
-       "median": 0.45,
-       "min": 0.45,
+       "max": 0.2,
+       "mean": 0.2,
+       "median": 0.2,
+       "min": 0.2,
        "n": 1,
-       "p5": 0.45,
-       "p95": 0.45
+       "p5": 0.2,
+       "p95": 0.2
       }
      },
      "hardware_residual_20261027T015558Z": {
       "count": 1,
       "mean_histogram": [
+       9.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
        5.0,
        0.0,
        0.0,
        0.0,
        0.0,
        0.0,
-       15.0,
        0.0,
        0.0,
        0.0,
-       0.0,
-       0.0,
-       0.0,
-       0.0,
-       0.0,
-       0.0
+       6.0
       ],
       "metrics": {
        "H_Hmax": {
-        "max": 0.2028195311147832,
-        "mean": 0.2028195311147832,
-        "median": 0.2028195311147832,
-        "min": 0.2028195311147832,
+        "max": 0.3848727675750336,
+        "mean": 0.3848727675750336,
+        "median": 0.3848727675750336,
+        "min": 0.3848727675750336,
         "n": 1,
-        "p5": 0.2028195311147832,
-        "p95": 0.2028195311147832
+        "p5": 0.3848727675750336,
+        "p95": 0.3848727675750336
        },
        "brain_ratio": {
-        "max": 0.25,
-        "mean": 0.25,
-        "median": 0.25,
-        "min": 0.25,
+        "max": 0.45,
+        "mean": 0.45,
+        "median": 0.45,
+        "min": 0.45,
         "n": 1,
-        "p5": 0.25,
-        "p95": 0.25
+        "p5": 0.45,
+        "p95": 0.45
        },
        "distinct_modes": {
-        "max": 2.0,
-        "mean": 2.0,
-        "median": 2.0,
-        "min": 2.0,
+        "max": 3.0,
+        "mean": 3.0,
+        "median": 3.0,
+        "min": 3.0,
         "n": 1,
-        "p5": 2.0,
-        "p95": 2.0
+        "p5": 3.0,
+        "p95": 3.0
        },
        "transient_H": {
-        "max": 0.018197460304383656,
-        "mean": 0.018197460304383656,
-        "median": 0.018197460304383656,
-        "min": 0.018197460304383656,
+        "max": 0.056594846197496405,
+        "mean": 0.056594846197496405,
+        "median": 0.056594846197496405,
+        "min": 0.056594846197496405,
         "n": 1,
-        "p5": 0.018197460304383656,
-        "p95": 0.018197460304383656
+        "p5": 0.056594846197496405,
+        "p95": 0.056594846197496405
        }
       },
       "runs": [
        {
-        "H_Hmax": 0.2028195311147832,
-        "brain_ratio": 0.25,
-        "distinct_modes": 2,
+        "H_Hmax": 0.3848727675750336,
+        "brain_ratio": 0.45,
+        "distinct_modes": 3,
         "init_seed": 20261026,
         "kind": "hardware",
         "noise_seed": 0,
         "prefix": "20261027T015558Z",
-        "transient_H": 0.018197460304383656,
-        "tv_to_classical": 0.45
+        "transient_H": 0.056594846197496405,
+        "tv_to_classical": 0.1
        }
       ],
       "tv_to_classical": {
-       "max": 0.45,
-       "mean": 0.45,
-       "median": 0.45,
-       "min": 0.45,
+       "max": 0.1,
+       "mean": 0.1,
+       "median": 0.1,
+       "min": 0.1,
        "n": 1,
-       "p5": 0.45,
-       "p95": 0.45
+       "p5": 0.1,
+       "p95": 0.1
       }
      },
      "noise_1024shot_floor": {
@@ -1730,6 +1730,366 @@
        "p5": 0.5,
        "p95": 0.65
       }
+     },
+     "true_residual_permuted_20261027T010656Z": {
+      "count": 10,
+      "mean_histogram": [
+       8.4,
+       0.3,
+       0.0,
+       0.0,
+       0.3,
+       0.0,
+       5.5,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       5.5
+      ],
+      "metrics": {
+       "H_Hmax": {
+        "max": 0.3953227248076732,
+        "mean": 0.3716679101662576,
+        "median": 0.3815473364772869,
+        "min": 0.29532272480767313,
+        "n": 10,
+        "p5": 0.29532272480767313,
+        "p95": 0.3953227248076732
+       },
+       "brain_ratio": {
+        "max": 0.7,
+        "mean": 0.42000000000000004,
+        "median": 0.4,
+        "min": 0.25,
+        "n": 10,
+        "p5": 0.25,
+        "p95": 0.55
+       },
+       "distinct_modes": {
+        "max": 3.0,
+        "mean": 3.0,
+        "median": 3.0,
+        "min": 3.0,
+        "n": 10,
+        "p5": 3.0,
+        "p95": 3.0
+       },
+       "transient_H": {
+        "max": 0.06164960383997012,
+        "mean": 0.05380004035646493,
+        "median": 0.0548071760329029,
+        "min": 0.044760449531873935,
+        "n": 10,
+        "p5": 0.044760449531873935,
+        "p95": 0.057809663260998956
+       }
+      },
+      "runs": [
+       {
+        "H_Hmax": 0.37822190537954015,
+        "brain_ratio": 0.35,
+        "distinct_modes": 3,
+        "init_seed": 20261026,
+        "kind": "hardware",
+        "noise_seed": 0,
+        "prefix": "20261027T010656Z",
+        "transient_H": 0.0530195058683094,
+        "tv_to_classical": 0.1
+       },
+       {
+        "H_Hmax": 0.3953227248076732,
+        "brain_ratio": 0.35,
+        "distinct_modes": 3,
+        "init_seed": 20261026,
+        "kind": "hardware",
+        "noise_seed": 1,
+        "prefix": "20261027T010656Z",
+        "transient_H": 0.050774163166475844,
+        "tv_to_classical": 0.0
+       },
+       {
+        "H_Hmax": 0.37136882430683366,
+        "brain_ratio": 0.3,
+        "distinct_modes": 3,
+        "init_seed": 20261026,
+        "kind": "hardware",
+        "noise_seed": 2,
+        "prefix": "20261027T010656Z",
+        "transient_H": 0.06164960383997012,
+        "tv_to_classical": 0.19999999999999998
+       },
+       {
+        "H_Hmax": 0.3848727675750336,
+        "brain_ratio": 0.45,
+        "distinct_modes": 3,
+        "init_seed": 20261026,
+        "kind": "hardware",
+        "noise_seed": 3,
+        "prefix": "20261027T010656Z",
+        "transient_H": 0.056594846197496405,
+        "tv_to_classical": 0.1
+       },
+       {
+        "H_Hmax": 0.3848727675750336,
+        "brain_ratio": 0.45,
+        "distinct_modes": 3,
+        "init_seed": 20261026,
+        "kind": "hardware",
+        "noise_seed": 4,
+        "prefix": "20261027T010656Z",
+        "transient_H": 0.048881237400385906,
+        "tv_to_classical": 0.1
+       },
+       {
+        "H_Hmax": 0.3848727675750336,
+        "brain_ratio": 0.45,
+        "distinct_modes": 3,
+        "init_seed": 20261026,
+        "kind": "hardware",
+        "noise_seed": 5,
+        "prefix": "20261027T010656Z",
+        "transient_H": 0.056594846197496405,
+        "tv_to_classical": 0.1
+       },
+       {
+        "H_Hmax": 0.29532272480767313,
+        "brain_ratio": 0.7,
+        "distinct_modes": 3,
+        "init_seed": 20261026,
+        "kind": "hardware",
+        "noise_seed": 6,
+        "prefix": "20261027T010656Z",
+        "transient_H": 0.044760449531873935,
+        "tv_to_classical": 0.6499999999999999
+       },
+       {
+        "H_Hmax": 0.375,
+        "brain_ratio": 0.25,
+        "distinct_modes": 3,
+        "init_seed": 20261026,
+        "kind": "hardware",
+        "noise_seed": 7,
+        "prefix": "20261027T010656Z",
+        "transient_H": 0.05714192493516643,
+        "tv_to_classical": 0.19999999999999998
+       },
+       {
+        "H_Hmax": 0.3953227248076732,
+        "brain_ratio": 0.35,
+        "distinct_modes": 3,
+        "init_seed": 20261026,
+        "kind": "hardware",
+        "noise_seed": 8,
+        "prefix": "20261027T010656Z",
+        "transient_H": 0.050774163166475844,
+        "tv_to_classical": 0.0
+       },
+       {
+        "H_Hmax": 0.35150189482808214,
+        "brain_ratio": 0.55,
+        "distinct_modes": 3,
+        "init_seed": 20261026,
+        "kind": "hardware",
+        "noise_seed": 9,
+        "prefix": "20261027T010656Z",
+        "transient_H": 0.057809663260998956,
+        "tv_to_classical": 0.2
+       }
+      ],
+      "tv_to_classical": {
+       "max": 0.6499999999999999,
+       "mean": 0.16499999999999998,
+       "median": 0.1,
+       "min": 0.0,
+       "n": 10,
+       "p5": 0.0,
+       "p95": 0.2
+      }
+     },
+     "true_residual_permuted_20261027T015558Z": {
+      "count": 10,
+      "mean_histogram": [
+       8.6,
+       0.5,
+       0.0,
+       0.0,
+       0.3,
+       0.0,
+       4.9,
+       0.2,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       0.0,
+       5.5
+      ],
+      "metrics": {
+       "H_Hmax": {
+        "max": 0.4356844121534168,
+        "mean": 0.3886020917902078,
+        "median": 0.3848727675750336,
+        "min": 0.37136882430683366,
+        "n": 10,
+        "p5": 0.37136882430683366,
+        "p95": 0.3953227248076732
+       },
+       "brain_ratio": {
+        "max": 0.5,
+        "mean": 0.43,
+        "median": 0.45,
+        "min": 0.3,
+        "n": 10,
+        "p5": 0.3,
+        "p95": 0.5
+       },
+       "distinct_modes": {
+        "max": 4.0,
+        "mean": 3.1,
+        "median": 3.0,
+        "min": 3.0,
+        "n": 10,
+        "p5": 3.0,
+        "p95": 3.0
+       },
+       "transient_H": {
+        "max": 0.06964637962244313,
+        "mean": 0.05750247549919472,
+        "median": 0.056951360724850825,
+        "min": 0.04537745021564319,
+        "n": 10,
+        "p5": 0.04537745021564319,
+        "p95": 0.06707622952096923
+       }
+      },
+      "runs": [
+       {
+        "H_Hmax": 0.4356844121534168,
+        "brain_ratio": 0.5,
+        "distinct_modes": 4,
+        "init_seed": 20261026,
+        "kind": "hardware",
+        "noise_seed": 0,
+        "prefix": "20261027T015558Z",
+        "transient_H": 0.06707622952096923,
+        "tv_to_classical": 0.65
+       },
+       {
+        "H_Hmax": 0.3897179621113401,
+        "brain_ratio": 0.4,
+        "distinct_modes": 3,
+        "init_seed": 20261026,
+        "kind": "hardware",
+        "noise_seed": 1,
+        "prefix": "20261027T015558Z",
+        "transient_H": 0.0564508540079293,
+        "tv_to_classical": 0.05000000000000002
+       },
+       {
+        "H_Hmax": 0.3848727675750336,
+        "brain_ratio": 0.3,
+        "distinct_modes": 3,
+        "init_seed": 20261026,
+        "kind": "hardware",
+        "noise_seed": 2,
+        "prefix": "20261027T015558Z",
+        "transient_H": 0.06164960383997012,
+        "tv_to_classical": 0.1
+       },
+       {
+        "H_Hmax": 0.3848727675750336,
+        "brain_ratio": 0.45,
+        "distinct_modes": 3,
+        "init_seed": 20261026,
+        "kind": "hardware",
+        "noise_seed": 3,
+        "prefix": "20261027T015558Z",
+        "transient_H": 0.05073122857409061,
+        "tv_to_classical": 0.1
+       },
+       {
+        "H_Hmax": 0.37136882430683366,
+        "brain_ratio": 0.5,
+        "distinct_modes": 3,
+        "init_seed": 20261026,
+        "kind": "hardware",
+        "noise_seed": 4,
+        "prefix": "20261027T015558Z",
+        "transient_H": 0.04537745021564319,
+        "tv_to_classical": 0.15
+       },
+       {
+        "H_Hmax": 0.3848727675750336,
+        "brain_ratio": 0.45,
+        "distinct_modes": 3,
+        "init_seed": 20261026,
+        "kind": "hardware",
+        "noise_seed": 5,
+        "prefix": "20261027T015558Z",
+        "transient_H": 0.056594846197496405,
+        "tv_to_classical": 0.1
+       },
+       {
+        "H_Hmax": 0.3897179621113401,
+        "brain_ratio": 0.4,
+        "distinct_modes": 3,
+        "init_seed": 20261026,
+        "kind": "hardware",
+        "noise_seed": 6,
+        "prefix": "20261027T015558Z",
+        "transient_H": 0.06964637962244313,
+        "tv_to_classical": 0.1
+       },
+       {
+        "H_Hmax": 0.37136882430683366,
+        "brain_ratio": 0.5,
+        "distinct_modes": 3,
+        "init_seed": 20261026,
+        "kind": "hardware",
+        "noise_seed": 7,
+        "prefix": "20261027T015558Z",
+        "transient_H": 0.05730787525220525,
+        "tv_to_classical": 0.15
+       },
+       {
+        "H_Hmax": 0.37822190537954015,
+        "brain_ratio": 0.45,
+        "distinct_modes": 3,
+        "init_seed": 20261026,
+        "kind": "hardware",
+        "noise_seed": 8,
+        "prefix": "20261027T015558Z",
+        "transient_H": 0.059416124594724076,
+        "tv_to_classical": 0.1
+       },
+       {
+        "H_Hmax": 0.3953227248076732,
+        "brain_ratio": 0.35,
+        "distinct_modes": 3,
+        "init_seed": 20261026,
+        "kind": "hardware",
+        "noise_seed": 9,
+        "prefix": "20261027T015558Z",
+        "transient_H": 0.050774163166475844,
+        "tv_to_classical": 0.0
+       }
+      ],
+      "tv_to_classical": {
+       "max": 0.65,
+       "mean": 0.15,
+       "median": 0.1,
+       "min": 0.0,
+       "n": 10,
+       "p5": 0.0,
+       "p95": 0.15
+      }
      }
     },
     "varying_init": {
@@ -1983,62 +2343,62 @@
        "p95": 0.0
       }
      },
-     "hardware_permuted_20261027T010656Z": {
+     "hardware_permuted_20261027T003737Z": {
       "count": 10,
       "mean_histogram": [
-       17.4,
-       0.5,
-       0.3,
-       0.3,
-       0.0,
+       18.9,
        0.2,
-       0.5,
+       0.2,
        0.1,
-       0.2,
        0.0,
+       0.0,
+       0.2,
+       0.2,
        0.1,
        0.0,
        0.0,
        0.0,
-       0.2,
-       0.2
+       0.0,
+       0.0,
+       0.1,
+       0.0
       ],
       "metrics": {
        "H_Hmax": {
-        "max": 0.24794003704524334,
-        "mean": 0.15851171621785795,
-        "median": 0.1868961699561435,
-        "min": 0.07159923927898905,
+        "max": 0.2304820237218406,
+        "mean": 0.07028255706332824,
+        "median": 0.035799619639494525,
+        "min": -0.0,
         "n": 10,
-        "p5": 0.07159923927898905,
+        "p5": -0.0,
         "p95": 0.1868961699561435
        },
        "brain_ratio": {
-        "max": 0.95,
-        "mean": 0.8699999999999999,
-        "median": 0.85,
-        "min": 0.75,
+        "max": 1.0,
+        "mean": 0.945,
+        "median": 0.975,
+        "min": 0.8,
         "n": 10,
-        "p5": 0.75,
-        "p95": 0.95
+        "p5": 0.8,
+        "p95": 1.0
        },
        "distinct_modes": {
         "max": 3.0,
-        "mean": 2.7,
-        "median": 3.0,
-        "min": 2.0,
+        "mean": 1.8,
+        "median": 1.5,
+        "min": 1.0,
         "n": 10,
-        "p5": 2.0,
+        "p5": 1.0,
         "p95": 3.0
        },
        "transient_H": {
-        "max": 0.030801209518511858,
-        "mean": 0.015686460135030864,
-        "median": 0.013568636390786915,
-        "min": 0.004836616080473831,
+        "max": 0.04218504437322248,
+        "mean": 0.008275665934631833,
+        "median": 0.0024183080402369155,
+        "min": 0.0,
         "n": 10,
-        "p5": 0.004836616080473831,
-        "p95": 0.026071319424993696
+        "p5": 0.0,
+        "p95": 0.020895157290890844
        }
       },
       "runs": [
@@ -2049,211 +2409,31 @@
         "init_seed": 20262026,
         "kind": "hardware",
         "noise_seed": 20262026000,
-        "prefix": "20261027T010656Z",
+        "prefix": "20261027T003737Z",
         "transient_H": 0.004836616080473831,
         "tv_to_classical": 0.65
        },
        {
-        "H_Hmax": 0.1868961699561435,
-        "brain_ratio": 0.85,
-        "distinct_modes": 3,
+        "H_Hmax": -0.0,
+        "brain_ratio": 1.0,
+        "distinct_modes": 1,
         "init_seed": 20262026,
         "kind": "hardware",
         "noise_seed": 20262026001,
-        "prefix": "20261027T010656Z",
-        "transient_H": 0.024118194424993696,
-        "tv_to_classical": 0.55
-       },
-       {
-        "H_Hmax": 0.1868961699561435,
-        "brain_ratio": 0.85,
-        "distinct_modes": 3,
-        "init_seed": 20262027,
-        "kind": "hardware",
-        "noise_seed": 20262027000,
-        "prefix": "20261027T010656Z",
-        "transient_H": 0.013568636390786915,
-        "tv_to_classical": 0.55
-       },
-       {
-        "H_Hmax": 0.1868961699561435,
-        "brain_ratio": 0.85,
-        "distinct_modes": 3,
-        "init_seed": 20262027,
-        "kind": "hardware",
-        "noise_seed": 20262027001,
-        "prefix": "20261027T010656Z",
-        "transient_H": 0.013568636390786915,
-        "tv_to_classical": 0.55
-       },
-       {
-        "H_Hmax": 0.24794003704524334,
-        "brain_ratio": 0.75,
-        "distinct_modes": 3,
-        "init_seed": 20262028,
-        "kind": "hardware",
-        "noise_seed": 20262028000,
-        "prefix": "20261027T010656Z",
-        "transient_H": 0.030801209518511858,
-        "tv_to_classical": 0.25
-       },
-       {
-        "H_Hmax": 0.07159923927898905,
-        "brain_ratio": 0.95,
-        "distinct_modes": 2,
-        "init_seed": 20262028,
-        "kind": "hardware",
-        "noise_seed": 20262028001,
-        "prefix": "20261027T010656Z",
-        "transient_H": 0.004836616080473831,
-        "tv_to_classical": 0.44999999999999996
-       },
-       {
-        "H_Hmax": 0.11724889839732029,
-        "brain_ratio": 0.9,
-        "distinct_modes": 2,
-        "init_seed": 20262029,
-        "kind": "hardware",
-        "noise_seed": 20262029000,
-        "prefix": "20261027T010656Z",
-        "transient_H": 0.0081649902271397,
+        "prefix": "20261027T003737Z",
+        "transient_H": 0.0,
         "tv_to_classical": 0.7
-       },
-       {
-        "H_Hmax": 0.1868961699561435,
-        "brain_ratio": 0.85,
-        "distinct_modes": 3,
-        "init_seed": 20262029,
-        "kind": "hardware",
-        "noise_seed": 20262029001,
-        "prefix": "20261027T010656Z",
-        "transient_H": 0.020895157290890844,
-        "tv_to_classical": 0.55
-       },
-       {
-        "H_Hmax": 0.1868961699561435,
-        "brain_ratio": 0.85,
-        "distinct_modes": 3,
-        "init_seed": 20262030,
-        "kind": "hardware",
-        "noise_seed": 20262030000,
-        "prefix": "20261027T010656Z",
-        "transient_H": 0.026071319424993696,
-        "tv_to_classical": 0.24999999999999997
        },
        {
         "H_Hmax": 0.1422488983973203,
         "brain_ratio": 0.9,
         "distinct_modes": 3,
-        "init_seed": 20262030,
-        "kind": "hardware",
-        "noise_seed": 20262030001,
-        "prefix": "20261027T010656Z",
-        "transient_H": 0.010003225521257346,
-        "tv_to_classical": 0.25
-       }
-      ],
-      "tv_to_classical": {
-       "max": 0.7,
-       "mean": 0.475,
-       "median": 0.55,
-       "min": 0.24999999999999997,
-       "n": 10,
-       "p5": 0.24999999999999997,
-       "p95": 0.65
-      }
-     },
-     "hardware_permuted_20261027T015558Z": {
-      "count": 10,
-      "mean_histogram": [
-       19.0,
-       0.3,
-       0.2,
-       0.0,
-       0.0,
-       0.0,
-       0.3,
-       0.0,
-       0.0,
-       0.1,
-       0.1,
-       0.0,
-       0.0,
-       0.0,
-       0.0,
-       0.0
-      ],
-      "metrics": {
-       "H_Hmax": {
-        "max": 0.11724889839732029,
-        "mean": 0.06900428126292327,
-        "median": 0.07159923927898905,
-        "min": -0.0,
-        "n": 10,
-        "p5": -0.0,
-        "p95": 0.07159923927898905
-       },
-       "brain_ratio": {
-        "max": 1.0,
-        "mean": 0.95,
-        "median": 0.95,
-        "min": 0.9,
-        "n": 10,
-        "p5": 0.9,
-        "p95": 0.95
-       },
-       "distinct_modes": {
-        "max": 2.0,
-        "mean": 1.9,
-        "median": 2.0,
-        "min": 1.0,
-        "n": 10,
-        "p5": 1.0,
-        "p95": 2.0
-       },
-       "transient_H": {
-        "max": 0.02066807748277185,
-        "mean": 0.00593610061265625,
-        "median": 0.004836616080473831,
-        "min": 0.0,
-        "n": 10,
-        "p5": 0.0,
-        "p95": 0.004836616080473831
-       }
-      },
-      "runs": [
-       {
-        "H_Hmax": 0.07159923927898905,
-        "brain_ratio": 0.95,
-        "distinct_modes": 2,
-        "init_seed": 20262026,
-        "kind": "hardware",
-        "noise_seed": 20262026000,
-        "prefix": "20261027T015558Z",
-        "transient_H": 0.004836616080473831,
-        "tv_to_classical": 0.6499999999999999
-       },
-       {
-        "H_Hmax": 0.07159923927898905,
-        "brain_ratio": 0.95,
-        "distinct_modes": 2,
-        "init_seed": 20262026,
-        "kind": "hardware",
-        "noise_seed": 20262026001,
-        "prefix": "20261027T015558Z",
-        "transient_H": 0.004836616080473831,
-        "tv_to_classical": 0.65
-       },
-       {
-        "H_Hmax": 0.07159923927898905,
-        "brain_ratio": 0.95,
-        "distinct_modes": 2,
         "init_seed": 20262027,
         "kind": "hardware",
         "noise_seed": 20262027000,
-        "prefix": "20261027T015558Z",
-        "transient_H": 0.004836616080473831,
-        "tv_to_classical": 0.6499999999999999
+        "prefix": "20261027T003737Z",
+        "transient_H": 0.010003225521257346,
+        "tv_to_classical": 0.6000000000000001
        },
        {
         "H_Hmax": -0.0,
@@ -2262,31 +2442,31 @@
         "init_seed": 20262027,
         "kind": "hardware",
         "noise_seed": 20262027001,
-        "prefix": "20261027T015558Z",
+        "prefix": "20261027T003737Z",
         "transient_H": 0.0,
         "tv_to_classical": 0.7
        },
        {
-        "H_Hmax": 0.07159923927898905,
-        "brain_ratio": 0.95,
-        "distinct_modes": 2,
+        "H_Hmax": 0.2304820237218406,
+        "brain_ratio": 0.8,
+        "distinct_modes": 3,
         "init_seed": 20262028,
         "kind": "hardware",
         "noise_seed": 20262028000,
-        "prefix": "20261027T015558Z",
-        "transient_H": 0.004836616080473831,
-        "tv_to_classical": 0.44999999999999996
+        "prefix": "20261027T003737Z",
+        "transient_H": 0.04218504437322248,
+        "tv_to_classical": 0.30000000000000004
        },
        {
-        "H_Hmax": 0.11724889839732029,
-        "brain_ratio": 0.9,
-        "distinct_modes": 2,
+        "H_Hmax": -0.0,
+        "brain_ratio": 1.0,
+        "distinct_modes": 1,
         "init_seed": 20262028,
         "kind": "hardware",
         "noise_seed": 20262028001,
-        "prefix": "20261027T015558Z",
-        "transient_H": 0.02066807748277185,
-        "tv_to_classical": 0.4
+        "prefix": "20261027T003737Z",
+        "transient_H": 0.0,
+        "tv_to_classical": 0.5
        },
        {
         "H_Hmax": 0.07159923927898905,
@@ -2295,52 +2475,52 @@
         "init_seed": 20262029,
         "kind": "hardware",
         "noise_seed": 20262029000,
-        "prefix": "20261027T015558Z",
+        "prefix": "20261027T003737Z",
         "transient_H": 0.004836616080473831,
         "tv_to_classical": 0.6499999999999999
        },
        {
-        "H_Hmax": 0.07159923927898905,
-        "brain_ratio": 0.95,
-        "distinct_modes": 2,
+        "H_Hmax": -0.0,
+        "brain_ratio": 1.0,
+        "distinct_modes": 1,
         "init_seed": 20262029,
         "kind": "hardware",
         "noise_seed": 20262029001,
-        "prefix": "20261027T015558Z",
-        "transient_H": 0.004836616080473831,
-        "tv_to_classical": 0.6499999999999999
+        "prefix": "20261027T003737Z",
+        "transient_H": 0.0,
+        "tv_to_classical": 0.7
        },
        {
-        "H_Hmax": 0.07159923927898905,
-        "brain_ratio": 0.95,
-        "distinct_modes": 2,
+        "H_Hmax": 0.1868961699561435,
+        "brain_ratio": 0.85,
+        "distinct_modes": 3,
         "init_seed": 20262030,
         "kind": "hardware",
         "noise_seed": 20262030000,
-        "prefix": "20261027T015558Z",
-        "transient_H": 0.004836616080473831,
-        "tv_to_classical": 0.29999999999999993
+        "prefix": "20261027T003737Z",
+        "transient_H": 0.020895157290890844,
+        "tv_to_classical": 0.24999999999999997
        },
        {
-        "H_Hmax": 0.07159923927898905,
-        "brain_ratio": 0.95,
-        "distinct_modes": 2,
+        "H_Hmax": -0.0,
+        "brain_ratio": 1.0,
+        "distinct_modes": 1,
         "init_seed": 20262030,
         "kind": "hardware",
         "noise_seed": 20262030001,
-        "prefix": "20261027T015558Z",
-        "transient_H": 0.004836616080473831,
-        "tv_to_classical": 0.29999999999999993
+        "prefix": "20261027T003737Z",
+        "transient_H": 0.0,
+        "tv_to_classical": 0.35
        }
       ],
       "tv_to_classical": {
        "max": 0.7,
        "mean": 0.5399999999999999,
-       "median": 0.6499999999999999,
-       "min": 0.29999999999999993,
+       "median": 0.625,
+       "min": 0.24999999999999997,
        "n": 10,
-       "p5": 0.29999999999999993,
-       "p95": 0.65
+       "p5": 0.24999999999999997,
+       "p95": 0.7
       }
      },
      "hardware_recorded_replay_20261027T010656Z": {
@@ -2846,251 +3026,251 @@
      "hardware_residual_20261027T010656Z": {
       "count": 5,
       "mean_histogram": [
-       10.8,
-       0.6,
-       1.2,
-       0.2,
+       11.4,
        0.0,
-       0.0,
-       3.0,
-       1.2,
-       0.0,
-       0.0,
-       0.0,
-       0.0,
-       0.0,
-       0.0,
-       1.6,
-       1.4
-      ],
-      "metrics": {
-       "H_Hmax": {
-        "max": 0.3897179621113401,
-        "mean": 0.2845719566274849,
-        "median": 0.35150189482808214,
-        "min": 0.07159923927898905,
-        "n": 5,
-        "p5": 0.07159923927898905,
-        "p95": 0.3897179621113401
-       },
-       "brain_ratio": {
-        "max": 0.95,
-        "mean": 0.54,
-        "median": 0.55,
-        "min": 0.25,
-        "n": 5,
-        "p5": 0.25,
-        "p95": 0.7
-       },
-       "distinct_modes": {
-        "max": 3.0,
-        "mean": 2.6,
-        "median": 3.0,
-        "min": 2.0,
-        "n": 5,
-        "p5": 2.0,
-        "p95": 3.0
-       },
-       "transient_H": {
-        "max": 0.03911995971780697,
-        "mean": 0.02611259285362593,
-        "median": 0.03183302889518945,
-        "min": 0.004836616080473831,
-        "n": 5,
-        "p5": 0.004836616080473831,
-        "p95": 0.03850357855469677
-       }
-      },
-      "runs": [
-       {
-        "H_Hmax": 0.07159923927898905,
-        "brain_ratio": 0.95,
-        "distinct_modes": 2,
-        "init_seed": 20262026,
-        "kind": "hardware",
-        "noise_seed": 20262026,
-        "prefix": "20261027T010656Z",
-        "transient_H": 0.004836616080473831,
-        "tv_to_classical": 0.65
-       },
-       {
-        "H_Hmax": 0.3897179621113401,
-        "brain_ratio": 0.25,
-        "distinct_modes": 3,
-        "init_seed": 20262027,
-        "kind": "hardware",
-        "noise_seed": 20262027,
-        "prefix": "20261027T010656Z",
-        "transient_H": 0.03911995971780697,
-        "tv_to_classical": 0.10000000000000003
-       },
-       {
-        "H_Hmax": 0.35150189482808214,
-        "brain_ratio": 0.55,
-        "distinct_modes": 3,
-        "init_seed": 20262028,
-        "kind": "hardware",
-        "noise_seed": 20262028,
-        "prefix": "20261027T010656Z",
-        "transient_H": 0.03183302889518945,
-        "tv_to_classical": 0.10000000000000002
-       },
-       {
-        "H_Hmax": 0.3897179621113401,
-        "brain_ratio": 0.25,
-        "distinct_modes": 3,
-        "init_seed": 20262029,
-        "kind": "hardware",
-        "noise_seed": 20262029,
-        "prefix": "20261027T010656Z",
-        "transient_H": 0.03850357855469677,
-        "tv_to_classical": 0.30000000000000004
-       },
-       {
-        "H_Hmax": 0.22032272480767318,
-        "brain_ratio": 0.7,
-        "distinct_modes": 2,
-        "init_seed": 20262030,
-        "kind": "hardware",
-        "noise_seed": 20262030,
-        "prefix": "20261027T010656Z",
-        "transient_H": 0.01626978101996265,
-        "tv_to_classical": 0.29999999999999993
-       }
-      ],
-      "tv_to_classical": {
-       "max": 0.65,
-       "mean": 0.29,
-       "median": 0.29999999999999993,
-       "min": 0.10000000000000002,
-       "n": 5,
-       "p5": 0.10000000000000002,
-       "p95": 0.30000000000000004
-      }
-     },
-     "hardware_residual_20261027T015558Z": {
-      "count": 5,
-      "mean_histogram": [
-       11.0,
+       0.4,
        0.8,
-       1.0,
-       2.2,
        0.0,
-       0.0,
+       0.4,
        3.0,
        0.0,
-       0.0,
+       0.6,
        0.0,
        0.0,
        0.0,
        0.0,
        0.0,
        1.4,
-       0.6
+       2.0
       ],
       "metrics": {
        "H_Hmax": {
-        "max": 0.4851613624038366,
-        "mean": 0.3097033349470293,
-        "median": 0.28919491236175987,
-        "min": 0.18048202372184058,
+        "max": 0.3953227248076732,
+        "mean": 0.3702749571949321,
+        "median": 0.36972447574686973,
+        "min": 0.3238654610595805,
         "n": 5,
-        "p5": 0.18048202372184058,
-        "p95": 0.3601613624038366
+        "p5": 0.3238654610595805,
+        "p95": 0.39273764861366717
        },
        "brain_ratio": {
-        "max": 0.8,
-        "mean": 0.55,
-        "median": 0.65,
-        "min": 0.25,
+        "max": 0.65,
+        "mean": 0.5700000000000001,
+        "median": 0.6,
+        "min": 0.35,
         "n": 5,
-        "p5": 0.25,
-        "p95": 0.7
+        "p5": 0.35,
+        "p95": 0.65
        },
        "distinct_modes": {
         "max": 4.0,
-        "mean": 2.8,
-        "median": 3.0,
-        "min": 2.0,
+        "mean": 3.6,
+        "median": 4.0,
+        "min": 3.0,
         "n": 5,
-        "p5": 2.0,
-        "p95": 3.0
+        "p5": 3.0,
+        "p95": 4.0
        },
        "transient_H": {
-        "max": 0.05769058330547841,
-        "mean": 0.035764783140063795,
-        "median": 0.03891009922797197,
-        "min": 0.018197460304383656,
+        "max": 0.0677592448142028,
+        "mean": 0.05911205737722715,
+        "median": 0.06104802155406353,
+        "min": 0.04639244577600096,
         "n": 5,
-        "p5": 0.018197460304383656,
-        "p95": 0.04038291364037579
+        "p5": 0.04639244577600096,
+        "p95": 0.06255091148086947
        }
       },
       "runs": [
        {
-        "H_Hmax": 0.23351701384387277,
+        "H_Hmax": 0.39273764861366717,
+        "brain_ratio": 0.6,
+        "distinct_modes": 4,
+        "init_seed": 20262026,
+        "kind": "hardware",
+        "noise_seed": 20262026,
+        "prefix": "20261027T010656Z",
+        "transient_H": 0.06104802155406353,
+        "tv_to_classical": 0.6000000000000001
+       },
+       {
+        "H_Hmax": 0.3953227248076732,
+        "brain_ratio": 0.35,
+        "distinct_modes": 3,
+        "init_seed": 20262027,
+        "kind": "hardware",
+        "noise_seed": 20262027,
+        "prefix": "20261027T010656Z",
+        "transient_H": 0.04639244577600096,
+        "tv_to_classical": 0.1
+       },
+       {
+        "H_Hmax": 0.36972447574686973,
         "brain_ratio": 0.65,
-        "distinct_modes": 2,
+        "distinct_modes": 4,
+        "init_seed": 20262028,
+        "kind": "hardware",
+        "noise_seed": 20262028,
+        "prefix": "20261027T010656Z",
+        "transient_H": 0.0677592448142028,
+        "tv_to_classical": 0.5
+       },
+       {
+        "H_Hmax": 0.3238654610595805,
+        "brain_ratio": 0.6,
+        "distinct_modes": 3,
+        "init_seed": 20262029,
+        "kind": "hardware",
+        "noise_seed": 20262029,
+        "prefix": "20261027T010656Z",
+        "transient_H": 0.057809663260998956,
+        "tv_to_classical": 0.3
+       },
+       {
+        "H_Hmax": 0.36972447574686973,
+        "brain_ratio": 0.65,
+        "distinct_modes": 4,
+        "init_seed": 20262030,
+        "kind": "hardware",
+        "noise_seed": 20262030,
+        "prefix": "20261027T010656Z",
+        "transient_H": 0.06255091148086947,
+        "tv_to_classical": 0.15000000000000002
+       }
+      ],
+      "tv_to_classical": {
+       "max": 0.6000000000000001,
+       "mean": 0.33,
+       "median": 0.3,
+       "min": 0.1,
+       "n": 5,
+       "p5": 0.1,
+       "p95": 0.5
+      }
+     },
+     "hardware_residual_20261027T015558Z": {
+      "count": 5,
+      "mean_histogram": [
+       8.2,
+       0.6,
+       0.2,
+       0.8,
+       0.0,
+       0.0,
+       2.4,
+       1.6,
+       2.2,
+       0.4,
+       1.4,
+       0.0,
+       0.0,
+       0.0,
+       0.8,
+       1.4
+      ],
+      "metrics": {
+       "H_Hmax": {
+        "max": 0.46419491236175997,
+        "mean": 0.3743635447173772,
+        "median": 0.3644293672825371,
+        "min": 0.30481017615921224,
+        "n": 5,
+        "p5": 0.30481017615921224,
+        "p95": 0.37822190537954015
+       },
+       "brain_ratio": {
+        "max": 0.5,
+        "mean": 0.41,
+        "median": 0.4,
+        "min": 0.35,
+        "n": 5,
+        "p5": 0.35,
+        "p95": 0.45
+       },
+       "distinct_modes": {
+        "max": 4.0,
+        "mean": 3.2,
+        "median": 3.0,
+        "min": 3.0,
+        "n": 5,
+        "p5": 3.0,
+        "p95": 3.0
+       },
+       "transient_H": {
+        "max": 0.0602146255469295,
+        "mean": 0.05108808238636414,
+        "median": 0.05422974114471229,
+        "min": 0.02863864515499935,
+        "n": 5,
+        "p5": 0.02863864515499935,
+        "p95": 0.05938936091006031
+       }
+      },
+      "runs": [
+       {
+        "H_Hmax": 0.46419491236175997,
+        "brain_ratio": 0.35,
+        "distinct_modes": 4,
         "init_seed": 20262026,
         "kind": "hardware",
         "noise_seed": 20262026,
         "prefix": "20261027T015558Z",
-        "transient_H": 0.023642859222109142,
-        "tv_to_classical": 0.45
+        "transient_H": 0.0602146255469295,
+        "tv_to_classical": 0.1
        },
        {
-        "H_Hmax": 0.4851613624038366,
-        "brain_ratio": 0.25,
-        "distinct_modes": 4,
+        "H_Hmax": 0.37822190537954015,
+        "brain_ratio": 0.35,
+        "distinct_modes": 3,
         "init_seed": 20262027,
         "kind": "hardware",
         "noise_seed": 20262027,
         "prefix": "20261027T015558Z",
-        "transient_H": 0.05769058330547841,
-        "tv_to_classical": 0.2
+        "transient_H": 0.05938936091006031,
+        "tv_to_classical": 0.09999999999999998
        },
        {
-        "H_Hmax": 0.18048202372184058,
-        "brain_ratio": 0.8,
-        "distinct_modes": 2,
+        "H_Hmax": 0.3644293672825371,
+        "brain_ratio": 0.45,
+        "distinct_modes": 3,
         "init_seed": 20262028,
         "kind": "hardware",
         "noise_seed": 20262028,
         "prefix": "20261027T015558Z",
-        "transient_H": 0.018197460304383656,
-        "tv_to_classical": 0.30000000000000004
+        "transient_H": 0.05296803917511924,
+        "tv_to_classical": 0.15000000000000002
        },
        {
         "H_Hmax": 0.3601613624038366,
-        "brain_ratio": 0.35,
+        "brain_ratio": 0.5,
         "distinct_modes": 3,
         "init_seed": 20262029,
         "kind": "hardware",
         "noise_seed": 20262029,
         "prefix": "20261027T015558Z",
-        "transient_H": 0.03891009922797197,
-        "tv_to_classical": 0.44999999999999996
+        "transient_H": 0.05422974114471229,
+        "tv_to_classical": 0.25
        },
        {
-        "H_Hmax": 0.28919491236175987,
-        "brain_ratio": 0.7,
+        "H_Hmax": 0.30481017615921224,
+        "brain_ratio": 0.4,
         "distinct_modes": 3,
         "init_seed": 20262030,
         "kind": "hardware",
         "noise_seed": 20262030,
         "prefix": "20261027T015558Z",
-        "transient_H": 0.04038291364037579,
-        "tv_to_classical": 0.29999999999999993
+        "transient_H": 0.02863864515499935,
+        "tv_to_classical": 0.25
        }
       ],
       "tv_to_classical": {
-       "max": 0.45,
-       "mean": 0.33999999999999997,
-       "median": 0.30000000000000004,
-       "min": 0.2,
+       "max": 0.25,
+       "mean": 0.16999999999999998,
+       "median": 0.15000000000000002,
+       "min": 0.09999999999999998,
        "n": 5,
-       "p5": 0.2,
-       "p95": 0.44999999999999996
+       "p5": 0.09999999999999998,
+       "p95": 0.25
       }
      },
      "noise_1024shot_floor": {
@@ -3812,6 +3992,366 @@
        "p5": 0.35,
        "p95": 0.7
       }
+     },
+     "true_residual_permuted_20261027T010656Z": {
+      "count": 10,
+      "mean_histogram": [
+       10.3,
+       0.8,
+       0.4,
+       0.8,
+       0.0,
+       0.0,
+       2.2,
+       0.8,
+       1.1,
+       0.1,
+       0.7,
+       0.0,
+       0.0,
+       0.0,
+       0.7,
+       2.1
+      ],
+      "metrics": {
+       "H_Hmax": {
+        "max": 0.44407440643129975,
+        "mean": 0.35890594697717465,
+        "median": 0.3509692843130362,
+        "min": 0.30904006359345293,
+        "n": 10,
+        "p5": 0.30904006359345293,
+        "p95": 0.39886546105958043
+       },
+       "brain_ratio": {
+        "max": 0.65,
+        "mean": 0.515,
+        "median": 0.5,
+        "min": 0.35,
+        "n": 10,
+        "p5": 0.35,
+        "p95": 0.65
+       },
+       "distinct_modes": {
+        "max": 4.0,
+        "mean": 3.2,
+        "median": 3.0,
+        "min": 3.0,
+        "n": 10,
+        "p5": 3.0,
+        "p95": 4.0
+       },
+       "transient_H": {
+        "max": 0.05870754964660872,
+        "mean": 0.049634472828257906,
+        "median": 0.04806454219426425,
+        "min": 0.04223887859854351,
+        "n": 10,
+        "p5": 0.04223887859854351,
+        "p95": 0.05576320486611693
+       }
+      },
+      "runs": [
+       {
+        "H_Hmax": 0.44407440643129975,
+        "brain_ratio": 0.35,
+        "distinct_modes": 4,
+        "init_seed": 20262026,
+        "kind": "hardware",
+        "noise_seed": 20262026000,
+        "prefix": "20261027T010656Z",
+        "transient_H": 0.05576320486611693,
+        "tv_to_classical": 0.05000000000000002
+       },
+       {
+        "H_Hmax": 0.39886546105958043,
+        "brain_ratio": 0.6,
+        "distinct_modes": 4,
+        "init_seed": 20262026,
+        "kind": "hardware",
+        "noise_seed": 20262026001,
+        "prefix": "20261027T010656Z",
+        "transient_H": 0.04692591148086946,
+        "tv_to_classical": 0.55
+       },
+       {
+        "H_Hmax": 0.3422488983973203,
+        "brain_ratio": 0.45,
+        "distinct_modes": 3,
+        "init_seed": 20262027,
+        "kind": "hardware",
+        "noise_seed": 20262027000,
+        "prefix": "20261027T010656Z",
+        "transient_H": 0.050267043355467,
+        "tv_to_classical": 0.2
+       },
+       {
+        "H_Hmax": 0.3848727675750336,
+        "brain_ratio": 0.45,
+        "distinct_modes": 3,
+        "init_seed": 20262027,
+        "kind": "hardware",
+        "noise_seed": 20262027001,
+        "prefix": "20261027T010656Z",
+        "transient_H": 0.05261236280679621,
+        "tv_to_classical": 0.15000000000000002
+       },
+       {
+        "H_Hmax": 0.35968967022875215,
+        "brain_ratio": 0.55,
+        "distinct_modes": 3,
+        "init_seed": 20262028,
+        "kind": "hardware",
+        "noise_seed": 20262028000,
+        "prefix": "20261027T010656Z",
+        "transient_H": 0.04664127630484519,
+        "tv_to_classical": 0.05000000000000002
+       },
+       {
+        "H_Hmax": 0.31972447574686974,
+        "brain_ratio": 0.65,
+        "distinct_modes": 3,
+        "init_seed": 20262028,
+        "kind": "hardware",
+        "noise_seed": 20262028001,
+        "prefix": "20261027T010656Z",
+        "transient_H": 0.04741836900032466,
+        "tv_to_classical": 0.15000000000000002
+       },
+       {
+        "H_Hmax": 0.3422488983973203,
+        "brain_ratio": 0.45,
+        "distinct_modes": 3,
+        "init_seed": 20262029,
+        "kind": "hardware",
+        "noise_seed": 20262029000,
+        "prefix": "20261027T010656Z",
+        "transient_H": 0.04223887859854351,
+        "tv_to_classical": 0.15
+       },
+       {
+        "H_Hmax": 0.3644293672825371,
+        "brain_ratio": 0.4,
+        "distinct_modes": 3,
+        "init_seed": 20262029,
+        "kind": "hardware",
+        "noise_seed": 20262029001,
+        "prefix": "20261027T010656Z",
+        "transient_H": 0.05870754964660872,
+        "tv_to_classical": 0.15
+       },
+       {
+        "H_Hmax": 0.30904006359345293,
+        "brain_ratio": 0.65,
+        "distinct_modes": 3,
+        "init_seed": 20262030,
+        "kind": "hardware",
+        "noise_seed": 20262030000,
+        "prefix": "20261027T010656Z",
+        "transient_H": 0.0470594168348035,
+        "tv_to_classical": 0.049999999999999996
+       },
+       {
+        "H_Hmax": 0.3238654610595805,
+        "brain_ratio": 0.6,
+        "distinct_modes": 3,
+        "init_seed": 20262030,
+        "kind": "hardware",
+        "noise_seed": 20262030001,
+        "prefix": "20261027T010656Z",
+        "transient_H": 0.048710715388203846,
+        "tv_to_classical": 0.050000000000000024
+       }
+      ],
+      "tv_to_classical": {
+       "max": 0.55,
+       "mean": 0.155,
+       "median": 0.15,
+       "min": 0.049999999999999996,
+       "n": 10,
+       "p5": 0.049999999999999996,
+       "p95": 0.2
+      }
+     },
+     "true_residual_permuted_20261027T015558Z": {
+      "count": 10,
+      "mean_histogram": [
+       11.5,
+       1.1,
+       0.2,
+       0.9,
+       0.3,
+       0.0,
+       1.5,
+       1.3,
+       0.8,
+       0.0,
+       0.8,
+       0.0,
+       0.0,
+       0.0,
+       0.6,
+       1.0
+      ],
+      "metrics": {
+       "H_Hmax": {
+        "max": 0.4048101761592123,
+        "mean": 0.33016018821662974,
+        "median": 0.3678990957946854,
+        "min": 0.2304820237218406,
+        "n": 10,
+        "p5": 0.2304820237218406,
+        "p95": 0.3897179621113401
+       },
+       "brain_ratio": {
+        "max": 0.8,
+        "mean": 0.575,
+        "median": 0.525,
+        "min": 0.35,
+        "n": 10,
+        "p5": 0.35,
+        "p95": 0.75
+       },
+       "distinct_modes": {
+        "max": 4.0,
+        "mean": 3.1,
+        "median": 3.0,
+        "min": 3.0,
+        "n": 10,
+        "p5": 3.0,
+        "p95": 3.0
+       },
+       "transient_H": {
+        "max": 0.05870754964660872,
+        "mean": 0.04008298749240676,
+        "median": 0.04227547184472789,
+        "min": 0.018476725798437635,
+        "n": 10,
+        "p5": 0.018476725798437635,
+        "p95": 0.05522224063326209
+       }
+      },
+      "runs": [
+       {
+        "H_Hmax": 0.3897179621113401,
+        "brain_ratio": 0.35,
+        "distinct_modes": 3,
+        "init_seed": 20262026,
+        "kind": "hardware",
+        "noise_seed": 20262026000,
+        "prefix": "20261027T015558Z",
+        "transient_H": 0.051912013044483146,
+        "tv_to_classical": 0.049999999999999996
+       },
+       {
+        "H_Hmax": 0.4048101761592123,
+        "brain_ratio": 0.55,
+        "distinct_modes": 4,
+        "init_seed": 20262026,
+        "kind": "hardware",
+        "noise_seed": 20262026001,
+        "prefix": "20261027T015558Z",
+        "transient_H": 0.03263893064497263,
+        "tv_to_classical": 0.5
+       },
+       {
+        "H_Hmax": 0.2304820237218406,
+        "brain_ratio": 0.8,
+        "distinct_modes": 3,
+        "init_seed": 20262027,
+        "kind": "hardware",
+        "noise_seed": 20262027000,
+        "prefix": "20261027T015558Z",
+        "transient_H": 0.029774800964035317,
+        "tv_to_classical": 0.5
+       },
+       {
+        "H_Hmax": 0.37136882430683366,
+        "brain_ratio": 0.5,
+        "distinct_modes": 3,
+        "init_seed": 20262027,
+        "kind": "hardware",
+        "noise_seed": 20262027001,
+        "prefix": "20261027T015558Z",
+        "transient_H": 0.05431286894990326,
+        "tv_to_classical": 0.2
+       },
+       {
+        "H_Hmax": 0.37136882430683366,
+        "brain_ratio": 0.5,
+        "distinct_modes": 3,
+        "init_seed": 20262028,
+        "kind": "hardware",
+        "noise_seed": 20262028000,
+        "prefix": "20261027T015558Z",
+        "transient_H": 0.05522224063326209,
+        "tv_to_classical": 0.04999999999999999
+       },
+       {
+        "H_Hmax": 0.37822190537954015,
+        "brain_ratio": 0.45,
+        "distinct_modes": 3,
+        "init_seed": 20262028,
+        "kind": "hardware",
+        "noise_seed": 20262028001,
+        "prefix": "20261027T015558Z",
+        "transient_H": 0.05217256991205325,
+        "tv_to_classical": 0.09999999999999998
+       },
+       {
+        "H_Hmax": 0.3644293672825371,
+        "brain_ratio": 0.4,
+        "distinct_modes": 3,
+        "init_seed": 20262029,
+        "kind": "hardware",
+        "noise_seed": 20262029000,
+        "prefix": "20261027T015558Z",
+        "transient_H": 0.05870754964660872,
+        "tv_to_classical": 0.15
+       },
+       {
+        "H_Hmax": 0.29532272480767313,
+        "brain_ratio": 0.7,
+        "distinct_modes": 3,
+        "init_seed": 20262029,
+        "kind": "hardware",
+        "noise_seed": 20262029001,
+        "prefix": "20261027T015558Z",
+        "transient_H": 0.02913544953187393,
+        "tv_to_classical": 0.7
+       },
+       {
+        "H_Hmax": 0.24794003704524334,
+        "brain_ratio": 0.75,
+        "distinct_modes": 3,
+        "init_seed": 20262030,
+        "kind": "hardware",
+        "noise_seed": 20262030000,
+        "prefix": "20261027T015558Z",
+        "transient_H": 0.018476725798437635,
+        "tv_to_classical": 0.09999999999999998
+       },
+       {
+        "H_Hmax": 0.24794003704524334,
+        "brain_ratio": 0.75,
+        "distinct_modes": 3,
+        "init_seed": 20262030,
+        "kind": "hardware",
+        "noise_seed": 20262030001,
+        "prefix": "20261027T015558Z",
+        "transient_H": 0.018476725798437635,
+        "tv_to_classical": 0.09999999999999998
+       }
+      ],
+      "tv_to_classical": {
+       "max": 0.7,
+       "mean": 0.24499999999999997,
+       "median": 0.12499999999999999,
+       "min": 0.04999999999999999,
+       "n": 10,
+       "p5": 0.04999999999999999,
+       "p95": 0.5
+      }
      }
     }
    },
@@ -4324,82 +4864,82 @@
      "hardware_residual_20261027T003737Z": {
       "count": 1,
       "mean_histogram": [
-       33.0,
+       49.0,
        0.0,
        0.0,
-       12.0,
+       4.0,
        0.0,
        0.0,
-       23.0,
-       0.0,
-       0.0,
-       0.0,
+       6.0,
        0.0,
        0.0,
        0.0,
+       3.0,
        0.0,
        0.0,
-       0.0
+       0.0,
+       1.0,
+       5.0
       ],
       "metrics": {
        "H_Hmax": {
-        "max": 0.3691948245155476,
-        "mean": 0.3691948245155476,
-        "median": 0.3691948245155476,
-        "min": 0.3691948245155476,
+        "max": 0.363795543611951,
+        "mean": 0.363795543611951,
+        "median": 0.363795543611951,
+        "min": 0.363795543611951,
         "n": 1,
-        "p5": 0.3691948245155476,
-        "p95": 0.3691948245155476
+        "p5": 0.363795543611951,
+        "p95": 0.363795543611951
        },
        "brain_ratio": {
-        "max": 0.4852941176470588,
-        "mean": 0.4852941176470588,
-        "median": 0.4852941176470588,
-        "min": 0.4852941176470588,
+        "max": 0.7205882352941176,
+        "mean": 0.7205882352941176,
+        "median": 0.7205882352941176,
+        "min": 0.7205882352941176,
         "n": 1,
-        "p5": 0.4852941176470588,
-        "p95": 0.4852941176470588
+        "p5": 0.7205882352941176,
+        "p95": 0.7205882352941176
        },
        "distinct_modes": {
-        "max": 3.0,
-        "mean": 3.0,
-        "median": 3.0,
-        "min": 3.0,
+        "max": 6.0,
+        "mean": 6.0,
+        "median": 6.0,
+        "min": 6.0,
         "n": 1,
-        "p5": 3.0,
-        "p95": 3.0
+        "p5": 6.0,
+        "p95": 6.0
        },
        "transient_H": {
-        "max": 0.021484378601053383,
-        "mean": 0.021484378601053383,
-        "median": 0.021484378601053383,
-        "min": 0.021484378601053383,
+        "max": 0.10690371658203536,
+        "mean": 0.10690371658203536,
+        "median": 0.10690371658203536,
+        "min": 0.10690371658203536,
         "n": 1,
-        "p5": 0.021484378601053383,
-        "p95": 0.021484378601053383
+        "p5": 0.10690371658203536,
+        "p95": 0.10690371658203536
        }
       },
       "runs": [
        {
-        "H_Hmax": 0.3691948245155476,
-        "brain_ratio": 0.4852941176470588,
-        "distinct_modes": 3,
+        "H_Hmax": 0.363795543611951,
+        "brain_ratio": 0.7205882352941176,
+        "distinct_modes": 6,
         "init_seed": 20261026,
         "kind": "hardware",
         "noise_seed": 0,
         "prefix": "20261027T003737Z",
-        "transient_H": 0.021484378601053383,
-        "tv_to_classical": 0.2647058823529412
+        "transient_H": 0.10690371658203536,
+        "tv_to_classical": 0.16176470588235292
        }
       ],
       "tv_to_classical": {
-       "max": 0.2647058823529412,
-       "mean": 0.2647058823529412,
-       "median": 0.2647058823529412,
-       "min": 0.2647058823529412,
+       "max": 0.16176470588235292,
+       "mean": 0.16176470588235292,
+       "median": 0.16176470588235292,
+       "min": 0.16176470588235292,
        "n": 1,
-       "p5": 0.2647058823529412,
-       "p95": 0.2647058823529412
+       "p5": 0.16176470588235292,
+       "p95": 0.16176470588235292
       }
      },
      "noise_1024shot_floor": {
@@ -5121,6 +5661,186 @@
        "p5": 0.25,
        "p95": 0.4411764705882353
       }
+     },
+     "true_residual_permuted_20261027T003737Z": {
+      "count": 10,
+      "mean_histogram": [
+       43.3,
+       0.0,
+       0.0,
+       5.0,
+       0.0,
+       0.0,
+       8.0,
+       0.0,
+       0.0,
+       0.0,
+       4.3,
+       0.0,
+       0.0,
+       0.0,
+       0.9,
+       6.5
+      ],
+      "metrics": {
+       "H_Hmax": {
+        "max": 0.4596737110008119,
+        "mean": 0.4215833749557566,
+        "median": 0.41628723405493406,
+        "min": 0.39799258364692525,
+        "n": 10,
+        "p5": 0.39799258364692525,
+        "p95": 0.44999748142085105
+       },
+       "brain_ratio": {
+        "max": 0.6764705882352942,
+        "mean": 0.6367647058823529,
+        "median": 0.6397058823529411,
+        "min": 0.5882352941176471,
+        "n": 10,
+        "p5": 0.5882352941176471,
+        "p95": 0.6764705882352942
+       },
+       "distinct_modes": {
+        "max": 6.0,
+        "mean": 5.8,
+        "median": 6.0,
+        "min": 5.0,
+        "n": 10,
+        "p5": 5.0,
+        "p95": 6.0
+       },
+       "transient_H": {
+        "max": 0.10776727742725031,
+        "mean": 0.09310022062545639,
+        "median": 0.09295003411917968,
+        "min": 0.07456224136261244,
+        "n": 10,
+        "p5": 0.07456224136261244,
+        "p95": 0.1069082621521675
+       }
+      },
+      "runs": [
+       {
+        "H_Hmax": 0.4334155617633541,
+        "brain_ratio": 0.6323529411764706,
+        "distinct_modes": 6,
+        "init_seed": 20261026,
+        "kind": "hardware",
+        "noise_seed": 0,
+        "prefix": "20261027T003737Z",
+        "transient_H": 0.10776727742725031,
+        "tv_to_classical": 0.10294117647058823
+       },
+       {
+        "H_Hmax": 0.39799258364692525,
+        "brain_ratio": 0.6764705882352942,
+        "distinct_modes": 6,
+        "init_seed": 20261026,
+        "kind": "hardware",
+        "noise_seed": 1,
+        "prefix": "20261027T003737Z",
+        "transient_H": 0.09666323686775267,
+        "tv_to_classical": 0.13235294117647062
+       },
+       {
+        "H_Hmax": 0.41192347035669397,
+        "brain_ratio": 0.6617647058823529,
+        "distinct_modes": 6,
+        "init_seed": 20261026,
+        "kind": "hardware",
+        "noise_seed": 2,
+        "prefix": "20261027T003737Z",
+        "transient_H": 0.10629668390303669,
+        "tv_to_classical": 0.11764705882352941
+       },
+       {
+        "H_Hmax": 0.4171206959342011,
+        "brain_ratio": 0.6323529411764706,
+        "distinct_modes": 5,
+        "init_seed": 20261026,
+        "kind": "hardware",
+        "noise_seed": 3,
+        "prefix": "20261027T003737Z",
+        "transient_H": 0.08084089655792268,
+        "tv_to_classical": 0.08823529411764704
+       },
+       {
+        "H_Hmax": 0.4154537721756671,
+        "brain_ratio": 0.6470588235294118,
+        "distinct_modes": 6,
+        "init_seed": 20261026,
+        "kind": "hardware",
+        "noise_seed": 4,
+        "prefix": "20261027T003737Z",
+        "transient_H": 0.1069082621521675,
+        "tv_to_classical": 0.08823529411764708
+       },
+       {
+        "H_Hmax": 0.4068938175837136,
+        "brain_ratio": 0.6617647058823529,
+        "distinct_modes": 6,
+        "init_seed": 20261026,
+        "kind": "hardware",
+        "noise_seed": 5,
+        "prefix": "20261027T003737Z",
+        "transient_H": 0.10294865357410414,
+        "tv_to_classical": 0.1323529411764706
+       },
+       {
+        "H_Hmax": 0.44999748142085105,
+        "brain_ratio": 0.5882352941176471,
+        "distinct_modes": 6,
+        "init_seed": 20261026,
+        "kind": "hardware",
+        "noise_seed": 6,
+        "prefix": "20261027T003737Z",
+        "transient_H": 0.07760549599503129,
+        "tv_to_classical": 0.04411764705882354
+       },
+       {
+        "H_Hmax": 0.4596737110008119,
+        "brain_ratio": 0.5882352941176471,
+        "distinct_modes": 6,
+        "init_seed": 20261026,
+        "kind": "hardware",
+        "noise_seed": 7,
+        "prefix": "20261027T003737Z",
+        "transient_H": 0.08817262704407958,
+        "tv_to_classical": 0.0735294117647059
+       },
+       {
+        "H_Hmax": 0.42372161241185397,
+        "brain_ratio": 0.6029411764705882,
+        "distinct_modes": 5,
+        "init_seed": 20261026,
+        "kind": "hardware",
+        "noise_seed": 8,
+        "prefix": "20261027T003737Z",
+        "transient_H": 0.07456224136261244,
+        "tv_to_classical": 0.08823529411764702
+       },
+       {
+        "H_Hmax": 0.3996410432634938,
+        "brain_ratio": 0.6764705882352942,
+        "distinct_modes": 6,
+        "init_seed": 20261026,
+        "kind": "hardware",
+        "noise_seed": 9,
+        "prefix": "20261027T003737Z",
+        "transient_H": 0.08923683137060667,
+        "tv_to_classical": 0.11764705882352944
+       }
+      ],
+      "tv_to_classical": {
+       "max": 0.13235294117647062,
+       "mean": 0.0985294117647059,
+       "median": 0.09558823529411765,
+       "min": 0.04411764705882354,
+       "n": 10,
+       "p5": 0.04411764705882354,
+       "p95": 0.1323529411764706
+      }
      }
     },
     "varying_init": {
@@ -5808,125 +6528,125 @@
       "count": 5,
       "mean_histogram": [
        43.6,
-       3.0,
-       2.8,
+       0.0,
+       4.6,
+       1.4,
+       0.0,
        5.2,
-       1.4,
-       1.8,
-       7.4,
-       0.6,
+       3.0,
        0.0,
+       3.8,
        0.0,
-       0.0,
-       0.0,
-       0.0,
-       0.0,
-       1.4,
-       0.8
+       0.4,
+       1.0,
+       0.8,
+       1.0,
+       1.0,
+       2.2
       ],
       "metrics": {
        "H_Hmax": {
-        "max": 0.5009470790308647,
-        "mean": 0.39602070107029974,
-        "median": 0.4198873751546807,
-        "min": 0.2317815536793315,
+        "max": 0.4685628408635938,
+        "mean": 0.39564178844116127,
+        "median": 0.3806656438099406,
+        "min": 0.29546944526902036,
         "n": 5,
-        "p5": 0.2317815536793315,
-        "p95": 0.434216283380668
+        "p5": 0.29546944526902036,
+        "p95": 0.465127795546511
        },
        "brain_ratio": {
-        "max": 0.7941176470588235,
+        "max": 0.7794117647058824,
         "mean": 0.6411764705882353,
-        "median": 0.6470588235294118,
-        "min": 0.5,
+        "median": 0.6617647058823529,
+        "min": 0.5441176470588235,
         "n": 5,
-        "p5": 0.5,
+        "p5": 0.5441176470588235,
         "p95": 0.6764705882352942
        },
        "distinct_modes": {
-        "max": 8.0,
-        "mean": 5.4,
+        "max": 6.0,
+        "mean": 5.6,
         "median": 6.0,
-        "min": 3.0,
+        "min": 5.0,
         "n": 5,
-        "p5": 3.0,
+        "p5": 5.0,
         "p95": 6.0
        },
        "transient_H": {
-        "max": 0.0893685354770188,
-        "mean": 0.0663674896233352,
-        "median": 0.07935126985530022,
-        "min": 0.03432258905697484,
+        "max": 0.09682998914882539,
+        "mean": 0.08546713540212054,
+        "median": 0.08949078299825426,
+        "min": 0.05988265505063145,
         "n": 5,
-        "p5": 0.03432258905697484,
-        "p95": 0.08898260309177394
+        "p5": 0.05988265505063145,
+        "p95": 0.0946650090229198
        }
       },
       "runs": [
        {
-        "H_Hmax": 0.2317815536793315,
-        "brain_ratio": 0.7941176470588235,
-        "distinct_modes": 3,
+        "H_Hmax": 0.465127795546511,
+        "brain_ratio": 0.5441176470588235,
+        "distinct_modes": 6,
         "init_seed": 20262026,
         "kind": "hardware",
         "noise_seed": 20262026,
         "prefix": "20261027T003737Z",
-        "transient_H": 0.03432258905697484,
-        "tv_to_classical": 0.2647058823529411
+        "transient_H": 0.09682998914882539,
+        "tv_to_classical": 0.4558823529411765
        },
        {
-        "H_Hmax": 0.5009470790308647,
-        "brain_ratio": 0.5882352941176471,
-        "distinct_modes": 8,
+        "H_Hmax": 0.3806656438099406,
+        "brain_ratio": 0.6617647058823529,
+        "distinct_modes": 5,
         "init_seed": 20262027,
         "kind": "hardware",
         "noise_seed": 20262027,
         "prefix": "20261027T003737Z",
-        "transient_H": 0.0893685354770188,
-        "tv_to_classical": 0.23529411764705882
+        "transient_H": 0.08949078299825426,
+        "tv_to_classical": 0.07352941176470587
        },
        {
-        "H_Hmax": 0.39327121410595367,
-        "brain_ratio": 0.6764705882352942,
+        "H_Hmax": 0.4685628408635938,
+        "brain_ratio": 0.5441176470588235,
         "distinct_modes": 6,
         "init_seed": 20262028,
         "kind": "hardware",
         "noise_seed": 20262028,
         "prefix": "20261027T003737Z",
-        "transient_H": 0.08898260309177394,
-        "tv_to_classical": 0.1764705882352941
+        "transient_H": 0.0946650090229198,
+        "tv_to_classical": 0.44117647058823534
        },
        {
-        "H_Hmax": 0.4198873751546807,
-        "brain_ratio": 0.5,
-        "distinct_modes": 4,
+        "H_Hmax": 0.3683832167167405,
+        "brain_ratio": 0.6764705882352942,
+        "distinct_modes": 5,
         "init_seed": 20262029,
         "kind": "hardware",
         "noise_seed": 20262029,
         "prefix": "20261027T003737Z",
-        "transient_H": 0.03981245063560826,
-        "tv_to_classical": 0.3529411764705882
+        "transient_H": 0.08646724078997178,
+        "tv_to_classical": 0.05882352941176473
        },
        {
-        "H_Hmax": 0.434216283380668,
-        "brain_ratio": 0.6470588235294118,
+        "H_Hmax": 0.29546944526902036,
+        "brain_ratio": 0.7794117647058824,
         "distinct_modes": 6,
         "init_seed": 20262030,
         "kind": "hardware",
         "noise_seed": 20262030,
         "prefix": "20261027T003737Z",
-        "transient_H": 0.07935126985530022,
-        "tv_to_classical": 0.2941176470588235
+        "transient_H": 0.05988265505063145,
+        "tv_to_classical": 0.0
        }
       ],
       "tv_to_classical": {
-       "max": 0.3529411764705882,
-       "mean": 0.2647058823529411,
-       "median": 0.2647058823529411,
-       "min": 0.1764705882352941,
+       "max": 0.4558823529411765,
+       "mean": 0.2058823529411765,
+       "median": 0.07352941176470587,
+       "min": 0.0,
        "n": 5,
-       "p5": 0.1764705882352941,
-       "p95": 0.2941176470588235
+       "p5": 0.0,
+       "p95": 0.44117647058823534
       }
      },
      "noise_1024shot_floor": {
@@ -6648,22 +7368,198 @@
        "p5": 0.19117647058823528,
        "p95": 0.35294117647058826
       }
+     },
+     "true_residual_permuted_20261027T003737Z": {
+      "count": 10,
+      "mean_histogram": [
+       45.1,
+       1.5,
+       0.9,
+       3.2,
+       1.9,
+       1.4,
+       3.7,
+       1.6,
+       1.2,
+       0.7,
+       1.6,
+       0.9,
+       0.9,
+       0.2,
+       1.6,
+       1.6
+      ],
+      "metrics": {
+       "H_Hmax": {
+        "max": 0.49066100849549715,
+        "mean": 0.3764756543263279,
+        "median": 0.38545615153583324,
+        "min": 0.20836323707094473,
+        "n": 10,
+        "p5": 0.20836323707094473,
+        "p95": 0.4777200652248864
+       },
+       "brain_ratio": {
+        "max": 0.8529411764705882,
+        "mean": 0.6632352941176471,
+        "median": 0.6764705882352942,
+        "min": 0.4852941176470588,
+        "n": 10,
+        "p5": 0.4852941176470588,
+        "p95": 0.8235294117647058
+       },
+       "distinct_modes": {
+        "max": 6.0,
+        "mean": 5.3,
+        "median": 5.5,
+        "min": 3.0,
+        "n": 10,
+        "p5": 3.0,
+        "p95": 6.0
+       },
+       "transient_H": {
+        "max": 0.11613445000724117,
+        "mean": 0.08331925703123207,
+        "median": 0.08556608026374121,
+        "min": 0.03612687848825674,
+        "n": 10,
+        "p5": 0.03612687848825674,
+        "p95": 0.10804183351994659
+       }
+      },
+      "runs": [
+       {
+        "H_Hmax": 0.407514975065245,
+        "brain_ratio": 0.6764705882352942,
+        "distinct_modes": 6,
+        "init_seed": 20262026,
+        "kind": "hardware",
+        "noise_seed": 20262026000,
+        "prefix": "20261027T003737Z",
+        "transient_H": 0.10804183351994659,
+        "tv_to_classical": 0.0735294117647059
+       },
+       {
+        "H_Hmax": 0.4173892329229538,
+        "brain_ratio": 0.6617647058823529,
+        "distinct_modes": 6,
+        "init_seed": 20262026,
+        "kind": "hardware",
+        "noise_seed": 20262026001,
+        "prefix": "20261027T003737Z",
+        "transient_H": 0.10620694069257505,
+        "tv_to_classical": 0.0441176470588235
+       },
+       {
+        "H_Hmax": 0.21219135132773304,
+        "brain_ratio": 0.8235294117647058,
+        "distinct_modes": 3,
+        "init_seed": 20262027,
+        "kind": "hardware",
+        "noise_seed": 20262027000,
+        "prefix": "20261027T003737Z",
+        "transient_H": 0.03612687848825674,
+        "tv_to_classical": 0.2352941176470588
+       },
+       {
+        "H_Hmax": 0.36339732800642144,
+        "brain_ratio": 0.6764705882352942,
+        "distinct_modes": 5,
+        "init_seed": 20262027,
+        "kind": "hardware",
+        "noise_seed": 20262027001,
+        "prefix": "20261027T003737Z",
+        "transient_H": 0.08846547529662072,
+        "tv_to_classical": 0.08823529411764708
+       },
+       {
+        "H_Hmax": 0.4777200652248864,
+        "brain_ratio": 0.5294117647058824,
+        "distinct_modes": 6,
+        "init_seed": 20262028,
+        "kind": "hardware",
+        "noise_seed": 20262028000,
+        "prefix": "20261027T003737Z",
+        "transient_H": 0.09514320742943227,
+        "tv_to_classical": 0.47058823529411764
+       },
+       {
+        "H_Hmax": 0.34978021035737883,
+        "brain_ratio": 0.7058823529411765,
+        "distinct_modes": 5,
+        "init_seed": 20262028,
+        "kind": "hardware",
+        "noise_seed": 20262028001,
+        "prefix": "20261027T003737Z",
+        "transient_H": 0.08155582070296906,
+        "tv_to_classical": 0.07352941176470593
+       },
+       {
+        "H_Hmax": 0.3600959566420096,
+        "brain_ratio": 0.6911764705882353,
+        "distinct_modes": 5,
+        "init_seed": 20262029,
+        "kind": "hardware",
+        "noise_seed": 20262029000,
+        "prefix": "20261027T003737Z",
+        "transient_H": 0.08266668523086172,
+        "tv_to_classical": 0.07352941176470587
+       },
+       {
+        "H_Hmax": 0.49066100849549715,
+        "brain_ratio": 0.5294117647058824,
+        "distinct_modes": 6,
+        "init_seed": 20262029,
+        "kind": "hardware",
+        "noise_seed": 20262029001,
+        "prefix": "20261027T003737Z",
+        "transient_H": 0.11613445000724117,
+        "tv_to_classical": 0.47058823529411764
+       },
+       {
+        "H_Hmax": 0.20836323707094473,
+        "brain_ratio": 0.8529411764705882,
+        "distinct_modes": 5,
+        "init_seed": 20262030,
+        "kind": "hardware",
+        "noise_seed": 20262030000,
+        "prefix": "20261027T003737Z",
+        "transient_H": 0.03789413630938778,
+        "tv_to_classical": 0.07352941176470586
+       },
+       {
+        "H_Hmax": 0.47764317815020924,
+        "brain_ratio": 0.4852941176470588,
+        "distinct_modes": 6,
+        "init_seed": 20262030,
+        "kind": "hardware",
+        "noise_seed": 20262030001,
+        "prefix": "20261027T003737Z",
+        "transient_H": 0.08095714263502954,
+        "tv_to_classical": 0.5
+       }
+      ],
+      "tv_to_classical": {
+       "max": 0.5,
+       "mean": 0.21029411764705883,
+       "median": 0.0808823529411765,
+       "min": 0.0441176470588235,
+       "n": 10,
+       "p5": 0.0441176470588235,
+       "p95": 0.47058823529411764
+      }
      }
     }
    }
   }
  },
  "conclusion": [
-  "current solver, 20 iteracio, fixed_init kor: a klasszikus kontroll a zajos agak savjan KIVUL van",
-  "current solver, 20 iteracio, varying_init kor: a klasszikus kontroll a zajos agak savjan KIVUL van",
-  "current solver, 68 iteracio, fixed_init kor: a klasszikus kontroll a zajos agak savjan KIVUL van",
-  "current solver, 68 iteracio, varying_init kor: a klasszikus kontroll a zajos agak savjan KIVUL van",
-  "HARDVERES REZIDUUM (hardware_residual_20261027T010656Z, 20 iter, fixed_init): M1(distinct=2.0) vagy M2(brain=0.2500) KIVUL esik a zajos agak savjan -> SZABALY: uj QPU futas INDOKOLT",
-  "HARDVERES REZIDUUM (hardware_residual_20261027T015558Z, 20 iter, fixed_init): M1(distinct=2.0) vagy M2(brain=0.2500) KIVUL esik a zajos agak savjan -> SZABALY: uj QPU futas INDOKOLT",
-  "HARDVERES REZIDUUM (hardware_residual_20261027T010656Z, 20 iter, varying_init): M1(distinct=3.0) vagy M2(brain=0.5500) KIVUL esik a zajos agak savjan -> SZABALY: uj QPU futas INDOKOLT",
-  "HARDVERES REZIDUUM (hardware_residual_20261027T015558Z, 20 iter, varying_init): M1(distinct=3.0) vagy M2(brain=0.6500) KIVUL esik a zajos agak savjan -> SZABALY: uj QPU futas INDOKOLT",
-  "HARDVERES REZIDUUM (hardware_residual_20261027T003737Z, 68 iter, fixed_init): M1(distinct=3.0) vagy M2(brain=0.4853) KIVUL esik a zajos agak savjan -> SZABALY: uj QPU futas INDOKOLT",
-  "HARDVERES REZIDUUM (hardware_residual_20261027T003737Z, 68 iter, varying_init): M1(distinct=6.0) vagy M2(brain=0.6471) KIVUL esik a zajos agak savjan -> SZABALY: uj QPU futas INDOKOLT"
+  "HARDVERES REZIDUUM (hardware_residual_20261027T010656Z, 20 iter, fixed_init): M1(distinct=3.0) es M2(brain=0.5500) BELUL van a true_residual_permuted savjan (distinct_band=(3.0, 3.0), brain_band=(0.25, 0.55)) -> SZABALY: uj QPU futas NEM indokolt",
+  "HARDVERES REZIDUUM (hardware_residual_20261027T015558Z, 20 iter, fixed_init): M1(distinct=3.0) es M2(brain=0.4500) BELUL van a true_residual_permuted savjan (distinct_band=(3.0, 3.0), brain_band=(0.3, 0.5)) -> SZABALY: uj QPU futas NEM indokolt",
+  "HARDVERES REZIDUUM (hardware_residual_20261027T010656Z, 20 iter, varying_init): M1(distinct=4.0) es M2(brain=0.6000) BELUL van a true_residual_permuted savjan (distinct_band=(3.0, 4.0), brain_band=(0.35, 0.65)) -> SZABALY: uj QPU futas NEM indokolt",
+  "HARDVERES REZIDUUM (hardware_residual_20261027T015558Z, 20 iter, varying_init): M1(distinct=3.0) es M2(brain=0.4000) BELUL van a true_residual_permuted savjan (distinct_band=(3.0, 3.0), brain_band=(0.35, 0.75)) -> SZABALY: uj QPU futas NEM indokolt",
+  "HARDVERES REZIDUUM (hardware_residual_20261027T003737Z, 68 iter, fixed_init): M1(distinct=6.0) vagy M2(brain=0.7206) KIVUL esik a true_residual_permuted savjan (distinct_band=(5.0, 6.0), brain_band=(0.5882352941176471, 0.6764705882352942)) -> SZABALY: uj QPU futas INDOKOLT",
+  "HARDVERES REZIDUUM (hardware_residual_20261027T003737Z, 68 iter, varying_init): M1(distinct=6.0) es M2(brain=0.6618) BELUL van a true_residual_permuted savjan (distinct_band=(3.0, 6.0), brain_band=(0.4852941176470588, 0.8235294117647058)) -> SZABALY: uj QPU futas NEM indokolt"
  ],
  "generated_by": "scripts/control_comparison.py",
  "hardware": {
@@ -6830,6 +7726,12 @@
       "brain_ratio": 70.0,
       "distinct_modes": 20.0,
       "transient_H": 10.0
+     },
+     "true_residual_permuted_20261027T003737Z": {
+      "H_Hmax": 0.0,
+      "brain_ratio": 100.0,
+      "distinct_modes": 0.0,
+      "transient_H": 0.0
      }
     },
     "varying_init": {
@@ -6892,6 +7794,12 @@
       "brain_ratio": 70.0,
       "distinct_modes": 20.0,
       "transient_H": 30.0
+     },
+     "true_residual_permuted_20261027T003737Z": {
+      "H_Hmax": 0.0,
+      "brain_ratio": 100.0,
+      "distinct_modes": 0.0,
+      "transient_H": 0.0
      }
     }
    },
@@ -7003,16 +7911,16 @@
       "transient_H": 100.0
      },
      "hardware_residual_20261027T010656Z": {
-      "H_Hmax": 100.0,
+      "H_Hmax": 0.0,
       "brain_ratio": 100.0,
       "distinct_modes": 100.0,
-      "transient_H": 100.0
+      "transient_H": 0.0
      },
      "hardware_residual_20261027T015558Z": {
-      "H_Hmax": 100.0,
+      "H_Hmax": 0.0,
       "brain_ratio": 100.0,
       "distinct_modes": 100.0,
-      "transient_H": 100.0
+      "transient_H": 0.0
      },
      "noise_1024shot_floor": {
       "H_Hmax": 100.0,
@@ -7037,6 +7945,18 @@
       "brain_ratio": 0.0,
       "distinct_modes": 100.0,
       "transient_H": 100.0
+     },
+     "true_residual_permuted_20261027T010656Z": {
+      "H_Hmax": 0.0,
+      "brain_ratio": 90.0,
+      "distinct_modes": 100.0,
+      "transient_H": 0.0
+     },
+     "true_residual_permuted_20261027T015558Z": {
+      "H_Hmax": 0.0,
+      "brain_ratio": 100.0,
+      "distinct_modes": 90.0,
+      "transient_H": 0.0
      }
     },
     "varying_init": {
@@ -7052,17 +7972,11 @@
       "distinct_modes": 80.0,
       "transient_H": 20.0
      },
-     "hardware_permuted_20261027T010656Z": {
+     "hardware_permuted_20261027T003737Z": {
       "H_Hmax": 100.0,
       "brain_ratio": 0.0,
       "distinct_modes": 100.0,
-      "transient_H": 100.0
-     },
-     "hardware_permuted_20261027T015558Z": {
-      "H_Hmax": 100.0,
-      "brain_ratio": 0.0,
-      "distinct_modes": 100.0,
-      "transient_H": 100.0
+      "transient_H": 90.0
      },
      "hardware_recorded_replay_20261027T010656Z": {
       "H_Hmax": 80.0,
@@ -7089,16 +8003,16 @@
       "transient_H": 100.0
      },
      "hardware_residual_20261027T010656Z": {
-      "H_Hmax": 40.0,
-      "brain_ratio": 60.0,
-      "distinct_modes": 100.0,
-      "transient_H": 60.0
+      "H_Hmax": 0.0,
+      "brain_ratio": 100.0,
+      "distinct_modes": 40.0,
+      "transient_H": 0.0
      },
      "hardware_residual_20261027T015558Z": {
-      "H_Hmax": 40.0,
-      "brain_ratio": 60.0,
+      "H_Hmax": 0.0,
+      "brain_ratio": 100.0,
       "distinct_modes": 80.0,
-      "transient_H": 40.0
+      "transient_H": 20.0
      },
      "noise_1024shot_floor": {
       "H_Hmax": 100.0,
@@ -7123,6 +8037,18 @@
       "brain_ratio": 0.0,
       "distinct_modes": 100.0,
       "transient_H": 90.0
+     },
+     "true_residual_permuted_20261027T010656Z": {
+      "H_Hmax": 0.0,
+      "brain_ratio": 100.0,
+      "distinct_modes": 80.0,
+      "transient_H": 0.0
+     },
+     "true_residual_permuted_20261027T015558Z": {
+      "H_Hmax": 30.0,
+      "brain_ratio": 60.0,
+      "distinct_modes": 90.0,
+      "transient_H": 40.0
      }
     }
    },
@@ -7236,13 +8162,13 @@
      "hardware_residual_20261027T010656Z": {
       "H_Hmax": 0.0,
       "brain_ratio": 100.0,
-      "distinct_modes": 100.0,
+      "distinct_modes": 0.0,
       "transient_H": 0.0
      },
      "hardware_residual_20261027T015558Z": {
       "H_Hmax": 0.0,
       "brain_ratio": 100.0,
-      "distinct_modes": 100.0,
+      "distinct_modes": 0.0,
       "transient_H": 0.0
      },
      "noise_1024shot_floor": {
@@ -7268,6 +8194,18 @@
       "brain_ratio": 60.0,
       "distinct_modes": 90.0,
       "transient_H": 50.0
+     },
+     "true_residual_permuted_20261027T010656Z": {
+      "H_Hmax": 0.0,
+      "brain_ratio": 100.0,
+      "distinct_modes": 0.0,
+      "transient_H": 0.0
+     },
+     "true_residual_permuted_20261027T015558Z": {
+      "H_Hmax": 0.0,
+      "brain_ratio": 100.0,
+      "distinct_modes": 0.0,
+      "transient_H": 0.0
      }
     },
     "varying_init": {
@@ -7283,17 +8221,11 @@
       "distinct_modes": 0.0,
       "transient_H": 0.0
      },
-     "hardware_permuted_20261027T010656Z": {
-      "H_Hmax": 30.0,
-      "brain_ratio": 80.0,
-      "distinct_modes": 30.0,
-      "transient_H": 30.0
-     },
-     "hardware_permuted_20261027T015558Z": {
-      "H_Hmax": 100.0,
-      "brain_ratio": 10.0,
-      "distinct_modes": 100.0,
-      "transient_H": 90.0
+     "hardware_permuted_20261027T003737Z": {
+      "H_Hmax": 70.0,
+      "brain_ratio": 30.0,
+      "distinct_modes": 70.0,
+      "transient_H": 70.0
      },
      "hardware_recorded_replay_20261027T010656Z": {
       "H_Hmax": 0.0,
@@ -7320,15 +8252,15 @@
       "transient_H": 60.0
      },
      "hardware_residual_20261027T010656Z": {
-      "H_Hmax": 20.0,
-      "brain_ratio": 80.0,
-      "distinct_modes": 40.0,
-      "transient_H": 20.0
+      "H_Hmax": 0.0,
+      "brain_ratio": 100.0,
+      "distinct_modes": 0.0,
+      "transient_H": 0.0
      },
      "hardware_residual_20261027T015558Z": {
       "H_Hmax": 0.0,
       "brain_ratio": 100.0,
-      "distinct_modes": 40.0,
+      "distinct_modes": 0.0,
       "transient_H": 0.0
      },
      "noise_1024shot_floor": {
@@ -7354,6 +8286,18 @@
       "brain_ratio": 50.0,
       "distinct_modes": 60.0,
       "transient_H": 60.0
+     },
+     "true_residual_permuted_20261027T010656Z": {
+      "H_Hmax": 0.0,
+      "brain_ratio": 100.0,
+      "distinct_modes": 0.0,
+      "transient_H": 0.0
+     },
+     "true_residual_permuted_20261027T015558Z": {
+      "H_Hmax": 0.0,
+      "brain_ratio": 100.0,
+      "distinct_modes": 0.0,
+      "transient_H": 0.0
      }
     }
    },
@@ -7375,7 +8319,7 @@
    "fixed_init",
    "varying_init"
   ],
-  "runs": 298,
+  "runs": 348,
   "seeds": 10,
   "solvers": [
    "current"
