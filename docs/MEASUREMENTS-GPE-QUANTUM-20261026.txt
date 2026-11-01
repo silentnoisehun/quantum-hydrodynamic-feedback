@@ -278,7 +278,7 @@ iteracio, 10 loves, Bell c = 0,949, a GPE valodi 2D FFT-vel (numpy).
   A METRIKA-HIBA (sajat hibam, jelezve): az "aktiv atmeneti allapot = 16/16"
   mindig 16-ot irt, mert a sor-osszegeket nullara allitottam, mielott
   szamoltam volna. A tenyleges ertek a klasszikus/dead agban 1 lenne.
-  A hisztogram és az H/Hmax ertekek不受 (nem érintett).
+  A hisztogram és az H/Hmax ertekeknem erinti (nem érintett).
 
 3.3. KET SAJAT HIBA, AMIT A MERES KIFEDEZETT (a "nem hazudunk egymasnak" elv)
 

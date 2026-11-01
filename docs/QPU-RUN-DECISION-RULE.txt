@@ -1,5 +1,5 @@
 ================================================================================
-A QPU-FUTTATAS ELOZETES JOVAHAGYASI SZABALYA (PRE-REGISZTRALT)
+A QPU-FUTTATAS ELOZETES JOVAHAGYASI SZABALYA (ELORE ROGZITETT)
 Datum: 2026-11-01
 Allapot: ELOTTOROZVE, a fenti datumot megelozon egyetlen uj QPU-futast sem
          inditottunk.
@@ -102,7 +102,7 @@ A KIVETEL (a szabaly egyetlen kivétele, eloregisztralva):
   szerint nem fut le. A dontes mindig a CPU savból jon:
     - ha a hardver a javitott solverrel is a zajsavon KIVUL van ->
       a hardveres mod-mintazat nem a meresi zaj termeke; ezt kell
-      dokumentalni, a f不加 korlataival egyutt;
+      dokumentalni, az f-korlataival egyutt;
     - ha a javitott solverrel a zajsavon BELUL van -> a hardveres
       elteres a LEGACY solver hatasa, nem a kvantum-csatorna.
 
