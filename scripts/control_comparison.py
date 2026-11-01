@@ -89,9 +89,10 @@ DET_ARMS = [{"id": "classical", "kind": "classical"},
             {"id": "exact", "kind": "exact"}]
 
 # A visszacsatolasra kerulo parameterek tartomanyai.
-A_RANGE = (0.0, 1.0)          # a visszacsatolt A (A_back/pi)
-F_RANGE = (0.0, 15.0)         # a visszacsatolt f (mod-index)
-PHI_RANGE = (0.0, 1.0)        # a visszacsatolt phi (phi_back/pi)
+# A reziduum (hardware_residual) negativ is lehet, ezert szelesabb tartomany.
+A_RANGE = (-1.0, 1.0)         # a visszacsatolt A / reziduum A
+F_RANGE = (-15.0, 15.0)       # a visszacsatolt f / reziduum f (mod-index)
+PHI_RANGE = (-1.0, 1.0)       # a visszacsatolt phi / reziduum phi
 
 
 def clip(value, bounds):
@@ -118,7 +119,8 @@ _FEEDBACK_CACHE = {}
 
 
 def recorded_feedback(prefix, feedback_mode, solver_name):
-    """A hardveres futas rogzitett visszacsatolasai a folyadek szamara.
+    """A hardveres futas ROGZITETT visszacsatolasai a folyadek szamara
+    (mostantol: hardware_recorded_replay).
 
     A nyers `counts_raw`-okat visszafejtjuk (a replay ugyanigy csinalja),
     majd a hardver skalajara helyezzuk:
@@ -131,8 +133,8 @@ def recorded_feedback(prefix, feedback_mode, solver_name):
     `f_fb / 0.5 * 15` (a tenyleges mode-index).
 
     🧬 A `_rescaled` utagas: a JAVITOTT f-skalat hasznalja, fuggetlenul a
-    solvertol. Ez a döntő arm: ugyanaz a ROZGZITETT hardveres visszacsatolas,
-    csak a helyes skalan — igy megvalaszolható, hogy a hardveres mod-mintazat
+    solvertol. Ez a dontoeso arm: ugyanaz a ROGZITETT hardveres visszacsatolas,
+    csak a helyes skalan — igy megvalaszolhato, hogy a hardveres mod-mintazat
     a f-skala hibaja miatt volt-e kivagyes, vagy a kvantum csatorna hatasa.
     """
     key = (prefix, feedback_mode, solver_name)
@@ -162,6 +164,62 @@ def recorded_feedback(prefix, feedback_mode, solver_name):
     return out
 
 
+_TRUE_RESIDUAL_CACHE = {}
+
+
+def true_residual_feedback(prefix, solver_name):
+    """A VALODI reziduum: iteracionkent `decoded_raw - ideal` a javitott
+    f-skalan, a javitott solverrel.
+
+    Az `ideal` ertekek a nyers fajlok `ideal` mezojeibol jonnek (ez az, amit
+    a QPU-nak elkuldunk: A es phi egyforman, f pedig `encoded.f % 0.5`).
+    A 68 iteracios futasban nincs `ideal` mezo, ott az `encoded`-bol
+    szarmazik: ideal.A = encoded.A, ideal.f = encoded.f % 0.5,
+    ideal.phi = encoded.phi.
+    A `decoded_raw` a mertes ertek a QPU-tol.
+
+    A reziduum a javitott f-skalan (mode-index tartomany [0,15]):
+      A_residual    = (decoded_raw.A - ideal.A) / pi           -> [0, 1]
+      f_residual    = (decoded_raw.f - ideal.f) * 30           -> [0, 15]
+                    (mivel f [0, 0.5]-on van, denormalizalas * 15/0.5 = 30)
+      phi_residual  = (decoded_raw.phi - ideal.phi) / pi       -> [0, 1]
+
+    Ez az ARM valaszolja meg: ha a QPU-zaj helyes kodolassal/skalaval
+    szamit-e. A korabbi `hardware_residual` (most
+    `hardware_recorded_replay`) csak a rogzitett dekodolt ertekeket
+    jatszotta vissza, ami nem ugyanaz.
+    """
+    key = (prefix, solver_name)
+    if key in _TRUE_RESIDUAL_CACHE:
+        return _TRUE_RESIDUAL_CACHE[key]
+    out = []
+    for _, data in R.load_run(prefix):
+        # az ideal ertekek: ha van `ideal` mezo, azt hasznaljuk,
+        # kulonben az `encoded`-bol szarmazik
+        if "ideal" in data:
+            ideal = data["ideal"]
+        else:
+            enc = data["encoded"]
+            ideal = {
+                "A": enc["A"],
+                "f": enc["f"] % 0.5,  # a 2-qubit dekodolas csak [0, 0.5]-on egyertelmu
+                "phi": enc["phi"],
+            }
+        decoded_raw = data["decoded_raw"]
+
+        a_residual = (decoded_raw["A"] - ideal["A"]) / math.pi
+        f_residual = (decoded_raw["f"] - ideal["f"]) * 30.0  # 15/0.5 = 30
+        ph_residual = (decoded_raw["phi"] - ideal["phi"]) / math.pi
+
+        out.append((
+            clip(a_residual, A_RANGE),
+            clip(f_residual, F_RANGE),
+            clip(ph_residual, PHI_RANGE),
+        ))
+    _TRUE_RESIDUAL_CACHE[key] = out
+    return out
+
+
 # ── egy futas ──────────────────────────────────────────────────────────
 def run_task(task):
     """Egy hurok-futas. A feladat egy tuple, hogy a ProcessPoolExecutor
@@ -187,7 +245,10 @@ def run_task(task):
         seq = q.run_loop_channel(channel, iters=iters, seed=init_seed,
                                   solver=solver)
     elif kind == "hardware":
-        feedback = list(recorded_feedback(prefix, feedback_mode, solver_name))
+        if feedback_mode == "true_residual":
+            feedback = list(true_residual_feedback(prefix, solver_name))
+        else:
+            feedback = list(recorded_feedback(prefix, feedback_mode, solver_name))
         if permute:
             order = np.random.default_rng(noise_seed).permutation(len(feedback))
             feedback = [feedback[i] for i in order]
@@ -228,9 +289,15 @@ def build_tasks(seeds, init_seeds, solvers, init_noise_seeds):
             for hw in HARDWARE_RUNS:
                 if hw["length"] != iters:
                     continue
-                tasks.append(("hardware", f"hardware_residual_{hw['prefix']}",
+                # A regi hardware_residual -> most hardware_recorded_replay
+                tasks.append(("hardware", f"hardware_recorded_replay_{hw['prefix']}",
                               0, None, iters, q.SEED, 0, solver_name,
                               hw["prefix"], hw["feedback"], False, "fixed_init"))
+                # Az UJ hardware_residual: valodi reziduum a javitott solverrel
+                if solver_name == "current":
+                    tasks.append(("hardware", f"hardware_residual_{hw['prefix']}",
+                                  0, None, iters, q.SEED, 0, solver_name,
+                                  hw["prefix"], "true_residual", False, "fixed_init"))
                 tasks.append(("hardware", f"hardware_rescaled_{hw['prefix']}",
                               0, None, iters, q.SEED, 0, solver_name,
                               hw["prefix"], hw["feedback"] + "_rescaled", False,
@@ -256,10 +323,16 @@ def build_tasks(seeds, init_seeds, solvers, init_noise_seeds):
                     if hw["length"] != iters:
                         continue
                     tasks.append(("hardware",
-                                  f"hardware_residual_{hw['prefix']}", 0, None,
+                                  f"hardware_recorded_replay_{hw['prefix']}", 0, None,
                                   iters, init_seed, init_seed, solver_name,
                                   hw["prefix"], hw["feedback"], False,
                                   "varying_init"))
+                    if solver_name == "current":
+                        tasks.append(("hardware",
+                                      f"hardware_residual_{hw['prefix']}", 0, None,
+                                      iters, init_seed, init_seed, solver_name,
+                                      hw["prefix"], "true_residual", False,
+                                      "varying_init"))
                     tasks.append(("hardware",
                                   f"hardware_rescaled_{hw['prefix']}", 0, None,
                                   iters, init_seed, init_seed, solver_name,
@@ -367,13 +440,14 @@ def write_report(path, payload, params):
     add("  kulcs              : %s" % params["key"])
     add("")
     add("AGAK")
-    add("  classical         nincs csatorna, nincs zaj (a KONTROLL)")
-    add("  exact             a teljes kvantum csatorna, ZAJ NELKULI meressel")
-    add("  noise_10shot_*    10 loves, a MATE-protokoll")
-    add("  noise_1024shot_*  1024 loves, ahogy a hardver futott")
-    add("  hardware_residual a hardveres nyers fajlok rogzitett visszacsatolasai")
-    add("  hardware_rescaled  ugyanaz, de a JAVITOTT f-skalan (a dontest arm)")
-    add("  hardware_permuted ugyanazok a visszacsatolasok, %d permutalva" %
+    add("  classical                nincs csatorna, nincs zaj (a KONTROLL)")
+    add("  exact                    a teljes kvantum csatorna, ZAJ NELKULI meressel")
+    add("  noise_10shot_*           10 loves, a MATE-protokoll")
+    add("  noise_1024shot_*         1024 loves, ahogy a hardver futott")
+    add("  hardware_recorded_replay a hardveres nyers fajlok ROGZITETT visszacsatolasai")
+    add("  hardware_residual        a VALODI reziduum: decoded_raw - ideal a javitott f-skalan")
+    add("  hardware_rescaled        ugyanaz a rogzitett visszacsatolas, de a JAVITOTT f-skalan (a dontest arm)")
+    add("  hardware_permuted        ugyanazok a visszacsatolasok, %d permutalva" %
         params["seeds"])
     add("")
 
@@ -393,6 +467,8 @@ def write_report(path, payload, params):
                 arms = payload["arms"][solver_name][str(iters)][rnd]
                 order = ([a["id"] for a in DET_ARMS]
                          + [a["id"] for a in NOISE_ARMS]
+                         + [f"hardware_recorded_replay_{hw['prefix']}"
+                            for hw in HARDWARE_RUNS if hw["length"] == iters]
                          + [f"hardware_residual_{hw['prefix']}"
                             for hw in HARDWARE_RUNS if hw["length"] == iters]
                          + [f"hardware_rescaled_{hw['prefix']}"
@@ -699,6 +775,53 @@ def main():
                     f"{solver_name} solver, {iters} iteracio, {rnd} kor: a "
                     f"klasszikus kontroll "
                     f"{'a zajos agak savjan BELUL van' if inside_all else 'a zajos agak savjan KIVUL van'}")
+
+    # ── hardveres reziduum arm ertekelese a QPU-RUN-DECISION-RULE.txt szerint ──
+    # M1 = distinct_modes, M2 = brain_ratio
+    # A hardveres reziduum a zajsavon KIVUL van, ha legalabb az egyik metrika
+    # (M1 vagy M2) KIVUL esik a zajos agak 5-95% savjan.
+    # A szabaly szerint: ha a hardver a zajsavon BELUL van -> NEM inditunk uj QPU futast.
+    for solver_name in solvers:
+        if solver_name != "current":
+            continue  # a valodi reziduum csak a javitott solverrel van szamitva
+        for iters in LENGTHS:
+            for rnd in ROUNDS:
+                arms_here = arms[solver_name][str(iters)][rnd]
+                # Megtalaljuk a hardveres reziduum agakat
+                hw_residual_arms = [aid for aid in arms_here.keys() if aid.startswith("hardware_residual_")]
+                for hw_arm in hw_residual_arms:
+                    hw_m = arms_here[hw_arm]["metrics"]
+                    hw_distinct = hw_m["distinct_modes"]["median"]
+                    hw_brain = hw_m["brain_ratio"]["median"]
+                    
+                    # Ellenorizzuk minden zaj ag ellen
+                    outside_any = False
+                    for arm in NOISE_ARMS:
+                        noisy = arms_here.get(arm["id"])
+                        if not noisy:
+                            continue
+                        # M1: distinct_modes
+                        d_band = (noisy["metrics"]["distinct_modes"]["p5"], noisy["metrics"]["distinct_modes"]["p95"])
+                        d_out = hw_distinct < d_band[0] or hw_distinct > d_band[1]
+                        # M2: brain_ratio
+                        b_band = (noisy["metrics"]["brain_ratio"]["p5"], noisy["metrics"]["brain_ratio"]["p95"])
+                        b_out = hw_brain < b_band[0] or hw_brain > b_band[1]
+                        
+                        if d_out or b_out:
+                            outside_any = True
+                    
+                    if outside_any:
+                        conclusion.append(
+                            f"HARDVERES REZIDUUM ({hw_arm}, {iters} iter, {rnd}): "
+                            f"M1(distinct={hw_distinct}) vagy M2(brain={hw_brain:.4f}) "
+                            f"KIVUL esik a zajos agak savjan -> "
+                            f"SZABALY: uj QPU futas INDOKOLT")
+                    else:
+                        conclusion.append(
+                            f"HARDVERES REZIDUUM ({hw_arm}, {iters} iter, {rnd}): "
+                            f"M1(distinct={hw_distinct}) es M2(brain={hw_brain:.4f}) "
+                            f"BELUL van a zajos agak savjan -> "
+                            f"SZABALY: uj QPU futas NEM indokolt")
 
     payload = {
         "generated_by": "scripts/control_comparison.py",
