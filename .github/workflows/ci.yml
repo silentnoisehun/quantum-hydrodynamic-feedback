@@ -61,6 +61,8 @@ jobs:
         run: python scripts/gpe_fft_measurement.py
       - name: "the raw measurement summary"
         run: python scripts/summarize_hardware_run.py
+      - name: "the quantum channel conventions (must match the hardware)"
+        run: python scripts/test_quantum_loop_sim.py
       - name: "hardware replay (the 2026-10-27 runs used the pre-fix solver)"
         run: python scripts/replay_hardware_log.py
       - name: "the regenerated loop summary must match the committed one"

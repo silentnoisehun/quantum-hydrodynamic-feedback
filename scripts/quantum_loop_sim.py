@@ -206,32 +206,87 @@ def extract(psi):
 # ------------------------------------------------------------------
 # A KVANTUM LOKES — 3 circuit, 10 shot, hardver-minoseg c
 # ------------------------------------------------------------------
-def q_measure(p_true):
+# 🧬 A ZAJKETT MODELL (2026-11-01, T2):
+#   "symmetric" — a klasszikus c-korrekcio modellje: p_eff = c*p + (1-c)*0.5
+#   "floor"     — a hardver MERT padlo/plafon modellje: a kvantum allapot
+#                 nem tud 0 vagy 1 lenni, a mero zajos hatarai korlátozzák:
+#                 p_eff = FLOOR + (CEILING-FLOOR)*p
+# A két modell araszt valaszt a "mennyire erős a hardver zaja" kerdesre.
+NOISE_SYMMETRIC = "symmetric"
+NOISE_FLOOR = "floor"
+
+# A hardver mero hatarai (a docs/MEASUREMENTS-HARDWARE-20261027.txt meresi
+# adatai): a legkisebb es a legnagyobb megyes valoszinuseg, amit a backend
+# visszaad. A "floor" modell ezekre szorulja a tenyleges valoszinuseget.
+HW_PROB_FLOOR = 0.037
+HW_PROB_CEILING = 0.93
+
+
+def effective_prob(p_true, c, model):
+    """A hardver effektiv valoszinusége egy tiszta valoszinusegbol."""
+    if model == NOISE_SYMMETRIC:
+        return c * p_true + (1.0 - c) * 0.5
+    if model == NOISE_FLOOR:
+        return HW_PROB_FLOOR + (HW_PROB_CEILING - HW_PROB_FLOOR) * p_true
+    raise ValueError(f"ismeretlen zajmodell: {model}")
+
+
+def q_measure(p_true, rng=None, shots=SHOTS, c=C_BELL, model=NOISE_SYMMETRIC):
     """A hardver c-vel gyengul: p_eff = c*p_true + (1-c)*0.5.
-       10 loves -> k darab talalat -> P = k/10"""
-    p_eff = C_BELL * p_true + (1 - C_BELL) * 0.5
-    k = rng.binomial(SHOTS, p_eff)
-    return k / SHOTS
+       `shots` loves -> k darab talalat -> P = k/shots"""
+    if rng is None:
+        rng = globals()["rng"]
+    p_eff = effective_prob(p_true, c, model)
+    k = rng.binomial(shots, p_eff)
+    return k / shots
 
 def decode_phase(p):     return 2.0 * asin(sqrt(min(max(p, 0.0), 1.0)))
 def decode_amplitude(p0):return 2.0 * acos(sqrt(min(max(p0, 0.0), 1.0)))
 def decode_frequency(p1):return asin(sqrt(min(max(p1, 0.0), 1.0))) / pi
 
-def quantum_shot(A, f, phi):
-    """A 3 hardver-meres, 10 lovesel, a c-minoseggel"""
+def quantum_shot(A, f, phi, rng=None, shots=SHOTS, c=C_BELL, model=NOISE_SYMMETRIC):
+    """A 3 hardver-meres, `shots` lovesel, a c-minoseggel"""
     # A: RY(A_kod) -> P(q0=0) = cos^2(A_kod/2)
+    # 🧬 A DEKODOLAS A P(q0=0)-ET HASZNALJA (2026-11-01, T1b):
+    # a hardver a Rust bridge-cli-t hasznalta, amelyik `A = 2*acos(sqrt(P(q0=0)))`
+    # alakban dekodol (`crates/quantum-bridge/src/lib.rs:365`). A korábbi
+    # Python-kod a `1.0 -` elorevesszerrel a P(q0=1)-et adta at, ami INVERTALTA
+    # az amplitudot: a visszacsatolas 1-A volt A helyett.
+    # MERVE: a hardveres nyers fajlokban a RUST konvencio illeszkedik 4.9e-11
+    # pontossaggal (a CLI 10 tizedespontos kiirasa), a Python konvencio
+    # 2.0-2.7 nagysagrendben eltér. A f- és phi-csatorna veszteségmentes
+    # volt (1.5e-12, illetve 4.0e-13) — csak az A-csatorna volt hibás.
     A_kod = pi * A
     p0_true = math.cos(A_kod/2.0)**2
-    A_back = decode_amplitude(1.0 - q_measure(p0_true))
+    A_back = decode_amplitude(q_measure(p0_true, rng, shots, c, model))
     # f: RY(2*pi*f_kod) + CNOT -> P(q0=1) = sin^2(pi*f_kod)
     # 🧬 a f eloszlik a mod-index tartomanyon [0,15], a DEKODOLAS viszont
     # csak [0,0.5]-on egyertelmu -> a kodolas elott normalizalunk.
     f_kod = normalize_f(f)
-    f_back = decode_frequency(q_measure(math.sin(pi*f_kod)**2))
+    f_back = decode_frequency(q_measure(math.sin(pi*f_kod)**2, rng, shots, c, model))
     # phi: RY(phi_kod) + CNOT -> P(q0=1) = sin^2(phi_kod/2)
     ph_kod = pi * phi
-    ph_back = decode_phase(q_measure(math.sin(ph_kod/2.0)**2))
+    ph_back = decode_phase(q_measure(math.sin(ph_kod/2.0)**2, rng, shots, c, model))
     return A_back/pi, denormalize_f(f_back), ph_back/pi
+
+
+def quantum_shot_exact(A, f, phi):
+    """A kvantum csatorna ZAJ NELKUL: a meres pontos, a c-torzitas nincs,
+    a loves szama korlatan. Csak a kodolas/dekodolas szabalyait alkalmazza.
+
+    🧬 Ezzel merhető, hogy a csatorna STRUKTURAJABOL-e a külonbseg, vagy
+    csak a zajbol jon: ha a zajmentes csatorna a klasszikus kontrollal
+    azonos mod-sorozatot ad, akkor a "kvantum vs klasszikus" kulonbseg
+    kizárólag a merési zaj.
+    """
+    A_kod = pi * A
+    p0_true = math.cos(A_kod / 2.0) ** 2
+    A_back = decode_amplitude(p0_true)
+    f_kod = normalize_f(f)
+    f_back = decode_frequency(math.sin(pi * f_kod) ** 2)
+    ph_kod = pi * phi
+    ph_back = decode_phase(math.sin(ph_kod / 2.0) ** 2)
+    return A_back / pi, denormalize_f(f_back), ph_back / pi
 
 def excite(psi, A, f, phi):
     """A dekodolt (A, f, phi) visszatoltese a folyadékba:
@@ -250,6 +305,36 @@ def excite(psi, A, f, phi):
 # ------------------------------------------------------------------
 # A HUROK
 # ------------------------------------------------------------------
+def run_loop_channel(channel, iters=ITERS, seed=SEED, solver=None,
+                     feedback_list=None, live=True):
+    """A hurok egy tetszleges visszacsatolasi csatornaval.
+
+    `channel(A, f, phi)` -> (A2, f2, ph2): a folyadékba visszacsatolt ertekek.
+    `feedback_list` esetén a csatorna helyett a MEGADOTT visszacsatolasokat
+    hasznalja, sorrendben — igy jatszhato vissza egy hardveres futas a
+    nyers fajlokból.
+    `solver` a hurok implementaciojanak modulja (a legacy solver is).
+
+    Ez a fuggveny a scripts/control_comparison.py osszes agarja
+    kozos magja: minden ag ugyanazt a hurkot futtatja, csak a
+    visszacsatolas kulonbozik.
+    """
+    sol = solver if solver is not None else sys.modules[__name__]
+    psi = sol.init_psi(sol.N, seed)
+    seq = []
+    for it in range(iters):
+        A, f, phi, E = sol.extract(psi)
+        if feedback_list is not None:
+            A2, f2, ph2 = feedback_list[it]
+        else:
+            A2, f2, ph2 = channel(A, f, phi)
+        psi = sol.excite(psi, A2, f2, ph2)
+        for _ in range(sol.GPE_STEPS):
+            psi = sol.gpe_step(psi, live=live)
+        seq.append(int(np.argmax(sol.mode_energies(psi))))
+    return seq
+
+
 def run_loop(mode, live=True, seed=SEED):
     """mode: 'quantum' | 'classical' (kvantumzaj nelkul) | 'dead' (gpe.rs halott)"""
     r = np.random.default_rng(seed)
@@ -261,7 +346,7 @@ def run_loop(mode, live=True, seed=SEED):
     for it in range(ITERS):
         A, f, phi, E = extract(psi)
         if mode == "quantum":
-            A2, f2, ph2 = quantum_shot(A, f, phi)
+            A2, f2, ph2 = quantum_shot(A, f, phi, rng=r)
         else:
             A2, f2, ph2 = A, f, phi       # a klasszikus kontroll: a GPE folytatodik
         psi = excite(psi, A2, f2, ph2)
