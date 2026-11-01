@@ -1,13 +1,15 @@
 //! A quantum-bridge parancssori felülete.
 //!
-//! 🧬 MIÉTT VAN: a Python hurok-szkript a valódi hardveren mért
+//! 🧬 MIÉTT VAN: a Python hurok-szkript a valós hardveren mért
 //! `(A, f, φ)` értékeket dekódolja vissza. A dekódolás matematikája
-//! EGYETLEN forrásból kell jöjjön — a Rust kőnyvtárból —, és az
-//! élő `c` (a Bell-anchorból mért hardver-minőség) a dekódolásba
-//! kell menjen, hogy a dekódoló valós időben kövesse a hardver
-//! öregedését.
+//! EGYETLEN forrásból kell jöjjön — a Rust kőnyvtárból.
+//!
+//! 🧬 A `--correct` ALAPBÓL KI (2026-11-01, T4): a mért hardver-zaj
+//! aszimmetrikus, ezért a szimmetrikus `c`-korrekció a dekódolást
+//! RONTJA (a mért nyers A-hiba 0.026 volt, a "korrigált" 0.212). A `c`
+//! (a Bell-anchor paritáspopulációja) csak MINŐSÉG-INDIKÁTOR.
 
-use quantum_bridge::measured::{BELL_FIDELITY_MAX, BELL_FIDELITY_MIN, BELL_FIDELITY_TYPICAL};
+use quantum_bridge::measured::{BELL_PARITY_MAX, BELL_PARITY_MIN, BELL_PARITY_TYPICAL};
 use quantum_bridge::{
     decode_amplitude_from_p, decode_frequency_from_p, decode_phase_from_p, degrade_probability,
     probability_q0_one, probability_q0_zero, unbias_probability, Counts, QuantumBackend,
@@ -21,16 +23,20 @@ fn usage() {
         "bridge-cli — a quantum-bridge dekódoló felülete\n\
          \n\
          decode-wave --amplitude-counts C --frequency-counts C --phase-counts C\n\
-         \x20             [--fidelity C] [--correct]\n\
+         \x20             [--parity C] [--correct]\n\
          \x20   A visszafejtett értékek: A_n f_n phi_n, majd A_c f_c phi_c.\n\
-         \x20   A --correct a --fidelity értékkel torzítástlanít (élő c).\n\
+         \x20   A --correct a --parity értékkel torzítástlanít (opcionális,\n\
+         \x20   a valós hardveren NEM ajánlott: a zaj aszimmetrikus).\n\
          \n\
-         decode --kind amplitude|frequency|phase --counts C [--fidelity C] [--correct]\n\
-         degrade --p P --fidelity C\n\
-         unbias  --p P --fidelity C\n\
+         decode --kind amplitude|frequency|phase --counts C [--parity C] [--correct]\n\
+         degrade --p P --parity C\n\
+         unbias  --p P --parity C\n\
+         bell-parity --counts C\n\
          status\n\
          \n\
-         A counts formátuma: 0x0:512,0x1:488"
+         A counts formátuma: 0x0:512,0x1:488\n\
+         \n\
+         ELAVULT (deprecated alias): bell-fidelity, --fidelity"
     );
 }
 
@@ -70,6 +76,29 @@ fn flag(flags: &HashMap<String, String>, name: &str) -> Result<String, String> {
         .get(name)
         .cloned()
         .ok_or_else(|| format!("hiányzó argumentum: --{name}"))
+}
+
+/// A `c` (paritáspopuláció) értéke: `--parity` az új név, `--fidelity` a
+/// deprecated alias. Ha egyik sincs megadva, nincs korrekció.
+fn parity_flag(flags: &HashMap<String, String>) -> Result<f64, String> {
+    if let Some(raw) = flags.get("parity") {
+        return raw
+            .trim()
+            .parse::<f64>()
+            .map_err(|_| format!("nem szám: --parity {raw}"));
+    }
+    if let Some(raw) = flags.get("fidelity") {
+        eprintln!(
+            "bridge-cli: figyelem: --fidelity elavult alias, hasznald --parity-t. \
+             A 'fidelity' elnevezés pontatlan: ez PARITÁSPOPULÁCIÓ (P(00)+P(11)), \
+             nem koherencia-fidelity."
+        );
+        return raw
+            .trim()
+            .parse::<f64>()
+            .map_err(|_| format!("nem szám: --fidelity {raw}"));
+    }
+    Err("hiányzó argumentum: --parity C".to_string())
 }
 
 fn number(flags: &HashMap<String, String>, name: &str) -> Result<f64, String> {
@@ -121,19 +150,27 @@ fn main() {
 fn run(command: &str, flags: &HashMap<String, String>, correct: bool) -> Result<String, String> {
     match command {
         "status" => Ok(format!(
-            "bell-fidelity: {:.3} (tipikus) | {:.3}-{:.3} (mért tartomány)\n{}",
-            BELL_FIDELITY_TYPICAL,
-            BELL_FIDELITY_MIN,
-            BELL_FIDELITY_MAX,
+            "bell-parity: {:.3} (tipikus) | {:.3}-{:.3} (mért tartomány)\n{}",
+            BELL_PARITY_TYPICAL,
+            BELL_PARITY_MIN,
+            BELL_PARITY_MAX,
             QuantumBackend::IbmEagle.status()
         )),
-        "bell-fidelity" => {
+        "bell-parity" | "bell-fidelity" => {
+            if command == "bell-fidelity" {
+                eprintln!(
+                    "bridge-cli: figyelem: a 'bell-fidelity' parancs elavult alias, \
+                     használd a 'bell-parity'-t. Ez a paritáspopuláció \
+                     (P(00)+P(11)), NEM koherencia-fidelity."
+                );
+            }
             let counts = parse_counts(&flag(flags, "counts")?)?;
             let total: usize = counts.values().sum();
             if total == 0 {
                 return Err("üres counts".to_string());
             }
             // A Bell-állapot a |00⟩ és |11⟩ felé kerül → a két bit egyezik.
+            // 🧬 Ez PARITÁSPOPULÁCIÓ, nem fidelity: a koherenciát nem méri.
             let balance =
                 counts.get("0x0").copied().unwrap_or(0) + counts.get("0x3").copied().unwrap_or(0);
             Ok(format!("{:.10}", balance as f64 / total as f64))
@@ -156,12 +193,12 @@ fn run(command: &str, flags: &HashMap<String, String>, correct: bool) -> Result<
         }
         "degrade" => {
             let p = number(flags, "p")?;
-            let c = number(flags, "fidelity")?;
+            let c = parity_flag(flags)?;
             Ok(format!("{:.10}", degrade_probability(p, c)))
         }
         "unbias" => {
             let p = number(flags, "p")?;
-            let c = number(flags, "fidelity")?;
+            let c = parity_flag(flags)?;
             Ok(format!("{:.10}", unbias_probability(p, c)))
         }
         "decode" => {
@@ -210,7 +247,7 @@ fn decode_one(
         return Ok((raw, raw));
     }
 
-    let c = number(flags, "fidelity")?;
+    let c = parity_flag(flags)?;
     let corrected = match kind {
         "amplitude" => decode_amplitude_from_p(unbias_probability(p_zero, c)),
         "frequency" => decode_frequency_from_p(unbias_probability(p_one, c)),

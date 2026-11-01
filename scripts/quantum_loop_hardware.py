@@ -196,23 +196,31 @@ def run_hardware_loop(args, cli, qc, service, backend, sampler, raw_dir, tag):
         counts_list = [r.data.c.get_counts() for r in result]
         job_id = job.job_id()
 
-        # a horgony: a Bell-egyensúly → az ÉLŐ c
+        # a horgony: a Bell-anchor PARITÁSPOPULÁCIÓJA → az ÉLŐ c
+        # 🧬 Ez NEM fidelity (2026-11-01, T4): a mért érték P(00)+P(11),
+        # vagyis a két bit megegyezésének aránya. A koherenciát nem méri.
         anchor_counts = None
         if with_anchor:
             anchor_counts = counts_list[-1]
-            c_live = float(call_cli(cli, ["bell-fidelity", "--counts",
+            c_live = float(call_cli(cli, ["bell-parity", "--counts",
                                           counts_to_cli(anchor_counts, 2)]))
             counts_list = counts_list[:-1]
 
         # a dekódolás a Rust bridge-cli-jével, az ÉLŐ c-vel
-        out = call_cli(cli, [
+        # 🧬 A `--correct` (a szimmetrikus c-korrekcio) ALAPBÓL KI
+        # (2026-11-01, T4): a meret hardver-zaj ASZIMMETRIKUS, ezert a
+        # korrekcio az A-csatornan ront (a nyers hiba 0.026, a
+        # "korrigalt" 0.212). A c csak MINOSEG-INDIKATOR.
+        decode_args = [
             "decode-wave",
             "--amplitude-counts", counts_to_cli(counts_list[0], 1),
             "--frequency-counts", counts_to_cli(counts_list[1], 2),
             "--phase-counts", counts_to_cli(counts_list[2], 2),
-            "--fidelity", f"{c_live:.10f}",
-            "--correct",
-        ])
+            "--parity", f"{c_live:.10f}",
+        ]
+        if args.correct:
+            decode_args.append("--correct")
+        out = call_cli(cli, decode_args)
         a_raw, f_raw, ph_raw, a_cor, f_cor, ph_cor = [float(x) for x in out.split()]
 
         # a hibaméret bázisa: az IDEÁLIS visszafejtett érték (a CLI-ből).
@@ -326,9 +334,15 @@ def main():
     ap.add_argument("--no-session", action="store_true", help="session nélkül (a várakozás mérésére)")
     ap.add_argument("--bridge-bin", default=None)
     ap.add_argument("--classical-control", action="store_true")
-    ap.add_argument("--feedback", choices=["corrected", "raw"], default="corrected",
+    ap.add_argument("--feedback", choices=["corrected", "raw"], default="raw",
                     help="melyik dekódolás kerül vissza a folyadékba: a nyers vagy "
-                         "az élő c-vel torzítástlanított érték")
+                         "az élő c-vel torzítástlanított érték. 🧬 AZ ALAPERTELMEZÉS "
+                         "A 'raw': a mért hardver-zaj aszimmetrikus, ezért a szimmetrikus "
+                         "c-korrekció a dekódolást RONTJA (a mért nyers A-hiba 0.026, "
+                         "a 'korrigált' 0.212 volt). A c csak minőség-indikátor.")
+    ap.add_argument("--correct", action="store_true",
+                    help="a szimmetrikus c-korrekció bekapcsolása a dekódolásban "
+                         "(alapból KI — a hardveres mérés szerint nem javít)")
     ap.add_argument("--no-save-state", dest="save_state", action="store_false",
                     help="ne mentsük a folyadékállapotot a nyers fájlba")
     ap.add_argument("--token-file", default=None,

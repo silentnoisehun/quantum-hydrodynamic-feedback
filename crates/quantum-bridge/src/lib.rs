@@ -63,11 +63,17 @@ fn binomial_sample(rng: &mut impl Rng, n: u64, p: f64) -> u64 {
 
 /// A hardver-igazolt SCS-kvóták (a `scs-quantum` repó mérési adatai)
 pub mod measured {
-    /// A Bell-állapot egyensúly 7 független futásból (2026.10.06, 156 qubit)
-    pub const BELL_FIDELITY_MIN: f64 = 0.877;
-    pub const BELL_FIDELITY_MAX: f64 = 0.993;
+    /// A Bell-anchor PARITÁSPOPULÁCIÓJA 7 független futásból (2026.10.06, 156 qubit)
+    ///
+    /// 🧬 NEM FIDELITY: a mért érték `P(00) + P(11)`, vagyis a két bit
+    /// megegyezésének aránya. Ez NEM méri a kvantum-koherenciát: egy
+    /// teljesen dekoherens elegy is 50%-ot ad, egy klasszikus
+    /// korrelált hibaesetben pedig magasabb lehet. A valódi fidelityhez
+    /// koherencia-merés kell (pl. X-bázisú paritás-oszcilláció).
+    pub const BELL_PARITY_MIN: f64 = 0.877;
+    pub const BELL_PARITY_MAX: f64 = 0.993;
     /// A jellemző futások ~92–95% között voltak
-    pub const BELL_FIDELITY_TYPICAL: f64 = 0.949;
+    pub const BELL_PARITY_TYPICAL: f64 = 0.949;
     /// A GHZ-állapot egyensúly: 89,3–96,7%
     pub const GHZ_FIDELITY_MIN: f64 = 0.893;
     pub const GHZ_FIDELITY_MAX: f64 = 0.967;
@@ -391,7 +397,7 @@ pub struct ModeMeasurement {
     /// A lővések száma
     pub shots: usize,
     /// A hardver Bell-egyensúlya (a mért minőség)
-    pub bell_fidelity: f64,
+    pub bell_parity: f64,
     /// A klasszikus döntés: a legnagyobb energiájú mód
     pub classical_idx: usize,
     /// A klasszikus döntés energiája
@@ -442,8 +448,13 @@ pub fn encode_mode_energies(energies: &[f64; 16]) -> Vec<(usize, f64)> {
 /// 🧬 A hardver nem hibátlan: a Bell-egyensúly `c` a mért állapotot a
 /// `|00⟩/|11⟩` elegyével keveri. A modell: `p_eff = c·p + (1−c)·0.5`.
 /// A `c = 1.0` a nulla zajú eset, a `c = 0.877` a leggyengébb mért futás.
-pub fn degrade_probability(p: f64, bell_fidelity: f64) -> f64 {
-    let c = bell_fidelity.clamp(0.0, 1.0);
+///
+/// 🧬 A `c` PARITÁSPOPULÁCIÓ, NEM FIDELITY (2026-11-01, T4): lásd
+/// [`measured::BELL_PARITY_MIN`]. A szimmetrikus modell MIATT a
+/// korrekció a valós hardveren NEM használható dekódoló-javításként
+/// (a mért zaj aszimmetrikus), csak minőség-indikátorként.
+pub fn degrade_probability(p: f64, bell_parity: f64) -> f64 {
+    let c = bell_parity.clamp(0.0, 1.0);
     c * p.clamp(0.0, 1.0) + (1.0 - c) * 0.5
 }
 
@@ -457,8 +468,15 @@ pub fn degrade_probability(p: f64, bell_fidelity: f64) -> f64 {
 ///
 /// Az `c` a hurokban a Bell-anchorból származó ÉLŐ érték, így a
 /// dekódoló valós időben követi a hardver öregedését és a driftet.
-pub fn unbias_probability(p_measured: f64, bell_fidelity: f64) -> f64 {
-    let c = bell_fidelity.clamp(0.0, 1.0);
+///
+/// 🧬 A LIVE `c` INDIKÁTOR, NEM DEKÓDOLÓ-KORREKCIÓ (2026-11-01, T4):
+/// a valós hardveren a mért hiba aszimmetrikus (a zaj padlója ~0.037,
+/// a plafonja ~0.93), ezért a szimmetrikus modellből visszafejtve a
+/// hibás mérés ELTORZUL. Az `A`-csatornán a mért nyers hiba 0.026,
+/// a "korrigált" 0.212 volt. Ezért a visszacsatolás alapból a Nyers
+/// dekódolást használja, és a `--correct` opcionális.
+pub fn unbias_probability(p_measured: f64, bell_parity: f64) -> f64 {
+    let c = bell_parity.clamp(0.0, 1.0);
     if c <= 0.0 {
         return 0.5;
     }
@@ -473,7 +491,7 @@ pub fn unbias_probability(p_measured: f64, bell_fidelity: f64) -> f64 {
 /// a hullámcsomag (A, f, φ) mérésére való. Itt a 16 módról van szó, és
 /// a mérés kimutatta, hogy ez az út a jelenlegi architektúrában
 /// nem ad kimutatható előnyt.
-pub fn measure_modes(energies: &[f64; 16], shots: usize, bell_fidelity: f64) -> ModeMeasurement {
+pub fn measure_modes(energies: &[f64; 16], shots: usize, bell_parity: f64) -> ModeMeasurement {
     let classical_idx = energies
         .iter()
         .enumerate()
@@ -486,7 +504,7 @@ pub fn measure_modes(energies: &[f64; 16], shots: usize, bell_fidelity: f64) -> 
     let mut rng = rand::thread_rng();
     let mut hits = [0usize; 16];
     for (i, &e) in energies.iter().enumerate() {
-        let p = degrade_probability(e, bell_fidelity);
+        let p = degrade_probability(e, bell_parity);
         hits[i] = binomial_sample(&mut rng, shots as u64, p) as usize;
     }
     let quantum_idx = hits
@@ -499,7 +517,7 @@ pub fn measure_modes(energies: &[f64; 16], shots: usize, bell_fidelity: f64) -> 
     ModeMeasurement {
         backend: QuantumBackend::Classical,
         shots,
-        bell_fidelity,
+        bell_parity,
         classical_idx,
         classical_energy,
         quantum_idx,
@@ -517,7 +535,7 @@ pub fn monte_carlo_accuracy(
     energies: &[f64; 16],
     trials: usize,
     shots: usize,
-    bell_fidelity: f64,
+    bell_parity: f64,
 ) -> f64 {
     let classical_idx = energies
         .iter()
@@ -532,7 +550,7 @@ pub fn monte_carlo_accuracy(
         let mut best_idx = 0usize;
         let mut best_hits = 0usize;
         for (i, &e) in energies.iter().enumerate() {
-            let p = degrade_probability(e, bell_fidelity);
+            let p = degrade_probability(e, bell_parity);
             let h = binomial_sample(&mut rng, shots as u64, p) as usize;
             if h > best_hits {
                 best_hits = h;
@@ -554,9 +572,9 @@ pub fn status() -> String {
          GHZ-egyensúly:   {:.3}–{:.3}\n  \
          QDS T₂_eff:     {:.1} ± {:.1} µs, {} shot\n  \
          16 mód argmax:  kvantum {:.2}% (mért)  vs  klasszikus {:.0}% (mért)",
-        measured::BELL_FIDELITY_MIN,
-        measured::BELL_FIDELITY_MAX,
-        measured::BELL_FIDELITY_TYPICAL,
+        measured::BELL_PARITY_MIN,
+        measured::BELL_PARITY_MAX,
+        measured::BELL_PARITY_TYPICAL,
         measured::GHZ_FIDELITY_MIN,
         measured::GHZ_FIDELITY_MAX,
         measured::QDS_T2_EFF_US,
@@ -748,7 +766,7 @@ mod tests {
     }
 
     #[test]
-    fn quantum_accuracy_degrades_with_hardware_fidelity() {
+    fn quantum_accuracy_degrades_with_hardware_parity() {
         // A gyengébb hardver (c = 0,877) NEM javíthat a kvantum-úton.
         let e = measured_mode_energies();
         let strong = monte_carlo_accuracy(&e, 300, 1024, 1.0);
