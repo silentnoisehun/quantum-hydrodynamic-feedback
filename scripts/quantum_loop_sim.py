@@ -335,7 +335,10 @@ def main():
     print("-" * 78)
     print("AG 2: KLASSZIKUS KONTROLL (azonos GPE, kvantumzaj NELKUL)")
     print("-" * 78)
-    seq_c, coh_c, par_c = run_loop("classical", live=True, seed=SEED+1)
+    # 🧬 UGYANAZ A SEED (2026-11-01, T2): a kontroll a kvantumág zajmentes
+    # változata kell legyen, különben a különbség a seed-változástól is
+    # jöhet. A korábbi kód SEED+1-gyel indított.
+    seq_c, coh_c, par_c = run_loop("classical", live=True, seed=SEED)
     results["classical"] = stats(seq_c, "classical")
     results["classical"]["coh_mean"] = float(np.mean(coh_c))
 

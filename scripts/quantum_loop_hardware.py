@@ -310,8 +310,16 @@ def run_hardware_loop(args, cli, qc, service, backend, sampler, raw_dir, tag):
 
 
 def run_classical_branch(args):
-    """A klasszikus kontroll: azonos GPE, kvantumzaj nélkül."""
-    psi = fluid.init_psi(fluid.N, args.seed + 1)
+    """A klasszikus kontroll: azonos GPE, kvantumzaj nélkül.
+
+    🧬 MIÉRT UGYANAZ A SEED (2026-11-01, T2): a kontrollnak a KVANTUMÁG
+    zajmentes változata kell, hogy a különbség a kvantumcsatornát mérje.
+    A korábbi kód `seed + 1`-gyel indított, ezért a "kvantum vs kontroll"
+    eltérés a seed-változástól is jöhetett — nem csak a kvantumcsatornától.
+    A 2026-10-27-i hardveres futások a RÉGI `seed + 1` viselkedéssel
+    készültek; ezt a docs/MEASUREMENTS-HARDWARE-20261027.txt rögzíti.
+    """
+    psi = fluid.init_psi(fluid.N, args.seed)
     seq = []
     for _ in range(args.iterations):
         a, f, phi, _ = fluid.extract(psi)
