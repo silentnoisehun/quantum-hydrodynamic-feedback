@@ -1,0 +1,119 @@
+================================================================================
+A QPU-FUTTATAS ELOZETES JOVAHAGYASI SZABALYA (PRE-REGISZTRALT)
+Datum: 2026-11-01
+Allapot: ELOTTOROZVE, a fenti datumot megelozon egyetlen uj QPU-futast sem
+         inditottunk.
+================================================================================
+
+A SZABALY CELJA
+  Hogy a "kvantum-visszacsatolas felel-e a modvaltasert" kerdesre a
+  VALASZ MERESBOL jon, ne pedig egy uj, draga hardveres futas utan
+  utolag legyen elmagyarazva.
+
+A PROBLEM, amit ez a szabaly kezel
+  A 2026-10-27-i hardveres futasok a SOLVER-JAVITAS ELOTT futottak
+  (igazolta: scripts/replay_hardware_log.py). Emiatt:
+    - a hardveres mod-sorozat nem a javitott dinamikaval készult;
+    - a "kvantum vs klasszikus" osszehasonlitas ket kulonbozo
+      szimulacio-modellre vonatkozott, tehat nem volt apriori
+      osszehasonlithato.
+  Uj QPU-futast csak akkor indokolt, ha a CPU oldali kontroll
+  (scripts/control_comparison.py) MEGMUTATJA, hogy a hardveres
+  viselkedes a zajos szimulacios savon kivul esik.
+  Ha a CPU kontroll szerint a hardveres viselkedes a ZAJOS SAVON BELUL
+  van, akkor az uj hardveres futas nem adna uj informaciot — a
+  megvalasz "a meresi zaj (nem a kvantum-csatorna) hozza a mod-mintazatot",
+  es ez CPU-n bizonyithato.
+
+--------------------------------------------------------------------------------
+1. A FIRTEK (A KULCS METRO SZAM) — ROZGZITETT, A FENTI DATUM ELOTT
+--------------------------------------------------------------------------------
+
+A FIRTEK: a hardveres reziduum-replay (az "d" ag) eredmenye a
+klasszikus-zaj sav ("c" ag) 5-95%-os savjan KILLOG-e a ROZGZITETT
+meroszamokon?
+
+A ROZGZITETT MEROSZAMOK (ketto — nem lehet egyebbel megelgedni):
+
+  M1  a LATOGATOTT MODOK SZAMA (a 16 modos argmax-sorban novelo egyedi
+      modok szama)
+  M2  a BRAIN-ARANY (a 0. mods szazaleka)
+
+A sav forrasa: measurement_cpu/control_comparison.json, a
+scripts/control_comparison.py altal irt "classical" kontroll es a
+"noise_10shot_symmetric" / "noise_1024shot_symmetric" /
+"noise_10shot_floor" / "noise_1024shot_floor" zajagak savjai.
+A HARDVERES REZIDUUM-REPLAY ag neve: "hardware_residual_<a futas cimkeje>".
+
+A KIVETEL (a szabaly egyetlen kivétele, eloregisztralva):
+  ha a CPU kontroll maga is bizonytalan (pl. a sav nincs rendben,
+  vagy a classical ag nem determinisztikus), akkor a szabaly NEM
+  dönt — a hiba elott nem szabad QPU-idot burnelni.
+
+--------------------------------------------------------------------------------
+2. HA A FIRTEK NEM TELJESUL (a hardver a zajsavon BELUL van)
+--------------------------------------------------------------------------------
+
+  NEM inditunk uj QPU-futast.
+
+  A kovetkezo keszlet:
+    - a hardveres mod-mintazat a meresi zaj produkuma;
+    - a kvantum-visszacsatolas NEM felelos a modvaltasert;
+    - a papírban ezt a "What this does NOT show" szekciaban kell
+      kimondani, a "kvantum felelős a módváltásért" állitás
+      TORLENDÓ.
+
+  A meglévő nyers fajlok (measurement_raw/) elegendőek: nem kell
+  uj hardveres adat ahhoz, hogy ezt ki lehessen mondani.
+
+--------------------------------------------------------------------------------
+3. HA A FIRTEK TELJESUL (a hardver a zajsavon KIVUL van)
+--------------------------------------------------------------------------------
+
+  Egyetlen QPU-futast indokolt — a KOVETKEZO KORULKEZESEK KOTELESEK:
+
+  a) ITERACIOK: 20-30. Nem 68, nem 100. (A 90 mp-os QPU-keret miatt.)
+  b) SOLVER: a JAVITOTT solver (scripts/quantum_loop_sim.py), NEM a legacy.
+  c) F-NORMALIZALAS: a kodolas elott a f-et a 16 mod index-tartomanyara
+     normalizalni kell (a 2026-10-27-i futasokban MINDEN iteracioban
+     osszzehajtott, 111/111).
+  d) VISSZACSATOLAS: a NYERS dekódolas (a --correct alapból KI). A
+     c-korrekcio a merés szerint RONT (nyers A-hiba 0,026; a
+     "korrigalt" 0,212).
+  e) KLASZIKUS PAR: UGYANAZONAL A SEEDDEL futo klasszikus kontroll
+     (a --classical-control ag), a classical ag seedje NEM lehet
+     seed+1 (a hurok classical agja a 2026-11-01-es javitasa elott
+     seed+1-gyel indult).
+  f) LOVES: 1024 (a hardveres futasokkal osszemelheto).
+  g) HORGONY: minden 5. iteracioban (a c merese).
+  h) QPU-KERET: LEGFELJEBB 90 mp QPU-ido (30 iteracio x 3,00 mp/iter,
+     a MERT 3,00 mp/iter alapjan). A kvota-ellenorzes BEKULDES ELOTT
+     tortenik (a kimerult konton a job SOOSEM fut le).
+  i) A nyers fajlok a measurement_raw/ mappaba mennek, a cimke a
+     futas cime legyen ("<UTC cimke>"), hogy a replay es a
+     control_comparison utolag hozzaferjen.
+
+--------------------------------------------------------------------------------
+4. MIT CSINALUNK, HA A FIRTEK TELJESUL (a futas utan)
+--------------------------------------------------------------------------------
+
+  A futas NEM szamit "bizonyiteknak" addig, amig a CPU kontrollos
+  osszehasonlitas (ujra, a javitott solverrel, a 3. pont g) pontjai
+  szerint nem fut le. A dontes mindig a CPU savból jon:
+    - ha a hardver a javitott solverrel is a zajsavon KIVUL van ->
+      a hardveres mod-mintazat nem a meresi zaj termeke; ezt kell
+      dokumentalni, a f不加 korlataival egyutt;
+    - ha a javitott solverrel a zajsavon BELUL van -> a hardveres
+      elteres a LEGACY solver hatasa, nem a kvantum-csatorna.
+
+--------------------------------------------------------------------------------
+5. AHOZAMENET (PAPIROK)
+--------------------------------------------------------------------------------
+
+  - docs/MEASUREMENTS-HARDWARE-20261027.txt: a 2b. pont (a 20 iteracios
+    futas) es a 6. pont (a kvota) atirasa a MERT szamokra;
+  - docs/MEASUREMENTS-CPU-CONTROLS.txt: a CPU kontroll eredmenye;
+  - paper/aisc2027_unified_paper.tex: a "Limitations" szekcio;
+  - CHANGELOG: a 0.2.2 bejegyzés.
+
+================================================================================
