@@ -32,7 +32,7 @@
 \renewcommand{\shortauthors}{Róbert and Steiner}
 
 \begin{abstract}
-We present a \emph{measurement audit} of the Quantum Organic Intelligence (QOI) framework: a quantum-classical feedback system coupling a Gross-Pitaevskii fluid solver (a 16-mode observable space) with a 2-qubit quantum bridge on IBM 156-qubit superconducting QPUs. The system implements three separate quantum measurements ($A$, $f$, $\varphi$) per iteration, with real-time Bell-fidelity anchoring and closed-loop decoding via a Rust bridge. We report the full measurement record --- including the negative results --- and we state explicitly which claims the hardware supports and which it does not. We report 91 documented hardware iterations (68+20+3) on \texttt{ibm\_fez} under the IBM Quantum open plan (600 s quota, no Runtime Sessions), measuring queue wait (17.9 s/iter), QPU time (2.96 s/iter), mode distributions, and per-channel decoding accuracy. Three findings are reported as measurements rather than claims: the quantum path achieves 0/6 mode-argmax accuracy (Wilson 95\% CI [0, 0.39]) against a dominant classical reference; the $c$-indicator (Bell balance) tracks hardware drift but \emph{fails} as a decoding correction for amplitude, because the readout noise is asymmetric and the symmetric $p = c\,p + (1-c)/2$ model does not hold; and the 16-mode energy gap (1.85\%) is below the shot-noise floor (0.137$\sigma$ at 1024 shots), so the mode competition is not resolvable on current hardware. Complementary validation: Quantum Delayed Synchronization (QDS) Hahn-echo $T_2 = 89.63 \pm 39.18\ \mu$s (5 runs, SD over runs); Quantum Anchor protocol for coherent-state anchoring; Wave-Quantum frequency-to-correlation encoding (Pearson 0.87--0.999); Quantum Anchored Memory (QAM) integrating $\psi(t)$ dynamics with a 9-level zoom microscope memory (Merkle integrity, spine bus). We release the raw data (104 files, of which 91 are iteration records), analysis scripts, and open-source crates (\texttt{fluid-stratos}, \texttt{quantum-bridge}) under MIT license.
+We present a \emph{measurement audit} of the Quantum Organic Intelligence (QOI) framework: a quantum-classical feedback system coupling a Gross-Pitaevskii fluid solver (a 16-mode observable space) with a 2-qubit quantum bridge on IBM 156-qubit superconducting QPUs. The system implements three separate quantum measurements ($A$, $f$, $\varphi$) per iteration, with real-time Bell-parity anchoring and closed-loop decoding via a Rust bridge. We report the full measurement record --- including the negative results --- and we state explicitly which claims the hardware supports and which it does not. We report 111 documented hardware iterations (68+20+20+3) on \texttt{ibm\_fez} under the IBM Quantum open plan (600 s quota, no Runtime Sessions), measuring queue wait (17.9 s/iter), QPU time (2.96 s/iter), mode distributions, and per-channel decoding accuracy. Four findings are reported as measurements rather than claims: the quantum path achieves 0/6 mode-argmax accuracy (Wilson 95\% CI [0, 0.39]) against a dominant classical reference; the $c$-indicator (Bell balance) tracks hardware drift but \emph{fails} as a decoding correction for amplitude, because the readout noise is asymmetric and the symmetric $p = c\,p + (1-c)/2$ model does not hold; the 16-mode energy gap (1.85\%) is below the shot-noise floor (0.137$\sigma$ at 1024 shots), so the mode competition is not resolvable on current hardware; and the mode histograms of the 2026-10-27 runs are \emph{not} evidence for the quantum channel --- replayed through the corrected fluid at the corrected frequency scale, the hardware's own recorded measurements land inside the band that measurement noise alone produces on all four statistics, so the multi-mode pattern of those runs was produced by a protocol defect rather than by the quantum bridge. Complementary validation: Quantum Delayed Synchronization (QDS) Hahn-echo $T_2 = 89.63 \pm 39.18\ \mu$s (5 runs, SD over runs); Quantum Anchor protocol for coherent-state anchoring; Wave-Quantum frequency-to-correlation encoding (Pearson 0.87--0.999); Quantum Anchored Memory (QAM) integrating $\psi(t)$ dynamics with a 9-level zoom microscope memory (Merkle integrity, spine bus). We release the raw data (126 files, of which 111 are iteration records), analysis scripts, and open-source crates (\texttt{fluid-stratos}, \texttt{quantum-bridge}) under MIT license.
 \end{abstract}
 
 \begin{CCSXML}
@@ -91,7 +91,7 @@ We augment this core with independently validated modules:
 \item \textbf{scs-quantum}: TKR frequency-domain wave-packet encoding, Bell balance 99.3\%.
 \end{itemize}
 
-This paper reports the \emph{complete measured record}: 91 QPU iterations on \texttt{ibm\_fez}, QDS $T_2$ data, and the architectural synthesis into QAM. All raw data, scripts, and crates are version-controlled and reproducible.
+This paper reports the \emph{complete measured record}: 111 QPU iterations on \texttt{ibm\_fez}, QDS $T_2$ data, and the architectural synthesis into QAM. All raw data, scripts, and crates are version-controlled and reproducible.
 
 \section{Related Work}
 
@@ -165,7 +165,7 @@ with inverse \texttt{unbias\_probability} (clamped to $[0,1]$). 18/18 tests pass
     \State Wait for job completion (timeout 900 s)
     \State Decode $(A_i', f_i', \varphi_i')$ via \texttt{bridge-cli} using live $c$
     \State $\psi_i \gets \text{FluidStratos}.\text{tick}(\psi_{i-1}, A_i', f_i', \varphi_i')$
-    \If{$i \bmod 5 = 0$} \State Update $c \gets \text{Bell fidelity from anchor}$ \EndIf
+    \If{$i \bmod 5 = 0$} \State Update $c \gets \text{Bell parity from anchor}$ \EndIf
 \EndFor
 \end{algorithmic}
 \end{algorithm}
@@ -190,13 +190,18 @@ IBM Quantum open plan (three separate instances --- separate instance identifier
 
 \subsection{Run 1: 68 Iterations (\texttt{ibm\_fez}, seed 20261027)}
 
-\textbf{Scope note.} The QPU-side quantities in this run (Bell fidelity, $c$ drift, per-channel
-decoding error, mode-argmax outcome) are hardware facts and are unaffected by the fluid
-implementation. The \emph{trajectory} (the mode histogram) is not: the fluid that generated it was
-the Python port described in \S\ref{sec:correction}, whose kinetic step was not a Fourier
-transform. The histogram is retained for traceability and is superseded by the corrected
-deterministic simulation (\S\ref{sec:quantum-noise}); a hardware re-run with the corrected fluid
-requires a plan instance with sufficient quota.
+\textbf{Scope note.} The QPU-side quantities in this run (Bell parity, $c$ drift, per-channel
+decoding error, and the decoded $(A, f, \varphi)$ values themselves) are hardware facts and are
+unaffected by the fluid implementation. The \emph{trajectory} is not: the mode-argmax sequence
+is a property of the fluid, and the fluid that generated it was the Python port described in
+\S\ref{sec:correction}, whose kinetic step was not a Fourier transform. Two further defects
+affect the trajectory only. The fed-back frequency was on the wrong scale
+($f_{\rm dec}/0.5$ instead of $f_{\rm dec}/0.5 \times 15$, the mode index living in
+$[0,15]$), and the simulator's amplitude channel decoded $P(q_0=1)$ where the bridge decodes
+$P(q_0=0)$, which inverts the amplitude. Both are corrected in the current code. The
+histogram is retained for traceability and is superseded by the corrected deterministic
+simulation (\S\ref{sec:quantum-noise}); a hardware re-run with the corrected fluid requires a
+plan instance with sufficient quota.
 
 \begin{table}[h]
 \centering
@@ -214,8 +219,9 @@ $c$ range & 0.9170--0.9531 \\
 $c$ mean & 0.9350 \\
 $c$ drift & +0.0361 \\
 Mode diversity & 7 modes (\#0: 27, \#7: 10, \#6: 9, \#15: 9, \#14: 6, \#1: 4, \#2: 3) \\
-Classical control modes & 1 dominant (968/1000) + 5 others \\
-TV distance (quantum vs classical) & 0.3730 \\
+Feedback decode & the $c$-corrected decode (the one \S\ref{sec:scope} shows to be the wrong one) \\
+$f$ feedback scale & $f_{\rm dec}/0.5$ --- the mode index lives in $[0,15]$, so the fed-back value was compressed by $15\times$ \\
+Classical control & not recorded for this run \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -249,7 +255,7 @@ Deterministic proof: for ideal measurement ($A_\text{true}=0.3$), $c$-correction
 \toprule
 Metric & Quantum & Classical Control \\
 \midrule
-Bell fidelity & 93.95\% & --- \\
+Bell parity & 93.95\% & --- \\
 Argmax accuracy & 0/6 (Wilson 95\% CI [0, 0.39]) & 6/6 (100\%) \\
 Quantum winners & Creativity 4$\times$, Logic 2$\times$ & Brain 0$\times$ \\
 \bottomrule
@@ -258,7 +264,7 @@ Quantum winners & Creativity 4$\times$, Logic 2$\times$ & Brain 0$\times$ \\
 
 The 1.85\% gap between Brain (0.096210) and Creativity (0.094434) requires $\sim$492k shots for 3-$\sigma$ statistical separation --- 481$\times$ current 1024. On open plan: $492\text{k shots} \times 0.74\text{ s/circuit} \approx 364\text{ s QPU}$ (single circuit time). \textbf{Fundamental limit:} open plan cannot resolve the mode competition quantum-mechanically; the shot-noise floor (0.137$\sigma$) is the primary barrier, not the quota.
 
-\subsection{Run 3: 20 Iterations Raw Feedback (seed 20261027)}
+\subsection{Run 3: 20 Iterations Raw Feedback (seed 20261026)}
 
 No $c$-correction, raw decoded values fed back.
 
@@ -270,23 +276,77 @@ No $c$-correction, raw decoded values fed back.
 \toprule
 Metric & Quantum (raw) & Classical \\
 \midrule
-Modes visited & 5 (\#0, \#6, \#7, \#8, \#15) & 1 dominant (968/1000) + 5 others \\
+Modes visited & 5 (\#0, \#6, \#7, \#8, \#15) & 1 dominant (949/1000) + 5 others \\
 Mean $A$ MAE & 0.036 & --- \\
 $c$-corrected $A$ MAE & 0.176 & --- \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Classical control does not lock to a single mode (968/1000 dominant, 5 other modes visited), confirming that the fluid itself has intrinsic mode-switching dynamics. The quantum channel adds structured perturbation (TV distance 0.3730 vs classical), but does not create the diversity \emph{ex nihilo}.
+The classical control column is the CPU reference of \S\ref{sec:classical-control}: with the
+corrected fluid it does not lock to a single mode (949 of 1000 iterations in the dominant
+mode, 5 other modes visited), so the fluid has intrinsic mode-switching dynamics on its
+own. The quantum branch does not create that diversity \emph{ex nihilo}, and it does not
+explain it either --- see \S\ref{sec:control} for the control comparison that settles this.
 
-\subsection{Run 4: Cross-Device Replication}
+\subsection{Run 4: Second 20-Iteration Run (seed 20261027)}
 
 \begin{itemize}
-\item \texttt{ibm\_kingston}: 52 jobs queued, 900 s timeout $\to$ \texttt{RuntimeJobTimeoutError}, job cancelled cleanly (timeout handler validated).
-\item \texttt{ibm\_fez} replication (seed 20261027): 20 iterations, 3 modes (\#0, \#6, \#7), avg wait 19.6 s/iter.
+\item \texttt{ibm\_kingston}: 52 jobs queued, 900 s timeout $\to$ \texttt{RuntimeJobTimeoutError}, job cancelled cleanly (timeout handler validated). This is a platform observation on a different device, not a replication.
+\item \texttt{ibm\_fez}, second 20-iteration run (seed 20261027): 3 modes (\#0, \#6, \#7), 60 s QPU time, 393.0 s wall time, avg wait 19.6 s/iter.
 \end{itemize}
 
-\section{Scope of the Claims}
+\subsection{CPU Control Comparison: Does the Quantum Channel Cause the Mode Switching?}
+\label{sec:control}
+
+The runs above cannot answer this on their own: each is a single trajectory, and the fluid
+that produced them is no longer the fluid in the repository. The control comparison
+(\texttt{scripts/control\_comparison.py}, raw output in \texttt{measurement\_cpu/}) runs the
+same loop under four kinds of feedback and compares the mode statistics against the
+classical control. Per branch: 200 noise seeds at a fixed initial state, plus 30 varying
+initial states at 6 noise seeds each, at both hardware run lengths (20 and 68 iterations),
+with both the corrected solver and the pre-fix one.
+
+The classical control does not lie inside the noise band. With the corrected solver at 20
+iterations, the noise-free control visits 3 modes with a Brain proportion of 0.35 and a
+marginal entropy $H/H_{\max} = 0.395$, while every noisy branch concentrates on a single
+mode (Brain 0.85--0.95, $H/H_{\max}$ 0.07--0.19). Measurement noise does not create
+structure here: it collapses the distribution onto the dominant mode.
+
+The decisive test replays the hardware's \emph{own recorded feedback} through the same loop.
+With the frequency scale the hardware actually used, that feedback sits outside the noise
+band on all four statistics. With the corrected frequency scale, the same recorded feedback
+lands inside the noise band on all four statistics, for all three hardware runs.
+
+\begin{table}[h]
+\centering
+\caption{Hardware feedback replayed through the pre-fix solver, 20 iterations. The noise band is the 1024-shot branch (median [5--95\%]).}
+\label{tab:control}
+\begin{tabular}{lcccc}
+\toprule
+Feedback interpretation & Modes & Brain & $H/H_{\max}$ & Transient $H$ \\
+\midrule
+Noise band (1024 shots) & 1 [1,1] & 1.00 [1.00,1.00] & 0.00 [0.00,0.00] & 0.000 [0.000,0.000] \\
+Classical control & 1 & 1.00 & 0.00 & 0.000 \\
+Hardware feedback, as the hardware fed it & 5 & 0.35 & 0.516 & 0.090 \\
+Hardware feedback, corrected $f$ scale & 1 & 1.00 & 0.00 & 0.000 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The multi-mode pattern of the 2026-10-27 runs was therefore produced by the frequency-scale
+defect, not by the quantum channel. With the scale corrected, the hardware's own
+measurements are indistinguishable from the classical control plus measurement noise. The
+permutation branch supports the same reading from the other side: reordering the recorded
+feedback changes the statistics far less than rescaling it does. For the 20-iteration run
+the recorded order sits near the middle of the permutation distribution (mode count at the
+60th percentile, marginal entropy at the 47th, transition entropy at the 84th), whereas
+against the noise band the same measurement is at the 100th percentile on modes and on
+entropy and at the 0th on the Brain proportion --- outside the band on all four. The
+\emph{values} of the recorded feedback carry the pattern; the order in which the hardware
+happened to produce them does not.
+
+\subsection{Scope of the Claims}
 
 \label{sec:scope}
 
@@ -294,15 +354,26 @@ This is a measurement paper. The claims it supports are: (i) a quantum-classical
 runs on a real superconducting QPU under an open plan, with every iteration's raw counts,
 job IDs and timestamps version-controlled; (ii) the symmetric depolarisation model
 $p = c\,p + (1-c)/2$ does \emph{not} describe the observed readout error, and correcting with
-the live Bell fidelity makes the amplitude channel worse; (iii) the mode-competition question
-is below the shot-noise floor of the available hardware.
+the live Bell parity makes the amplitude channel worse; (iii) the mode-competition question
+is below the shot-noise floor of the available hardware; (iv) the mode histograms of the
+2026-10-27 runs are not evidence for the quantum channel, because with the frequency scale
+corrected the same recorded measurements reproduce the classical control's behaviour and lie
+inside the measurement-noise band (\S\ref{sec:control}).
 
 The claims it does \emph{not} support: that the system exhibits emergent intelligence, that the
-16 modes are cognitive in any validated sense, or that the quantum channel outperforms the
-classical one. The mode names (Brain, Creativity, Logic, \dots) are labels of an architectural
-observable space inherited from the original design; they are not claims about cognition. The
-memory and reconsolidation architecture (\S\ref{sec:qam}) is an explicit design proposal and is
-marked \emph{not validated} wherever it appears.
+16 modes are cognitive in any validated sense, that the quantum channel outperforms the
+classical one, or that the quantum feedback causes the mode switching. The mode names (Brain,
+Creativity, Logic, \dots) are labels of an architectural observable space inherited from the
+original design; they are not claims about cognition. The memory and reconsolidation
+architecture (\S\ref{sec:qam}) is an explicit design proposal and is marked \emph{not
+validated} wherever it appears. The 16-mode argmax measurement (6 trials, 0/6 agreement) is
+reported rather than interpreted: at $N=6$ it cannot separate "no quantum effect" from "a
+small quantum effect".
+
+The bridge's encoding limits are stated in \S\ref{sec:bridge-limits}: the frequency channel is
+unambiguous only on $[0,0.5]$, the two-qubit form carries no information beyond the
+single-qubit form, and the three channels reduce to one and the same measurement --- so the
+"phase" is a rotation angle, not a quantum phase.
 
 \section{A Correction to the Fluid Port}
 
@@ -324,10 +395,21 @@ the density redistribution grows from $2.766$ to $2.780$, the 16-mode energy mot
 to $9.420$, the quantum branch's marginal concentration from $H/H_{\max}=0.4355$ to $0.5268$, and
 the total-variation distance between the quantum and classical branches from $0.2960$ to $0.3730$.
 What it invalidates is one specific inference: that the classical control collapses to a single
-mode. With the corrected operator the classical branch visits 968/1000 in one mode and 5 others,
+mode. With the corrected operator the classical branch visits 949/1000 in one mode and 5 others,
 so mode diversity alone does not separate the quantum channel from the fluid's own dynamics.
 The separating quantity is therefore the total-variation distance and the marginal concentration,
 not the mode count (\S\ref{sec:quantum-noise}).
+
+Two further corrections, applied after the numbers above were measured, reduce that separation
+substantially and are the reason the figures in \S\ref{sec:quantum-noise} and
+\S\ref{sec:classical-control} differ from the ones quoted here. The amplitude channel decoded
+$P(q_0=1)$ where the hardware bridge decodes $P(q_0=0)$, which inverts the amplitude; with the
+inverted channel the quantum branch's concentration was $H/H_{\max}=0.5268$ and the
+total-variation distance $0.3730$. With the amplitude decoded as the bridge decodes it, the
+quantum branch's concentration is $0.2198$ against the classical branch's $0.0993$, and the
+total-variation distance is $0.0970$. The frequency normalisation defect of
+\S\ref{sec:bridge-limits} was fixed at the same time. The corrected figures are the ones the
+repository now regenerates and the ones this paper reports.
 
 \section{Parity Tests}
 
@@ -441,7 +523,7 @@ Module & Key Metric & Value & Status \\
 \midrule
 Fluid STRATOS & Density redistribution $\max|\Delta\rho|$ (500 steps) & $2.780$ & Measured (30 tests) \\
 Fluid STRATOS & Coherence (500 steps) & $0.452$ & Measured \\
-Quantum Bridge & Bell fidelity (hardware) & $93.95\%$ & Measured \\
+Quantum Bridge & Bell parity (hardware) & $93.95\%$ & Measured \\
 Quantum Bridge & 16-mode argmax accuracy & 0/6 (Wilson 95\% CI [0, 0.39]) & Measured (6 trials) \\
 Quantum Bridge & $A$ raw MAE & $0.026$ & Measured \\
 Quantum Bridge & $c$-corrected $A$ MAE & $0.212$ & \textbf{Worse} \\
@@ -449,8 +531,9 @@ Quantum Bridge & $f$ raw MAE & $0.019$ & Measured \\
 Quantum Bridge & $c$-corrected $f$ MAE & $0.013$ & Improvement \\
 Quantum Bridge & $\varphi$ raw MAE & $0.430$ & Measured \\
 Quantum Bridge & $c$-corrected $\varphi$ MAE & $0.261$ & Improvement \\
-Hardware Loop & 68-iter mode diversity & 7 modes & Measured \\
-Hardware Loop & Classical control modes & 1 dominant + 5 others & Verified \\
+Hardware Loop & 68-iter mode diversity & 7 modes & Measured (trajectory superseded, \S\ref{sec:control}) \\
+Hardware Loop & Classical control modes & 1 dominant + 5 others & CPU reference (\S\ref{sec:classical-control}) \\
+Hardware Loop & Recorded feedback vs measurement-noise band & inside on 4/4 statistics & Measured (\S\ref{sec:control}) \\
 QDS & $T_2$ (qubit 91) & $89.63 \pm 39.18\ \mu\text{s}$ & 5 runs \\
 Quantum Anchor & Fidelity threshold & $> 0.95$ & Protocol defined \\
 Wave-Quantum & Pearson $r$ (freq $\to$ corr) & $0.87$--$0.999$ & Measured \\
@@ -485,24 +568,55 @@ scs-quantum & TKR wave-packet encoding & Not reproduced \\
 The measurement floor ($P_\text{min} \approx 0.037$) and ceiling ($P_\text{max} \approx 0.93$) create asymmetric error: $p_\text{meas} = c p + (1-c)/2$ assumes symmetric depolarization, which fails. The $c$-indicator remains useful for \emph{monitoring} drift (0.917--0.953), but \emph{correction amplifies error} for amplitude.
 
 \subsection{Bimodal Phase Dynamics}
+\label{sec:phase}
 $\varphi$ clusters near $0$ and $\pi$ (boundary of dynamical domain). At boundaries, readout noise $\pm \delta P$ maps to large $\delta\varphi$ via $\arcsin$ nonlinearity. Phase unwrapping or alternative encoding (e.g., $\sin\varphi, \cos\varphi$ via 2-qubit tomography) needed.
 
 \subsection{16-Mode Discrimination Gap}
 The Brain vs. Creativity energy gap (1.85\%) requires $\sim$492k shots for 3-$\sigma$ statistical separation --- 481$\times$ current 1024. On open plan: $492\text{k shots} \times 0.74\text{ s/circuit} \approx 364\text{ s QPU}$ (single circuit time). \textbf{Fundamental limit:} open plan cannot resolve the mode competition quantum-mechanically; the shot-noise floor (0.137$\sigma$) is the primary barrier, not the quota.
 
+\subsection{Limits of the Bridge Encoding}
+\label{sec:bridge-limits}
+
+Three properties of the encoding constrain what the bridge can measure, and they are
+properties of the protocol rather than of the device.
+
+\emph{The frequency channel is unambiguous only on $[0,0.5]$.} The two-qubit interference
+decode is $f = \arcsin(\sqrt{P})/\pi$ and $\sin^2(\pi f)$ is periodic, so a frequency above
+$0.5$ folds back. The fluid's $f$ is an energy-weighted average of the 16 mode indices and
+therefore lives in $[0,15]$; it must be normalised into $[0,0.5]$ before encoding and scaled
+back after decoding. On the recorded hardware files the encoded value was 1.24--3.81, and
+111 of 111 iterations folded back. This is a protocol defect, not a hardware limit, and it is
+fixed in the current code.
+
+\emph{Two qubits buy no advantage here.} The frequency and phase circuits are an \texttt{RY} on
+the control qubit plus a \texttt{CNOT} that copies it into the readout qubit. The probability
+law is $P(q_0=1) = \sin^2(\theta/2)$, the same law as a single-qubit rotation. The second
+qubit adds circuit size, and with it QPU time and error accumulation, but no information.
+
+\emph{$A$, $f$ and $\varphi$ are the same measurement.} All three reduce to one rotation angle
+$\theta$, a measurement of $P(q_0=1)$, and the inverse of $\sin^2(\theta/2)$. $A$ and
+$\varphi$ are literally the same inverse, $2\arcsin(\sqrt{P})$; $f$ is that form scaled by
+$1/\pi$. The phase is therefore not a quantum phase --- it is a rotation angle measured with
+the same statistics as the amplitude, and it is the channel whose fluid-side signal is
+bimodal (\S\ref{sec:phase}).
+
 \subsection{Quantum Noise as Perturbation, Not Structure}
 \label{sec:quantum-noise}
 Simulation with the corrected fluid (numpy FFT, 4 branches, 1000 iterations, deterministic seed):
-quantum-loop $H/H_{\max} = 0.5268$ (top mode 60.8\% over the last 500), classical control
-$H/H_{\max} = 0.0685$ (968/1000 in one mode, 5 other modes visited), uniform null model 0.9962,
+quantum-loop $H/H_{\max} = 0.2198$ (top mode 87.4\% over the last 500), classical control
+$H/H_{\max} = 0.0993$ (949/1000 in one mode, 5 other modes visited), uniform null model 0.9962,
 dead GPE 0.0000. The total-variation distance between the quantum and the classical branch is
-0.3730.
+0.0970. These figures are regenerated by \texttt{scripts/quantum\_loop\_sim.py} and committed as
+\texttt{measurement\_cpu/quantum-loop-results.json}.
 
-The two dominant-mode proportions differ by $\hat p = 0.968$ vs $0.607$; the standard error of
-that difference is $\sigma_{\Delta} = 0.012978$, i.e. a separation of roughly $22\sigma$ over
-1000 iterations. The quantum channel measurably changes the marginal mode distribution --- and the
-difference is larger after the fluid correction than before it. What the data do \emph{not} show is
+The two dominant-mode proportions differ by $\hat p = 0.949$ vs $0.874$; the standard error of
+that difference is $\sigma_{\Delta} = 0.0126$, i.e. a separation of roughly $6\sigma$ over
+1000 iterations. The quantum channel measurably changes the marginal mode distribution, and the
+separation is far smaller than the $22\sigma$ and TV distance of $0.3730$ that were reported
+before the amplitude channel was corrected. What the data do \emph{not} show is
 that the quantum path identifies the correct mode: the 16-mode argmax test fails at 0/6.
+And what the control comparison of \S\ref{sec:control} shows is stronger still: the mode
+switching of the hardware runs is not produced by the quantum channel at all.
 So the quantum channel is a structured perturbation of the fluid's own mode dynamics, not a source
 of modal information.
 
@@ -535,11 +649,21 @@ python scripts/quantum_loop_hardware.py --backend ibm_fez --iterations 100 --sho
 
 \section{Conclusion}
 
-We built and measured a quantum-classical feedback system on IBM superconducting hardware and audited it end to end. The loop runs (91 documented iterations), but the quantum path does not outperform the classical reference for mode discrimination (0/6, Wilson 95\% CI [0, 0.39] against a 968/1000 dominant classical reference). The $c$-indicator tracks hardware drift but fails as correction for amplitude due to asymmetric readout noise. Phase bimodality dominates $\varphi$ error. The 16-mode gap is statistically unresolved; the shot-noise floor (0.137$\sigma$) is the primary barrier, not the quota.
+We built and measured a quantum-classical feedback system on IBM superconducting hardware and audited it end to end. The loop runs (111 documented iterations), but the quantum path does not outperform the classical reference for mode discrimination (0/6, Wilson 95\% CI [0, 0.39] against a 949/1000 dominant classical reference). The $c$-indicator tracks hardware drift but fails as correction for amplitude due to asymmetric readout noise. Phase bimodality dominates $\varphi$ error. The 16-mode gap is statistically unresolved; the shot-noise floor (0.137$\sigma$) is the primary barrier, not the quota.
+
+The audit also overturned the framework's own central inference. The mode switching of the
+2026-10-27 runs was attributed to the quantum feedback; the control comparison shows that it
+was produced by a protocol defect in the frequency scale, and that the hardware's own
+recorded measurements, replayed correctly, are indistinguishable from the classical control
+plus measurement noise. What the quantum channel measurably does is perturb the marginal
+mode distribution (a $6\sigma$ shift in the dominant-mode proportion, TV distance 0.0970 at
+1000 iterations) --- it does not identify a mode, and it does not cause the switching.
 
 Complementary modules (QDS, Quantum Anchor, Wave-Quantum, QAM, Microscope Memory, scs-quantum) provide independently validated building blocks for a neuromorphic quantum memory architecture. The full stack is open: code, data, measurements, and limits.
 
-\textbf{Future work:} dedicated IBM plan for 1000 iterations; asymmetric noise model for mitigation; phase-unwrapped encoding; QAM biological cross-validation; IQM denominator comparison.
+\textbf{Future work:} a dedicated IBM plan for 1000 iterations, to be run only if the
+pre-registered condition in \texttt{docs/QPU-RUN-DECISION-RULE.txt} fires; an asymmetric noise
+model for mitigation; phase-unwrapped encoding; QAM biological cross-validation; IQM denominator comparison.
 
 \section*{Acknowledgments}
 
@@ -560,7 +684,7 @@ We thank the IBM Quantum team for open-plan access. This work was self-funded; s
 \toprule
 Repository & Focus & Key Result \\
 \midrule
-quantum-organic-intelligence & GPE + Bridge + Loop & 91 hardware iterations \\
+quantum-organic-intelligence & GPE + Bridge + Loop & 111 hardware iterations \\
 quantum-anchor & Coherent-state anchoring & Protocol (not reproduced here) \\
 wave-quantum & Freq-to-correlation encoding & Not reproduced here \\
 quantum-delayed-sync & Hahn-echo $T_2$ sweep & $89.63 \pm 39.18\ \mu\text{s}$ (5 runs) \\
@@ -585,9 +709,27 @@ Venv: qoi-venv (qiskit>=2.0, qiskit-ibm-runtime>=0.50)
 \end{verbatim}
 
 \section{Appendix C: Classical Control Baseline}
+\label{sec:classical-control}
 
-With the corrected operator the classical branch is not a single-mode attractor: over 1000 iterations it stays in one mode in 968 cases and visits 5 other modes. The fluid therefore has intrinsic mode-switching dynamics on its own, and the mode count alone cannot attribute diversity to the quantum channel.
+With the corrected operator the classical branch is not a single-mode attractor: over 1000
+iterations it stays in one mode in 949 cases and visits 5 other modes. The fluid therefore
+has intrinsic mode-switching dynamics on its own, and the mode count alone cannot attribute
+diversity to the quantum channel.
 
-The quantity that does separate the two branches is the distribution, not the mode count. The dominant-mode proportion is 0.607 (quantum) versus 0.968 (classical); the standard error of the difference is 0.012978, a separation of roughly $22\sigma$. The total-variation distance is 0.3730. The uniform null model (H/Hmax 0.9962) and the dead-GPE model (0.0000) bracket the result: the quantum channel sits between the classical fluid and a uniform distribution, which is what a structured perturbation --- rather than a source of information --- looks like.
+The quantity that separates the two branches is the distribution, not the mode count. The
+dominant-mode proportion is 0.874 (quantum) versus 0.949 (classical); the standard error of
+the difference is 0.0126, a separation of roughly $6\sigma$. The total-variation distance
+is 0.0970. The uniform null model ($H/H_{\max}$ 0.9962) and the dead-GPE model (0.0000)
+bracket the result, with the quantum branch (0.2198) much closer to the classical fluid
+(0.0993) than to the uniform distribution. The channel is a perturbation of the classical
+fluid, not a source of information --- and, as \S\ref{sec:control} shows, not the cause of
+the mode switching either.
+
+These figures are regenerated by \texttt{scripts/quantum\_loop\_sim.py} and committed as
+\texttt{measurement\_cpu/quantum-loop-results.json}; CI regenerates the file and compares it
+against the committed version. They supersede an earlier set of values (dominant proportions
+0.607 and 0.968, $22\sigma$, TV 0.3730) that were computed with an amplitude channel which
+decoded $P(q_0=1)$ where the hardware bridge decodes $P(q_0=0)$, and therefore fed the
+amplitude back inverted.
 
 \end{document}

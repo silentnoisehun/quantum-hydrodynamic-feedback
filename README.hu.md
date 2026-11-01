@@ -1,9 +1,9 @@
 ﻿# Quantum Organic Intelligence
 
-A Gross-Pitaevskii folyadék, a hardver-igazolt quantumhíd és a mérés, amely dokumentálja a rendszer dinamikai viselkedését. Ez a repó három mérhető komponensen alapul:
+A Gross-Pitaevskii folyadék, a quantumhíd, amelynek kódolását és dekódolását a rögzített hardvermérések igazolják, és a mérések, amelyek dokumentálják — és korlátozzák — a rendszer dinamikai viselkedését. Ez a repó három mérhető komponensen alapul:
 
 * `crates/fluid-stratos`: A 16 kognitív módra képezett GPE-folyadékmotor, valódi split-step Fourier kinetikus lépéssel.
-* `crates/quantum-bridge`: A hardver-igazolt quantumhíd: 2 qubit + 3 külön mérés ($A, f, \varphi$).
+* `crates/quantum-bridge`: A quantumhíd: 2 qubit + 3 külön mérés ($A, f, \varphi$), mérve egy 156 kvantos QPU-n. Amit ez a mérés bizonyít és amit nem, az [Ismert problémák](#ismert-problémák--mit-nem-mutat-ez) szekcióban van.
 * `docs/`: Mérési jelentések, módszertan és korlátok.
 
 ---
@@ -38,11 +38,27 @@ A szimulációs protokoll során a CPU-ról kinyert paramétereket $(A, f, \varp
 
 ## 3. Elvárások és Korlátok
 
-* **A perturbáció szerepe:** A kvantumzaj önmagában nem strukturált (közel áll az uniform null-modellhez). A GPE szolgáltatja az attraktort, míg a kvantumzaj a stabilizáló vagy destabilizáló perturbációt.
+* **A perturbáció szerepe:** a mérési zaj **nem** struktúraforrás. A javított folyadékkal a zajmentes klasszikus kontroll több módra terjed (20 iteráció után 16-ból 3, marginális entrópia H/Hmax 0,395), míg ugyanez a hurok mérési zajjal egyetlen módra koncentrálódik (Brain-arány 0,85-0,95, H/Hmax 0,07-0,19). A zaj tehát **elbontja** a struktúrát, nem létrehozza. A teljes sávok és a hardver helye: `docs/MEASUREMENTS-CPU-CONTROLS.txt`.
 * **Korlátok:**
-  1. A mért adatok egy koherens folyadék-attraktor létezését és a kvantumlökés által generált strukturált mozgást igazolják, de ez nem jelenti önmagában önszerveződő intelligencia meglétét.
+  1. A mért adatok egy koherens folyadék-attraktor létezését igazolják. **Nem** igazolják, hogy a kvantum-visszacsatolás okozza a módváltást: a hardver saját rögzített mérési értékeit a helyes frekvenciaskálán visszajátszva a módminta a sávba esik, amelyet a puszta mérési zaj is létrehoz (4 a 4 mérőszámon, a hardver által ténylegesen futtatott solverrel).
   2. A hisztogram-tesztet minden esetben össze kell vetni a klasszikus kontrollal a hamis pozitív eredmények elkerülése érdekében.
   3. A kvantumhíd a hullámcsomag $(A, f, \varphi)$ mérésére alkalmas; a 16 mód közötti verseny kvantum-úton történő eldöntése a jelenlegi hardver-paraméterek mellett nem mutatható ki.
+
+### Mit tud és mit nem a híd
+
+* **A frekvenciacsatorna csak $[0, 0,5]$-ön egyértelmű.** A kétkvantumos interferenciadekódolás $f = \arcsin(\sqrt{P})/\pi$, és a $\sin^2(\pi f)$ periodikus, tehát az $f > 0,5$ visszahoozik. A folyadék $f$-je a 16 mód indexének energiával súlyozott átlaga, tehát $[0, 15]$-ben van; kódolás előtt a $[0, 0,5]$ tartományba kell normalizálni, dekódolás után vissza kell skálázni. A rögzített hardverfájlokon mérve: a kódolt érték 1,24-3,81 volt, és **111-ből 111 iterációban visszahajtott**.
+* **A két kvubit itt nem ad kvantumelőnyt.** A frekvencia- és fázisáramkör a vezérlő kvantumon egy `RY` plusz egy `CNOT`, amely átmásolja az értéket a mérő kvantumra. A valószínűségi törvény $P(q_0=1) = \sin^2(\theta/2)$ — ugyanaz, mint egy egykvantumos forgatásnál. A plusz kvubit áramkör-méretet (és QPU-időt) ad, nem információt.
+* **Az $A$, az $f$ és a $\varphi$ ugyanaz a mérés.** Mindhárom erre egyszerűsül: „egy forgatási szög $\theta$, mérd $P(q_0=1)$, fordítsd meg a $\sin^2(\theta/2)$-et". Az $A$ és a $\varphi$ szó szerint ugyanaz az inverz, $2\arcsin(\sqrt{P})$; az $f$ ugyanez $1/\pi$-vel skálázva. A „fázis" tehát **nem kvantumfázis** — forgatási szög, és ugyanazzal a statisztikával mérjük, mint az amplitúdót.
+
+### Ismert problémák / Mit NEM mutat ez
+
+* **A 2026-10-27-i hardveres futások két javítás előtt készültek, és nem futottak újra.** Olyan solverrel futottak, amelynek kinetikus lépése nem volt Fourier-transzformáció, és a frekvenciát hibás skálán vezették vissza. A `scripts/replay_hardware_log.py` a rögzített modsorokat pontosan visszaadja a régi solverrel (20/20, 20/20, 68/68), és egyiket sem az újjal (7/20, 4/20, 26/68) — ez a bizonyíték arra, hogy melyik kóddal futottak. A modsorozataik tehát **nem** bizonyítékok a jelenlegi modellre.
+* **A hardverriport modsorozatai nem bizonyítékok a kvantumcsatornára.** A rögzített visszacsatolást a helyes frekvenciaskálán visszajátszva a hardver saját mérései ugyanazt az egyetlen módra összeomlást adják, mint a klasszikus kontroll és a szimulált zaj. A több módra járó mintát azokban a futásokban a frekvenciaskála hibája okozta.
+* **A 16 mód argmax mérése nem informatív.** Hat próbából 0/6 egyezés a klasszikus argmaxszal. $N = 6$ esetén ez a szám nem különbözteti meg a „nincs kvantumhatást" a „kis kvantumhatástól"; ezért jelentjük, nem értelmezzük.
+* **A Bell-referencia mennyisége paritás-populáció, nem fidelitás.** A $P(00) + P(11)$-t méri, vagyis a két bit egyezésének arányát. Nem méri a koherenciát. A belőle származó szimmetrikus $c$-korrekció az amplitúdócsatornát **rontja** (átlagos hiba 0,026 nyersen, 0,212 korrigáltan), ezért a híd a $c$-t csak minőség-indikátorként kezeli, és a `--correct` alapból ki van kapcsolva.
+* **Nincs emergens intelligencia.** Semmi itt nem mutat önszerveződő intelligenciát. A GPE folyadéknak önmagában is van módváltó dinamikája: a javított operátorral a klasszikus ág önmagában is több módot jár be.
+* **A koherencia nem önálló mérőszám.** A `gpe.rs` definíciója szerint normalizált arány, amit a szimuláció a dead GPE-n is 1,0000-nak mér.
+* **Egy új QPU-futtatás alapból nem engedélyezett.** A feltételt előre rögzíti a `docs/QPU-RUN-DECISION-RULE.txt`.
 
 ### Mi validálja a teljes állítást
 
@@ -52,6 +68,10 @@ hogy a hisztogram-tesztnek legyen elegendő statisztikai ereje. A `docs/`
 mögötti futások ennél rövidebbek, a
 `docs/MEASUREMENTS-HARDWARE-20261027.txt` 6. szakaszában mért okok miatt: az
 open csomag 600 s-os kvótája és a Runtime Session hiánya.
+
+Amíg a kontroll-összehasonlítás nem mondja, hogy a hardver viselkedése a zajsávon
+kívül esik, egy új hardveres futás nem indokolt; ezt a feltételt előre rögzíti a
+`docs/QPU-RUN-DECISION-RULE.txt`.
 
 ---
 
@@ -86,8 +106,8 @@ környezetváltozóban kell (a `scs_quantum` saját `.env` fájlját is betölti
 # de ez NEM QPU-bizonyíték, csak a kód helyességének igazolása
 python scripts/hardware_measure.py --local
 
-# A valódi hardver: a Bell-fidelity, a 16 mód argmax, az (A, f, φ) dekódolás
-python scripts/hardware_measure.py --backend ibm_brisbane --shots 1024 --mode-trials 20
+# A valódi hardver: a Bell-paritás, a 16 mód argmax, az (A, f, φ) dekódolás
+python scripts/hardware_measure.py --backend ibm_fez --shots 1024 --mode-trials 20
 ```
 
 A mérés három dolgot mér:

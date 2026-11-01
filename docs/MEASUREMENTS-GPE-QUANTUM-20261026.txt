@@ -4,7 +4,25 @@ Datum: 2026-10-26
 Szerzo: Mavis (MiniMax Code runtime), <workdir>
 ================================================================================
 
-=== ERRATUM (2026-10-31, post-external-review) ===
+=== ERRATUM (2026-11-01, post-audit) -- EZ FELULIRJA A KOVETKEZOT ===
+A 2026-10-31-es erratum szamai (H/Hmax 0,5268, TV 0,3730, klasszikus
+kontroll 968/1000) EL AVULTak: a Python szimulacio amplitudocsatorna
+INVERTALT volt (a P(q0=1)-et dekodolta a P(q0=0) helyett), igy a
+kvantumag 1-A-t vezetett vissza A helyett. (MERVE: a hardveres nyers
+fajlokban a bridge-cli konvencio illeszkedik 4,9e-11 pontossaggal, a
+Python-konvencio 2,0-2,7 nagysagrendben eltér.)
+A javitott szamok (forras: measurement_cpu/quantum-loop-results.json,
+amit a CI ujrageneralja):
+  - kvantum-hurok H/Hmax 0,2198 | klasszikus kontroll 0,0993
+  - dominans mod arany: kvantum 0,874 | klasszikus 0,949
+  - TV tavolsag: 0,0970 (nem 0,3730)
+  - a kulonbseg ~6 sigma (nem 22 sigma)
+  - a kvantum-hurok 9 egyedi modot latogat meg, a klasszikus kontroll 6-ot
+A GPE dead-vs-live meres (2,766 / 8,444) ERVENYES: az nem a kvantum
+csatornat hasznalja.
+A CHANGELOG 0.2.2 bejegyzese tartalmazza a valtozasok listajat.
+
+=== ERRATUM (2026-10-31, post-external-review) -- FELULIRVA A FENTIBBEL ===
 A kovetkezok a javított számok; a korabbi értékek (2,766 / 8,444 / 0,4355 / 0,2960 /
 "1000/1000 egyetlen mód") a 2026-10-31-es kód-javítás előttiek, és a papírban
 már nem szerepelnek. A pontos értékek: max |Δ| density 2,780; 16-mod energia
@@ -175,20 +193,24 @@ iteracio, 10 loves, Bell c = 0,949, a GPE valodi 2D FFT-vel (numpy).
 
   AG                                          hisztogram (16 mod)    H/Hmax  atmeneti H
   ------------------------------------------ ---------------------- ------- -----------
-  1. KVANTUM-HUROK (Mate protokoll)           704 38 22 16 8 21 ...  0,4355  0,7470
-  2. KLASSZIKUS KONTROLL (kvantumzaj nelkul) 1000 0 0 0 0 0 0 ...   0,0000  0,0000
+  1. KVANTUM-HUROK (Mate protokoll)           874 25 0 8 21 0 15 ...  0,2198  0,4143
+  2. KLASSZIKUS KONTROLL (kvantumzaj nelkul) 949 0 0 20 0 0 14 ...   0,0993  0,2830
   3. NULL-MODELL (uniform random)             56 54 57 61 79 61 ...  0,9962  2,6313
   4. DEAD GPE (a regi fazis-rotacio)          1000 0 0 0 0 0 0 ...   0,0000  0,0000
 
-  Az utolso 500 iteracioban a kvantum-agban a leggyakoribb mod 71,4%.
+  A kvantum-ag 9 kulonbozo modot latogat meg (a Brain 874-szer), a
+  klasszikus kontroll 6-ot (949/1000 egy modban, 5 masik modban).
+
+  Az utolso 500 iteracioban a kvantum-agban a leggyakoribb mod 87,4%.
 
   A KULONBSEG: a kvantum-egy es a klasszikus kontroll hisztogramjanak
-  TV-tavolsaga 0,2960.
+  TV-tavolsaga 0,0970.
 
-  A KOHERENCIA mind a negy agban 1,0000 volt (min 0,9997) — a
-  tanh((max/mean)/15) a GPE normalizalas UTAN is saturál (a max/mean
-  996-2726), ezért a koherencia NEM alkalmas a 3. meresi pontra a
-  dead kodból. Az elob kodból (a max/mean 46,99) már mukodik.
+  A KOHERENCIA a kvantum-agban 0,9925 atlag (min 0,3985), a klasszikus
+  kontrollban 0,9293, a dead GPE-ben 1,0000 — a tanh((max/mean)/15) a GPE
+  normalizalas UTAN is saturál (a max/mean 996-2726), ezért a koherencia
+  NEM alkalmas a 3. meresi pontra a dead kodból. Az elob kodból (a
+  max/mean 46,99) már mukodik.
 
 3.1. A PROTOKOLL MATEMATIKAI ELLENORZESE (10 loves)
 
@@ -224,8 +246,8 @@ iteracio, 10 loves, Bell c = 0,949, a GPE valodi 2D FFT-vel (numpy).
   1. A HISZTOGRAM-TESZT: a "3-4 mey attraktor 70-80%-kal" az ELVARAS,
      nem a bizonyitek. A VALOS video/log rendszer (6 allapot) majdnem
      lapos: H/Hmax = 0,988 (a marginális: MAG 24%, a tobbi 16/16/16/16/12).
-     DE az UJ, FFT-javitott GPE-vel a kvantum-hurok erosen aszimmetrikus
-     (0,4355) — a hisztogram-teszt tehát a javitott rendszeren mukodik.
+     DE az UJ, FFT-javitott GPE-vel a kvantum-hurok aszimmetrikus
+     (0,2198) — a hisztogram-teszt tehát a javitott rendszeren mukodik.
      A fontos: a dead kodb is "aszimmetrikus" eredmenyt adna (egyetlen
      attraktor 100%-ban), csak nem emergens, hanem statikus. A hiszto-
      gram-teszttel mindig egyutt kell adni a KLASSZIKUS KONTROLLT.
@@ -236,10 +258,10 @@ iteracio, 10 loves, Bell c = 0,949, a GPE valodi 2D FFT-vel (numpy).
      szabad "felszallasnak" nevezni: a koherencia a normalizalas
      artefaktuma, nem a folyadek novelo sajatallapota.
   4. A KONTROLL-KISERLET: ez a legfontosabb resz, es mukodik. A klasszikus
-     kontroll (azonos GPE, kvantumzaj nelkul) 1000/1000-asan egyetlen
-     modban all (H/Hmax = 0,0000), a kvantum-hurok viszont 16 aktiv
-     atmeneti allapotot ad (H/Hmax = 0,4355). A ketto kozott a TV-
-     tavolsag 0,2960.
+     kontroll (azonos GPE, kvantumzaj nelkul) 949/1000-asan a 0. modban
+     all, de 5 masik modot is latogat meg (H/Hmax = 0,0993), a kvantum-
+     hurok pedig 16 aktiv atmeneti allapotot ad (H/Hmax = 0,2198). A
+     ketto kozott a TV-tavolsag 0,0970.
      A TOBBJET kELL: a GPE_INTERACTION = 0 (a nemlinearis tag szerepe),
      a 16 mod pozicioinak randomizalasa (az attraktor a GENOM-helyekbol
      jon-e, nem a racs geometriajabol), es a tiszta 10 bites kvantumlokes
@@ -299,7 +321,7 @@ iteracio, 10 loves, Bell c = 0,949, a GPE valodi 2D FFT-vel (numpy).
 
   A video: 6 DISZKRÉT, ELORE KODOLT ALLAPOT, determinisztikus, H/Hmax =
   0,988 (majdnem lapos). Egy allapotgép.
-  A GPE/hurok: 16 FOLYTONOS mod, H/Hmax = 0,4355, attraktoros mozgas.
+  A GPE/hurok: 16 FOLYTONOS mod, H/Hmax = 0,2198, attraktoros mozgas.
 
   A video NEM a GPE vizualizacioja, es a GPE NEM reprodukalja a videot.
   A kvantum-visszacsatolasi hurok javaslat ezt a ket teret mosja ossze.

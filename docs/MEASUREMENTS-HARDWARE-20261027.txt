@@ -4,7 +4,48 @@ Datum: 2026-10-27
 Szerzo: Mavis (MiniMax Code runtime)
 ================================================================================
 
-=== ERRATUM (2026-10-31, post-external-review) ===
+=== ERRATUM (2026-11-01, post-audit) -- EZ FELULIRJA A KOVETKEZOT ===
+A 2026-10-31-es erratum szamai (H/Hmax 0,5268, TV 0,3730, klasszikus
+kontroll 968/1000) EL AVULTak. A Python szimulacio amplitudocsatorna
+INVERTALT volt: a P(q0=1)-et dekodolta a P(q0=0) helyett, igy a
+kvantumag 1-A-t vezetett vissza A helyett. (MERVE: a hardveres nyers
+fajlokban a bridge-cli konvencio illeszkedik 4,9e-11 pontossaggal, a
+Python-konvencio 2,0-2,7 nagysagrendben eltér.)
+A javitott szamok (forras: measurement_cpu/quantum-loop-results.json,
+amit a CI ujrageneralja):
+  - kvantumag H/Hmax 0,2198 | klasszikus kontroll 0,0993
+  - dominans mod arany: kvantum 0,874 | klasszikus 0,949
+  - TV tavolsag: 0,0970 (nem 0,3730)
+  - a kulonbseg ~6 sigma (nem 22 sigma)
+
+TOVABBI JAVITASOK E JELENTESBEN:
+  - a 20 iteracios futas "6/16" -> 5/16 meglatott mod (a modsor 5
+    egyedi modot tartalmaz: 0, 6, 7, 8, 15)
+  - a masodik 20 iteracios futas (tag 20261027T015558Z) is bekerult:
+    3 mod (0, 6, 7), 60 mp QPU-ido, 393,0 mp falioraido
+  - a kvota: a meres VEGEN 587 mp fogyott (13 mp maradt), nem 525 mp
+    (75 mp) -- a masodik 20 iteracios futas a 525 mp UTAN futott
+  - a 68 iteracios futas 100-re tervezett volt, de 68-nal ALLT MEG (a
+    RUNLOG "iter N/100" sorokat mutat); a klasszikus kontroll ehhez a
+    futashoz NEM futott
+  - a hardveres modsorozatok a JAVITAS ELOTTI solverrel keszultek
+    (igazolta: scripts/replay_hardware_log.py -- legacy 20/20, 20/20,
+    68/68; a javitott solver 7/20, 4/20, 26/68), es a f-visszacsatolas
+    HIBAS skalan tortent
+  - a "a valtozast a kvantum-visszacsatolas hozza, nem a GPE attraktor"
+    ALLITAS TOROLVE. A CPU kontroll-osszehasonlitas szerint
+    (docs/MEASUREMENTS-CPU-CONTROLS.txt) a hardver sajatt rogzitett
+    meresei a helyes f-skalan a ZAJSavon BELUL vannak (4 a 4
+    meroszsamon), tehát a tobbedik mod a f-skala hibaja volt, nem a
+    kvantumcsatorna hatasa
+  - az N=6 argon a "szimulacios null-modell alatt is elfogadhato"
+    erveles TOROLVE: N=6 nem informatív
+  - a 4. pont "determinisztikus bizonyitek" cime TOROLVE: a zajmentes
+    korrekciobizonyitek NEM a hardvermodellt teszteli; a valos bizonyitek
+    a 68 iteracios tabla (A nyers atlagos elojel +0,0125)
+A CHANGELOG 0.2.2 bejegyzese tartalmazza a valtozasok listajat.
+
+=== ERRATUM (2026-10-31, post-external-review) -- FELULIRVA A FENTIBBEL ===
 A jelentesben hivatkozott korrigalt szamok (H/Hmax 0,5268, TV 0,3730,
 klasszikus kontroll 968/1000 + 5 mod) felulirojak a korabbi ertekeket
 (0,4355, 0,2960, "1000/1000 egyetlen mod"). A 16-modos hardveres argmax
@@ -51,6 +92,15 @@ A kulcsok mind ugyanazokat a backendeket latjak (open csomag):
 
 A kvota: 600 QPU-mp egy gurdulo 28 napos ablakban. A meres alatt a
 fogyott 465 mp volt (155 -> 135 mp a 16 modos meres utan).
+
+A KVOTA ALLAPOTA A FUTASOK UTAN (a nyers loop_summary fajlok usage_before/
+usage_after mezoiből, mérve):
+  229 -> 238 mp  a 3 iterációs futás után
+  238 -> 439 mp  a 68 iterációs futás után (201 mp)
+  439 -> 465 mp  a 16 módos mérés után
+  465 -> 525 mp  az első 20 iterációs futás után (60 mp)
+  527 -> 587 mp  a második 20 iterációs futás után (60 mp)
+  => A MERES VEGEN 587 mp FOGYOTT, 13 mp MARADT.
 
 A SESSION NEM ELERHETO AZ OPEN CSOMAGON — ezt a platform mondta, nem mi:
 
@@ -136,6 +186,10 @@ a helyi logokkal. A határidőket a platform oldalán kell nézni.
   backend ibm_fez | 1024 loves | anchor minden 5. | 50 GPE-lepes/iter
   visszacsatolas: az ÉLO c-vel torzitastlanitott dekódolas
 
+  🧬 A FUTÁS 100 ITERÁCIÓRA VOLT TERVEZVE, DE 68-NÁL ÁLLT MEG (a RUNLOG
+  "iter N/100" sorokat mutat). A megállás okát a nyers fájlok nem
+  tartalmazzák.
+
   AZ IDOK
     QPU-idő összesen  : 201,00 mp   (2,96 mp/iter)
     faliora-idő       : 1214,8 mp   (17,9 mp/iter; min 6,8, max 137,5)
@@ -147,10 +201,13 @@ a helyi logokkal. A határidőket a platform oldalán kell nézni.
     a hisztogram: [27, 4, 3, 0, 0, 0, 9, 10, 0, 0, 0, 0, 0, 0, 6, 9]
     a meglatott modok szama: 7/16
 
-  A KODERES MEGALLAPITAS: a hurok NEM egyetlen modeba esik ossze. Hét
-  kulonbozo modot latogat meg, a Brain (#0) 27-szer. A szimulacio
-  kvantum-hurkajanak marginalis H/Hmax 0,4355 volt — a HARDVERES hurok
-  is strukturalt, nem osszecsomagolt.
+  🧬 A "KODERES MEGALLAPITAS" NEM TARTOZIK TOBBE (2026-11-01): a hurok
+  nem egyetlen módba esik össze, hét különböző módot látogat meg — de
+  EZ A GPE-ATTRAKTOR HATASA, nem a kvantum-visszacsatolásé. A CPU
+  kontroll-összehasonlítás (docs/MEASUREMENTS-CPU-CONTROLS.txt) szerint a
+  hardver saját rögzített mérései a helyes f-skálán a zajsávon BELÜL
+  vannak (4 a 4 mérőszámon): a több módot az f-skála hibája okozta, nem a
+  kvantumcsatorna.
 
 --------------------------------------------------------------------------------
 2b. A 20 ITERÁCIÓS FUTÁS — NYERS VISSZACSATOLÁSSAL (tag 20261027T010656Z)
@@ -168,17 +225,51 @@ minden 5., 50 GPE-lépés, ugyanaz a GPE.
 
   A MOD-ARGMAX SORRENDJE (20 iteráció)
     0 0 8 8 15 6 0 6 6 0 0 0 6 15 7 15 15 15 15 0
-    a meglátott módok száma: 6/16
+    a meglátott módok száma: 5/16   (a módok: 0, 6, 7, 8, 15)
+    🧬 JAVÍTVA (2026-11-01): a korábbi "6/16" téves volt — a sorban 5
+    egyedi mód van.
 
   A KLASSZIKUS KONTROLL ARGMAX SORRENDJE (ugyanaz a GPE, kvantumzaj nélkül)
     0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
     -> 20/20 Brain (#0), egyetlen más állapot nélkül
+    🧬 EZ A SOR A JAVÍTÁS ELŐTTI (legacy) SOLVERREL KÉSZÜLT — a
+    docs/RUNLOG-LOOP-20IT-RAW-20261027.txt 70. sora rögzíti, és a
+    scripts/replay_hardware_log.py ugyanezt adja vissza. A JAVÍTOTT
+    solverrel a klasszikus kontroll 20 iterációban 3 módot jár be
+    (0, 6, 15; Brain-arány 0,35) — tehát a "klasszikus kontroll egyetlen
+    módon marad" állítás SOLVER-FÜGGŐ, és a hardver futása a legacy
+    solverrel történt.
 
-A HARDVERES EREDMÉNY, AMI A SZIMULÁCIÓHOZ KAPCSOLÓDIK: a kvantum-hurok hat
-módot jár be, a klasszikus kontroll viszont EGYETLEN módon marad. A folyadék
-állapotában a változást a kvantum-visszacsatolás hozza, nem a GPE attraktor —
-a szimuláció ezt mutatta (a klasszikus kontroll 1000/1000 a 0. módon, a
-kvantum-hurok H/Hmax = 0,4355), most valódi hardveren is.
+A MÁSODIK 20 ITERÁCIÓS FUTÁS (tag 20261027T015558Z, seed 20261027)
+
+  AZ IDŐK
+    QPU-idő összesen  : 60,00 mp   (3,00 mp/iter)
+    falióra-idő       : 393,0 mp   (19,6 mp/iter; min 10,8, max 41,8)
+  a mért c: 0,9229 ... 0,9531
+
+  A MOD-ARGMAX SORRENDJE (20 iteráció)
+    0 0 6 0 7 0 7 7 6 6 7 7 7 6 7 7 6 6 7 0
+    a meglátott módok száma: 3/16   (a módok: 0, 6, 7)
+
+🧬 A "KVANTUM-VISSZACSATOLÁS HOZZA A VÁLTOZÁST" ÁLLÍTÁS TOROLVA
+(2026-11-01). A CPU kontroll-összehasonlítás négy ágat futtatott (a
+klasszikus kontroll, a zajmentes kvantumcsatorna, a mért c-vel és a
+hardver padló/plafon modellel terhelt zaj, és a hardver rögzített
+visszacsatolásainak visszajátszása), 200 zaj-seeddel ágonként, 30
+változó kezdeti állapottal, mindkét hardveres futáshosszon:
+
+  - a zajmentes kvantumcsatorna a klasszikus kontrollal AZONOS modsorozatot
+    ad (a javított solverrel) — a különbség tehát nem a csatorna
+    szerkezetéből jön;
+  - a hardver saját rögzített visszacsatolásai a HARDVER SKÁLÁJÁN
+    (f/0.5) a zajsávon KÍVÜL vannak (20 iteráció: 5 mód, Brain 0,35,
+    H/Hmax 0,516 — a zajsáv [1,1], [1,1], [0,0], [0,0]);
+  - a JAVÍTOTT f-skálán (f/0.5*15) UGYANAZ a rögzített visszacsatolás a
+    zajsávon BELÜL van, mind a 4 mérőszámon, mindhárom hardveres futásnál.
+
+  KÖVETKEZMÉNY: a több módot az f-visszacsatolás skálahibája okozta, nem
+  a kvantumcsatorna hatása. A hardveres modsorozatok nem bizonyítják,
+  hogy a kvantum-visszacsatolás felelős a módváltásért.
 
 A DEKÓDOLÁS PONTOSSÁGA A KÉT FUTÁSBAN (|hiba| átlag / átlagos előjel)
 
@@ -216,15 +307,21 @@ A HALASZ:
     loveszajnál).
 
 --------------------------------------------------------------------------------
-4. A C-KORREKCIÓ — DETERMINISZTIKUS BIZONYITEK (kvota nelkul)
+4. A C-KORREKCIÓ — MIT BIZONYÍT (kvota nelkul)
 --------------------------------------------------------------------------------
 
 A Rust `unbias_probability` az ellenkezoje a `degrade_probability`-nak:
   p_mert = c*p + (1-c)*0.5   ->   p_becsult = (p_mert - (1-c)*0.5)/c
 
-A ket LEKETEZES, hogy a modell illik-e a valodi hardverre. HAJTOK: az
-IDEALIS (hibatlan) áramkör eredmenyet dekódoljuk — ha a korrekcio itt
-is eltol, akkor a modell illik-e egyáltalan.
+🧬 A CÍM TOROLVA (2026-11-01): ez NEM "determinisztikus bizonyíték" a
+hardvermodellre. A következő táblázat ZAJSMENTES (hibátlan) áramkört
+dekódol, és megmutatja, hogy a korrekció egy hibátlan mérést is
+elront. Ez a modell belső konzisztenciájáról szól, NEM arról, hogy a
+modell illik-e a valódi hardverre. A VALÓS bizonyíték a 3. pont
+(68 iteráció): a mért hibák átlagos előjele — az A-csatornán nyersen
++0,0125 (gyakorlatilag torzítatlan), c-vel torzítástalanítva −0,21201
+(a torzítás 17× nagyobb a lővészajnál). A f- és φ-csatornán a korrekció
+kissé javít, tehát a hatás csatornánként eltér.
 
   A_kod   idealis   nyers        hiba    torzitastlan   hiba
   0,900   0,9000    0,9007     +0,0007     0,8395     -0,0605
@@ -276,11 +373,13 @@ es a c alapjan lehet donteni, hogy egy meres megbizonykodott-e.
     PONTOSSAG: 0,00% (0/6)
 
   A SZUMLACIONALJOZ KEPEST: a szimulacio 38,65%-ot adott (c = 0,949,
-  nulla tovabbi zajjal). A valodi hardver 0/6-ot ad. A 0/6 a
-  szimulacios null-modell alatt is elfogadhato (p = 0,3865^6 = 5,2%):
-  a ket eredmeny NEM ellentmondo, a hardver a szimulaltat rosszabb
-  eredmenyre hozza, ahogy az extra hiba (crosstalk, leolvasasi hiba)
-  miatt vartuk.
+  nulla tovabbi zajjal). A valodi hardver 0/6-ot ad.
+
+  🧬 AZ "ELFOGADHATO" ÉRVELÉS TOROLVA (2026-11-01): N=6 mellett a 0/6
+  NEM informatív. A 6 próbából nem különböztethető meg a "nincs
+  kvantumhatás" a "kis kvantumhatástól" — a Wilson 95%-os
+  konfidenciaintervallum [0, 0,39] ezt ki is mondja. A szám JELENTVE
+  van, értelmezve NEM.
 
   A DONTES: a kvantum-ut a MERT hardverrel NEM nyert a klasszikus
   argmax ellen. Az ok valtozatlan: a mért energiak kulonbsege 1,85%,
@@ -299,13 +398,23 @@ es a c alapjan lehet donteni, hogy egy meres megbizonykodott-e.
   ezer-szeres. A megoldas: sessiont ado plan instance (a 2. reteg),
   es a 1000 iteraciora alkalmas kvota.
 
-  A 68 (illetve 100) iteracios futas a kvotabol MEGFELEL, es a
-  strukturalt viselkedes mar kimutathato volt.
+  A 68 iteracios futas a kvotabol MEGFELEL. 🧬 A "strukturált viselkedés"
+  megfogalmazás TOROLVA (2026-11-01): a többmódos modsorozatot az
+  f-visszacsatolás skálahibája okozta (lásd a 2b. pontot), nem a
+  kvantum-visszacsatolás.
 
-  A TELJES MERES KVOTA-FOGYASA: 525 mp a 600 mp-es limitbol (88%).
-  A fogyasztas megoszlasa: 201 mp (68 it. hurok) + 60 mp (20 it. hurok)
-  + ~20 mp (a 16 modos meres) + a kalibracio. A 75 mp maradt a meres
-  vegekor.
+  A TELJES MERES KVOTA-FOGYASA: 587 mp a 600 mp-es limitbol (97,8%).
+  🧬 JAVÍTVA (2026-11-01): a korábbi "525 mp, 75 mp maradt" adat a
+  MÉRÉS VÉGÉRŐL származott, de a második 20 iterációs futás UTÁN volt.
+  A teljes fogyasztás a nyers loop_summary fájlok usage_before/
+  usage_after mezőiből, mérve:
+    229 -> 238 mp  a 3 iterációs futás után
+    238 -> 439 mp  a 68 iterációs futás után (201 mp)
+    439 -> 465 mp  a 16 módos mérés után
+    465 -> 525 mp  az első 20 iterációs futás után (60 mp)
+    527 -> 587 mp  a második 20 iterációs futás után (60 mp)
+  A mérés végén 13 mp maradt. A hurok-futások összesen 321 mp QPU-időt
+  használtak (201 + 60 + 60).
 
   A TELJES ALLITAS VALIDALASA: a protokoll 1000 iteracio. A teljes
   allitast A MERES VEGIGFUTASAVAL lehet validalni — a teljes, 1000
@@ -321,21 +430,38 @@ es a c alapjan lehet donteni, hogy egy meres megbizonykodott-e.
 7. MIT NEM BIZONYIT A MERES
 --------------------------------------------------------------------------------
 
-  - NEM bizonyit emergent intelligenciat. A hurok strukturalt
-    viselkedes mutat, de a GPE attraktor is mutat.
-  - NEM bizonyitja, hogy a kvantumzaj strukturalt: a szimulacio
-    szerint a kvantumzaj onmagaban nem strukturalt (a GPE adja az
-    attraktort). A hardveres hurok ezt nem valtasztja meg.
+  - NEM bizonyit emergent intelligenciat.
+  - NEM bizonyitja, hogy a kvantum-visszacsatolas felelos a
+    modvaltasert. Ez a jelentés fo allitasa volt; a 2026-11-01-es CPU
+    kontroll-osszehasonlitas (docs/MEASUREMENTS-CPU-CONTROLS.txt)
+    MEGCSAFOLTA. A hardver sajatt rogzitett meresei a helyes f-skalan a
+    zajsavon belul vannak (4 a 4 meroszsamon), vagyis a tobbedik mod az
+    f-skala hibaja volt.
+  - NEM bizonyitja, hogy a kvantumzaj strukturált: a szimulacio
+    szerint a kvantumzaj onmagaban nem strukturált, es a CPU kontroll
+    szerint a zaj a strukturat ROMBOLJA (osszecsomagolja a modokra).
   - A hisztogram-teszthez a klasszikus kontroll MINDIG szukseges. A
-    hardveres hurok mellett a klasszikus kontroll is futott (a
-    `--classical-control` ag).
+    20 iteracios futashoz van ilyen (a RUNLOG-ban, a legacy solverrel);
+    a 68 iteracios futashoz NEM futott, es a nyers fajlokban nincs
+    rogzitve.
   - A koherencia NEM onallos meroszam: a gpe.rs definicioja szerint
     normalizalt arany, amit a szimulacio a dead GPE-n is 1,0000-nak
     mer.
-  - A f-csatorna modul 1 szerint osszefugg (a visszafejtes csak a
+  - Az f-csatorna modul 1 szerint osszefugg (a visszafejtes csak a
     [0, 0.5] tartomanyban egyertelmu); a folyadék f-erteke 0...15
     kozott van, igy a hurokban a visszacsatolt f csak az f mod 1 resze.
+    A 2026-10-27-i futasokban a f_kod 1,24-3,81 volt, es 111/111
+    iteracioban osszzehajtott.
   - A c-korrekcio NEM javitja a dekodolast (a 4. pont).
+  - A ketkvantumos kodolas NEM ad kvantumelonyet: az f- es a phi-
+    aramkor egy RY a vezerlo kvantumon plusz egy CNOT, aminek
+    valoszinusegi torvenye P(q0=1) = sin^2(theta/2) — ugyanaz, mint
+    egy egykvantumos forgatasnal.
+  - Az A, az f es a phi UGYANAZ a meres: egy forgatasi szog -> P(q0=1)
+    -> a sin^2(theta/2) inverze. A "fazis" tehát NEM kvantumfazis, hanem
+    forgatasi szog, ugyanazzal a statisztikaval mert, mint az amplitudo.
+  - A 16 modos argmax meres N=6 mellett nem informatív (a 0/6 a Wilson
+    95%-os konfidenciaintervallumban [0, 0,39]).
 
 --------------------------------------------------------------------------------
 8. A REPRODUKALAS
@@ -357,6 +483,13 @@ es a c alapjan lehet donteni, hogy egy meres megbizonykodott-e.
 
   # a nyers adatok osszegzese (a docs/ minden szam innen jon)
   python scripts/summarize_hardware_run.py
+
+  # a hardveres futasok visszajatszasa: melyik solver adja vissza a
+  # naplózott modsorozatot? (a CI-gate)
+  python scripts/replay_hardware_log.py
+
+  # a CPU kontroll-osszehasonlitas (4 ag, >=200 zaj-seed/ag)
+  python scripts/control_comparison.py
 
   A nyers meresi fajlok a `measurement_raw/` mappaban vannak (verzion-
   kovetett): minden job ID-vel, a backenddel, a loves szammal, a QPU-

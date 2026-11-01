@@ -7,7 +7,25 @@ Mates utasitasara: "szamolj elobb szimulacioval, elore" + "most merjunk meg"
 Allitas: ahol meresi bizonyitek van, ott a szam. Ahol nincs, ott
 "nem verifikalva". Semmi nem szerepel itt forras nelkul.
 
-=== ERRATUM (2026-10-31, post-external-review) ===
+=== ERRATUM (2026-11-01, post-audit) -- EZ FELULIRJA A KOVETKEZOT ===
+A 2026-10-31-es erratum szamai (H/Hmax 0,5268, TV 0,3730, klasszikus
+kontroll 968/1000) EL AVULTak: a Python szimulacio amplitudocsatorna
+INVERTALT volt (a P(q0=1)-et dekodolta a P(q0=0) helyett), igy a
+kvantumag 1-A-t vezetett vissza A helyett. (MERVE: a hardveres nyers
+fajlokban a bridge-cli konvencio illeszkedik 4,9e-11 pontossaggal, a
+Python-konvencio 2,0-2,7 nagysagrendben eltér.)
+A javitott szamok (forras: measurement_cpu/quantum-loop-results.json,
+amit a CI ujrageneralja):
+  - kvantum-hurok H/Hmax 0,2198 | klasszikus kontroll 0,0993
+  - dominans mod arany: kvantum 0,874 | klasszikus 0,949
+  - TV tavolsag: 0,0970 (nem 0,3730)
+  - a kulonbseg ~6 sigma (nem 22 sigma)
+  - a kvantum-hurok 9 egyedi modot latogat meg, a klasszikus kontroll 6-ot
+A GPE dead-vs-live meres (2,766 / 8,444) ERVENYES: az nem a kvantum
+csatornat hasznalja.
+A CHANGELOG 0.2.2 bejegyzese tartalmazza a valtozasok listajat.
+
+=== ERRATUM (2026-10-31, post-external-review) -- FELULIRVA A FENTIBBEL ===
 A jelentes korabbiertekei (max |Δ| density 2,766; 16-mod energia 8,444;
 H/Hmax 0,4355; TV 0,2960; "1000/1000 egyetlen mod") a 2026-10-31-es
 korrekció előttiek. A javított számok: 2,780 / 9,420 / 0,5268 / 0,3730 /
