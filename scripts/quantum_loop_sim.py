@@ -358,7 +358,13 @@ def run_loop(mode, live=True, seed=SEED):
     rng = old_rng
     return seq, coh, params
 
-def stats(seq, label):
+def metrics(seq):
+    """A mod-sorozat statisztikai merőszámai.
+
+    EZT a FÜGGVÉNYT HASZNÁLJA A scripts/control_comparison.py IS, hogy a
+    CPU-kontrollok és a hardveres futások ugyanazt a mérőszámot kapják.
+    Egyetlen definíció — különben a két oldal nem hasonlítható össze.
+    """
     n = len(seq)
     hist = np.bincount(seq, minlength=16)
     # a marginalis elosztas entrópiaja
@@ -388,12 +394,29 @@ def stats(seq, label):
     tp = thist / len(tail)
     tnz = tp[tp > 0]
     tH = -(tnz*np.log(tnz)).sum()
-    print("  %-22s hisztogram: %s" % (label, " ".join("%d" % h for h in hist)))
-    print("  %-22s marginalis H/Hmax = %.4f  |  atmeneti H (sor) = %.4f / %.4f" % (label, H/Hmax, mH, math.log(16)))
+    return {
+        "hist": hist.tolist(),
+        "H_Hmax": float(H / Hmax),
+        "mH": mH,
+        "transient_H": float(mH / Hmax),
+        "active": active,
+        "tail_H": float(tH / Hmax),
+        "tail_max": float(tp.max()),
+        "distinct_modes": int((hist > 0).sum()),
+        "brain_ratio": float(p[0]),
+        "n": int(n),
+    }
+
+
+def stats(seq, label):
+    m = metrics(seq)
+    print("  %-22s hisztogram: %s" % (label, " ".join("%d" % h for h in m["hist"])))
+    print("  %-22s marginalis H/Hmax = %.4f  |  atmeneti H (sor) = %.4f / %.4f" % (
+        label, m["H_Hmax"], m["mH"], math.log(16)))
     print("  %-22s aktiv atmeneti allapot = %d/16  |  utolso 500: H/Hmax = %.4f, max modos gyakorisag = %.1f%%" % (
-        label, active, tH/Hmax, 100*tp.max()))
-    return {"hist": hist.tolist(), "H_Hmax": float(H/Hmax), "mH": mH, "active": active,
-            "tail_H": float(tH/Hmax), "tail_max": float(tp.max())}
+        label, m["active"], m["tail_H"], 100 * m["tail_max"]))
+    return {"hist": m["hist"], "H_Hmax": m["H_Hmax"], "mH": m["mH"], "active": m["active"],
+            "tail_H": m["tail_H"], "tail_max": m["tail_max"]}
 
 
 
@@ -469,14 +492,21 @@ def main():
         A, f, phi = par_q[i]
         print("    iter %d: A=%.4f f=%.4f phi=%.4f  -> argmax mod = %d" % (i, A, f, phi, seq_q[i]))
 
-    out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                            "quantum-loop-results.json")
-    with open(out_path, "w") as fh:
+    # 🧬 A KIMENET A measurement_cpu/ MAPPABA MEGY (2026-11-01, T5): a
+    # papírban szereplő 1000 iterációs számoknak is visszavezethetőnek kell
+    # lenniük egy MÉRÉSI fájlra — ugyanúgy, ahogy a docs/ minden száma a
+    # measurement_raw/ fájlokra vezethető vissza. A CI ezt a fájlt újragenerálja
+    # és a commitolt verzióval összeveti.
+    out_dir = os.path.join(os.path.dirname(os.path.dirname(
+        os.path.abspath(__file__))), "measurement_cpu")
+    os.makedirs(out_dir, exist_ok=True)
+    out_path = os.path.join(out_dir, "quantum-loop-results.json")
+    with open(out_path, "w", encoding="utf-8") as fh:
         json.dump({"results": results,
                    "seq_quantum": seq_q, "seq_classical": seq_c, "seq_dead": seq_d,
                    "coh_quantum": coh_q, "coh_classical": coh_c}, fh, indent=1)
     print()
-    print("  kiirva: quantum-loop-results.json")
+    print("  kiirva: measurement_cpu/quantum-loop-results.json")
 
 
 

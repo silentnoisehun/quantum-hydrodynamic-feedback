@@ -1,0 +1,475 @@
+==============================================================================
+A KVANTUM-VISSZACSATOLAS KONTROLL-OSSZEHASONLITASA (CPU)
+==============================================================================
+
+GENERALVA: scripts/control_comparison.py
+A CEL: a modvaltas felelose-e a kvantum csatornanak, vagy a meresi
+zajnak? A valasz a kontroll savjan belul van-e, nem az allitasbol jon.
+
+PARAMETEREK
+  solver            : a javitott (scripts/quantum_loop_sim.py) es a
+                      legacy (a72ead4, a hardver ezzel futott)
+  hurok-hossz       : 20, 68 iteracio (a hardveres futasok hossza)
+  zaj seed/db       : 200 (1. kor), kezdeti allapot: 30 db x 6 zaj seed (2. kor)
+  c (zaj agak)      : 0.934570  -- a 111 rogzitett c_live ertek medianja
+  kulcs              : a classical kontroll benne van-e a zajos agak 5-95% savjan
+
+AGAK
+  classical         nincs csatorna, nincs zaj (a KONTROLL)
+  exact             a teljes kvantum csatorna, ZAJ NELKULI meressel
+  noise_10shot_*    10 loves, a MATE-protokoll
+  noise_1024shot_*  1024 loves, ahogy a hardver futott
+  hardware_residual a hardveres nyers fajlok rogzitett visszacsatolasai
+  hardware_rescaled  ugyanaz, de a JAVITOTT f-skalan (a dontest arm)
+  hardware_permuted ugyanazok a visszacsatolasok, 200 permutalva
+
+==============================================================================
+A JAVITOTT SOLVERREL
+==============================================================================
+
+-- 20 iteracio, fixed_init kor --
+  ag                                     lattogatott modok      Brain-aran             H/Hmax                 atmeneti H            
+  classical                              3  [3, 3]              0.3500  [0.3500, 0.3500] 0.3953  [0.3953, 0.3953] 0.0555  [0.0555, 0.0555]
+  exact                                  3  [3, 3]              0.3500  [0.3500, 0.3500] 0.3953  [0.3953, 0.3953] 0.0555  [0.0555, 0.0555]
+  noise_10shot_symmetric                 2  [1, 4]              0.9000  [0.6500, 1.0000] 0.1172  [-0.0000, 0.3298] 0.0100  [0.0000, 0.0442]
+  noise_1024shot_symmetric               2  [2, 3]              0.9000  [0.8500, 0.9500] 0.1172  [0.0716, 0.1869] 0.0207  [0.0048, 0.0261]
+  noise_10shot_floor                     3  [1, 4]              0.8500  [0.6500, 1.0000] 0.1869  [-0.0000, 0.3197] 0.0228  [0.0000, 0.0448]
+  noise_1024shot_floor                   2  [1, 2]              0.9500  [0.9000, 1.0000] 0.0716  [-0.0000, 0.1172] 0.0048  [0.0000, 0.0207]
+  hardware_residual_20261027T010656Z     3  [3, 3]              0.6500  [0.6500, 0.6500] 0.2853  [0.2853, 0.2853] 0.0319  [0.0319, 0.0319]
+  hardware_residual_20261027T015558Z     2  [2, 2]              0.9000  [0.9000, 0.9000] 0.1172  [0.1172, 0.1172] 0.0082  [0.0082, 0.0082]
+  hardware_rescaled_20261027T010656Z     3  [3, 3]              0.6500  [0.6500, 0.6500] 0.2853  [0.2853, 0.2853] 0.0319  [0.0319, 0.0319]
+  hardware_rescaled_20261027T015558Z     2  [2, 2]              0.9000  [0.9000, 0.9000] 0.1172  [0.1172, 0.1172] 0.0082  [0.0082, 0.0082]
+  hardware_permuted_20261027T010656Z     2  [2, 3]              0.8000  [0.7000, 0.9500] 0.1805  [0.0716, 0.2892] 0.0165  [0.0048, 0.0401]
+  hardware_permuted_20261027T015558Z     2  [1, 3]              0.9000  [0.8500, 1.0000] 0.1172  [-0.0000, 0.1869] 0.0082  [0.0000, 0.0228]
+
+  A klasszikus kontroll a zajos agak savjan belul van?
+    noise_10shot_symmetric         distinct_modes kontroll=3.0000     sav=[1.0000, 4.0000]  Benne
+    noise_10shot_symmetric         brain_ratio    kontroll=0.3500     sav=[0.6500, 1.0000]  KIVUL
+    noise_10shot_symmetric         H_Hmax         kontroll=0.3953     sav=[-0.0000, 0.3298]  KIVUL
+    noise_10shot_symmetric         transient_H    kontroll=0.0555     sav=[0.0000, 0.0442]  KIVUL
+    noise_1024shot_symmetric       distinct_modes kontroll=3.0000     sav=[2.0000, 3.0000]  Benne
+    noise_1024shot_symmetric       brain_ratio    kontroll=0.3500     sav=[0.8500, 0.9500]  KIVUL
+    noise_1024shot_symmetric       H_Hmax         kontroll=0.3953     sav=[0.0716, 0.1869]  KIVUL
+    noise_1024shot_symmetric       transient_H    kontroll=0.0555     sav=[0.0048, 0.0261]  KIVUL
+    noise_10shot_floor             distinct_modes kontroll=3.0000     sav=[1.0000, 4.0000]  Benne
+    noise_10shot_floor             brain_ratio    kontroll=0.3500     sav=[0.6500, 1.0000]  KIVUL
+    noise_10shot_floor             H_Hmax         kontroll=0.3953     sav=[-0.0000, 0.3197]  KIVUL
+    noise_10shot_floor             transient_H    kontroll=0.0555     sav=[0.0000, 0.0448]  KIVUL
+    noise_1024shot_floor           distinct_modes kontroll=3.0000     sav=[1.0000, 2.0000]  KIVUL
+    noise_1024shot_floor           brain_ratio    kontroll=0.3500     sav=[0.9000, 1.0000]  KIVUL
+    noise_1024shot_floor           H_Hmax         kontroll=0.3953     sav=[-0.0000, 0.1172]  KIVUL
+    noise_1024shot_floor           transient_H    kontroll=0.0555     sav=[0.0000, 0.0207]  KIVUL
+
+
+-- 20 iteracio, varying_init kor --
+  ag                                     lattogatott modok      Brain-aran             H/Hmax                 atmeneti H            
+  classical                              3  [2, 5]              0.4000  [0.2500, 0.7500] 0.3738  [0.2203, 0.4759] 0.0553  [0.0185, 0.0824]
+  exact                                  3  [2, 5]              0.4000  [0.2500, 0.7500] 0.3738  [0.2203, 0.4759] 0.0553  [0.0185, 0.0824]
+  noise_10shot_symmetric                 2  [1, 4]              0.9000  [0.7000, 1.0000] 0.1172  [-0.0000, 0.3239] 0.0050  [0.0000, 0.0422]
+  noise_1024shot_symmetric               3  [2, 4]              0.8750  [0.7500, 0.9500] 0.1474  [0.0716, 0.2555] 0.0207  [0.0048, 0.0415]
+  noise_10shot_floor                     2  [1, 4]              0.9000  [0.7000, 1.0000] 0.1422  [-0.0000, 0.3142] 0.0104  [0.0000, 0.0454]
+  noise_1024shot_floor                   1  [1, 2]              1.0000  [0.9000, 1.0000] 0  [0, 0]              0  [0, 0]             
+  hardware_residual_20261027T010656Z     3  [2, 4]              0.8000  [0.6500, 0.9000] 0.1994  [0.1172, 0.3197] 0.0261  [0.0100, 0.0474]
+  hardware_residual_20261027T015558Z     2  [1, 3]              0.9500  [0.9000, 0.9500] 0.0716  [-0.0000, 0.1422] 0.0048  [0.0000, 0.0100]
+  hardware_rescaled_20261027T010656Z     3  [2, 4]              0.8000  [0.6500, 0.9000] 0.1994  [0.1172, 0.3197] 0.0261  [0.0100, 0.0474]
+  hardware_rescaled_20261027T015558Z     2  [1, 3]              0.9500  [0.9000, 0.9500] 0.0716  [-0.0000, 0.1422] 0.0048  [0.0000, 0.0100]
+  hardware_permuted_20261027T010656Z     3  [2, 4]              0.8500  [0.7500, 0.9500] 0.1805  [0.0716, 0.2805] 0.0136  [0.0048, 0.0327]
+  hardware_permuted_20261027T015558Z     2  [1, 3]              0.9500  [0.8500, 1.0000] 0.0716  [-0.0000, 0.1525] 0.0048  [0.0000, 0.0155]
+
+  A klasszikus kontroll a zajos agak savjan belul van?
+    noise_10shot_symmetric         distinct_modes kontroll=3.0000     sav=[1.0000, 4.0000]  Benne
+    noise_10shot_symmetric         brain_ratio    kontroll=0.4000     sav=[0.7000, 1.0000]  KIVUL
+    noise_10shot_symmetric         H_Hmax         kontroll=0.3738     sav=[-0.0000, 0.3239]  KIVUL
+    noise_10shot_symmetric         transient_H    kontroll=0.0553     sav=[0.0000, 0.0422]  KIVUL
+    noise_1024shot_symmetric       distinct_modes kontroll=3.0000     sav=[2.0000, 4.0000]  Benne
+    noise_1024shot_symmetric       brain_ratio    kontroll=0.4000     sav=[0.7500, 0.9500]  KIVUL
+    noise_1024shot_symmetric       H_Hmax         kontroll=0.3738     sav=[0.0716, 0.2555]  KIVUL
+    noise_1024shot_symmetric       transient_H    kontroll=0.0553     sav=[0.0048, 0.0415]  KIVUL
+    noise_10shot_floor             distinct_modes kontroll=3.0000     sav=[1.0000, 4.0000]  Benne
+    noise_10shot_floor             brain_ratio    kontroll=0.4000     sav=[0.7000, 1.0000]  KIVUL
+    noise_10shot_floor             H_Hmax         kontroll=0.3738     sav=[-0.0000, 0.3142]  KIVUL
+    noise_10shot_floor             transient_H    kontroll=0.0553     sav=[0.0000, 0.0454]  KIVUL
+    noise_1024shot_floor           distinct_modes kontroll=3.0000     sav=[1.0000, 2.0000]  KIVUL
+    noise_1024shot_floor           brain_ratio    kontroll=0.4000     sav=[0.9000, 1.0000]  KIVUL
+    noise_1024shot_floor           H_Hmax         kontroll=0.3738     sav=[-0.0000, 0.1172]  KIVUL
+    noise_1024shot_floor           transient_H    kontroll=0.0553     sav=[0.0000, 0.0207]  KIVUL
+
+
+-- 68 iteracio, fixed_init kor --
+  ag                                     lattogatott modok      Brain-aran             H/Hmax                 atmeneti H            
+  classical                              6  [6, 6]              0.5588  [0.5588, 0.5588] 0.4828  [0.4828, 0.4828] 0.1077  [0.1077, 0.1077]
+  exact                                  6  [6, 6]              0.5588  [0.5588, 0.5588] 0.4828  [0.4828, 0.4828] 0.1077  [0.1077, 0.1077]
+  noise_10shot_symmetric                 4  [2, 6]              0.8676  [0.7500, 0.9706] 0.1839  [0.0479, 0.3117] 0.0387  [0.0035, 0.0740]
+  noise_1024shot_symmetric               3  [2, 4]              0.9412  [0.9118, 0.9559] 0.0954  [0.0552, 0.1398] 0.0206  [0.0036, 0.0368]
+  noise_10shot_floor                     4  [3, 6]              0.8529  [0.7206, 0.9412] 0.2098  [0.0926, 0.3360] 0.0405  [0.0167, 0.0764]
+  noise_1024shot_floor                   2  [1, 2]              0.9853  [0.9706, 1.0000] 0.0276  [-0.0000, 0.0479] 0.0018  [0.0000, 0.0174]
+  hardware_residual_20261027T003737Z     2  [2, 2]              0.9412  [0.9412, 0.9412] 0.0807  [0.0807, 0.0807] 0.0170  [0.0170, 0.0170]
+  hardware_rescaled_20261027T003737Z     2  [2, 2]              0.9412  [0.9412, 0.9412] 0.0807  [0.0807, 0.0807] 0.0170  [0.0170, 0.0170]
+  hardware_permuted_20261027T003737Z     2  [1, 4]              0.9559  [0.8382, 1.0000] 0.0753  [-0.0000, 0.1998] 0.0169  [0.0000, 0.0396]
+
+  A klasszikus kontroll a zajos agak savjan belul van?
+    noise_10shot_symmetric         distinct_modes kontroll=6.0000     sav=[2.0000, 6.0000]  Benne
+    noise_10shot_symmetric         brain_ratio    kontroll=0.5588     sav=[0.7500, 0.9706]  KIVUL
+    noise_10shot_symmetric         H_Hmax         kontroll=0.4828     sav=[0.0479, 0.3117]  KIVUL
+    noise_10shot_symmetric         transient_H    kontroll=0.1077     sav=[0.0035, 0.0740]  KIVUL
+    noise_1024shot_symmetric       distinct_modes kontroll=6.0000     sav=[2.0000, 4.0000]  KIVUL
+    noise_1024shot_symmetric       brain_ratio    kontroll=0.5588     sav=[0.9118, 0.9559]  KIVUL
+    noise_1024shot_symmetric       H_Hmax         kontroll=0.4828     sav=[0.0552, 0.1398]  KIVUL
+    noise_1024shot_symmetric       transient_H    kontroll=0.1077     sav=[0.0036, 0.0368]  KIVUL
+    noise_10shot_floor             distinct_modes kontroll=6.0000     sav=[3.0000, 6.0000]  Benne
+    noise_10shot_floor             brain_ratio    kontroll=0.5588     sav=[0.7206, 0.9412]  KIVUL
+    noise_10shot_floor             H_Hmax         kontroll=0.4828     sav=[0.0926, 0.3360]  KIVUL
+    noise_10shot_floor             transient_H    kontroll=0.1077     sav=[0.0167, 0.0764]  KIVUL
+    noise_1024shot_floor           distinct_modes kontroll=6.0000     sav=[1.0000, 2.0000]  KIVUL
+    noise_1024shot_floor           brain_ratio    kontroll=0.5588     sav=[0.9706, 1.0000]  KIVUL
+    noise_1024shot_floor           H_Hmax         kontroll=0.4828     sav=[-0.0000, 0.0479]  KIVUL
+    noise_1024shot_floor           transient_H    kontroll=0.1077     sav=[0.0000, 0.0174]  KIVUL
+
+
+-- 68 iteracio, varying_init kor --
+  ag                                     lattogatott modok      Brain-aran             H/Hmax                 atmeneti H            
+  classical                              5.5000  [5.0000, 7.0000] 0.6324  [0.5735, 0.7794] 0.4121  [0.1968, 0.4590] 0.0884  [0.0516, 0.1092]
+  exact                                  5.5000  [5.0000, 7.0000] 0.6324  [0.5735, 0.7794] 0.4121  [0.1968, 0.4590] 0.0884  [0.0516, 0.1092]
+  noise_10shot_symmetric                 4  [2, 6]              0.8824  [0.7500, 0.9706] 0.1720  [0.0479, 0.3217] 0.0362  [0.0018, 0.0739]
+  noise_1024shot_symmetric               3  [2, 4]              0.9559  [0.8971, 0.9706] 0.0753  [0.0479, 0.1500] 0.0178  [0.0018, 0.0370]
+  noise_10shot_floor                     5  [2, 6]              0.8529  [0.7647, 0.9559] 0.2008  [0.0552, 0.3065] 0.0390  [0.0036, 0.0702]
+  noise_1024shot_floor                   1  [1, 2]              1.0000  [0.9706, 1.0000] 0  [0, 0]              0  [0, 0]             
+  hardware_residual_20261027T003737Z     2  [1, 3]              0.9706  [0.9265, 0.9853] 0.0552  [-0.0000, 0.0926] 0.0036  [0.0000, 0.0175]
+  hardware_rescaled_20261027T003737Z     2  [1, 3]              0.9706  [0.9265, 0.9853] 0.0552  [-0.0000, 0.0926] 0.0036  [0.0000, 0.0175]
+  hardware_permuted_20261027T003737Z     2  [1, 4]              0.9706  [0.8529, 1.0000] 0.0479  [-0.0000, 0.1830] 0.0058  [0.0000, 0.0349]
+
+  A klasszikus kontroll a zajos agak savjan belul van?
+    noise_10shot_symmetric         distinct_modes kontroll=5.5000     sav=[2.0000, 6.0000]  Benne
+    noise_10shot_symmetric         brain_ratio    kontroll=0.6324     sav=[0.7500, 0.9706]  KIVUL
+    noise_10shot_symmetric         H_Hmax         kontroll=0.4121     sav=[0.0479, 0.3217]  KIVUL
+    noise_10shot_symmetric         transient_H    kontroll=0.0884     sav=[0.0018, 0.0739]  KIVUL
+    noise_1024shot_symmetric       distinct_modes kontroll=5.5000     sav=[2.0000, 4.0000]  KIVUL
+    noise_1024shot_symmetric       brain_ratio    kontroll=0.6324     sav=[0.8971, 0.9706]  KIVUL
+    noise_1024shot_symmetric       H_Hmax         kontroll=0.4121     sav=[0.0479, 0.1500]  KIVUL
+    noise_1024shot_symmetric       transient_H    kontroll=0.0884     sav=[0.0018, 0.0370]  KIVUL
+    noise_10shot_floor             distinct_modes kontroll=5.5000     sav=[2.0000, 6.0000]  Benne
+    noise_10shot_floor             brain_ratio    kontroll=0.6324     sav=[0.7647, 0.9559]  KIVUL
+    noise_10shot_floor             H_Hmax         kontroll=0.4121     sav=[0.0552, 0.3065]  KIVUL
+    noise_10shot_floor             transient_H    kontroll=0.0884     sav=[0.0036, 0.0702]  KIVUL
+    noise_1024shot_floor           distinct_modes kontroll=5.5000     sav=[1.0000, 2.0000]  KIVUL
+    noise_1024shot_floor           brain_ratio    kontroll=0.6324     sav=[0.9706, 1.0000]  KIVUL
+    noise_1024shot_floor           H_Hmax         kontroll=0.4121     sav=[-0.0000, 0.0479]  KIVUL
+    noise_1024shot_floor           transient_H    kontroll=0.0884     sav=[0.0000, 0.0174]  KIVUL
+
+==============================================================================
+A LEGACY SOLVERREL (a hardver ezzel futott)
+==============================================================================
+
+-- 20 iteracio, fixed_init kor --
+  ag                                     lattogatott modok      Brain-aran             H/Hmax                 atmeneti H            
+  classical                              1  [1, 1]              1  [1, 1]              0  [0, 0]              0  [0, 0]             
+  exact                                  1  [1, 1]              1  [1, 1]              0  [0, 0]              0  [0, 0]             
+  noise_10shot_symmetric                 2  [1, 3]              0.9500  [0.6500, 1.0000] 0.0716  [-0.0000, 0.2482] 0.0048  [0.0000, 0.0304]
+  noise_1024shot_symmetric               1  [1, 1]              1  [1, 1]              0  [0, 0]              0  [0, 0]             
+  noise_10shot_floor                     2  [1, 3]              0.9000  [0.6000, 1.0000] 0.1172  [-0.0000, 0.2500] 0.0100  [0.0000, 0.0311]
+  noise_1024shot_floor                   1  [1, 1]              1  [1, 1]              0  [0, 0]              0  [0, 0]             
+  hardware_residual_20261027T010656Z     5  [5, 5]              0.3500  [0.3500, 0.3500] 0.5160  [0.5160, 0.5160] 0.0899  [0.0899, 0.0899]
+  hardware_residual_20261027T015558Z     3  [3, 3]              0.2500  [0.2500, 0.2500] 0.3849  [0.3849, 0.3849] 0.0702  [0.0702, 0.0702]
+  hardware_rescaled_20261027T010656Z     1  [1, 1]              1  [1, 1]              0  [0, 0]              0  [0, 0]             
+  hardware_rescaled_20261027T015558Z     1  [1, 1]              1  [1, 1]              0  [0, 0]              0  [0, 0]             
+  hardware_permuted_20261027T010656Z     5  [4, 6]              0.3500  [0.1500, 0.6000] 0.5226  [0.4119, 0.6022] 0.0713  [0.0378, 0.1027]
+  hardware_permuted_20261027T015558Z     3  [3, 3]              0.3000  [0.1500, 0.5000] 0.3782  [0.3197, 0.3953] 0.0590  [0.0359, 0.0701]
+
+  A klasszikus kontroll a zajos agak savjan belul van?
+    noise_10shot_symmetric         distinct_modes kontroll=1.0000     sav=[1.0000, 3.0000]  Benne
+    noise_10shot_symmetric         brain_ratio    kontroll=1.0000     sav=[0.6500, 1.0000]  Benne
+    noise_10shot_symmetric         H_Hmax         kontroll=-0.0000    sav=[-0.0000, 0.2482]  Benne
+    noise_10shot_symmetric         transient_H    kontroll=0.0000     sav=[0.0000, 0.0304]  Benne
+    noise_1024shot_symmetric       distinct_modes kontroll=1.0000     sav=[1.0000, 1.0000]  Benne
+    noise_1024shot_symmetric       brain_ratio    kontroll=1.0000     sav=[1.0000, 1.0000]  Benne
+    noise_1024shot_symmetric       H_Hmax         kontroll=-0.0000    sav=[-0.0000, -0.0000]  Benne
+    noise_1024shot_symmetric       transient_H    kontroll=0.0000     sav=[0.0000, 0.0000]  Benne
+    noise_10shot_floor             distinct_modes kontroll=1.0000     sav=[1.0000, 3.0000]  Benne
+    noise_10shot_floor             brain_ratio    kontroll=1.0000     sav=[0.6000, 1.0000]  Benne
+    noise_10shot_floor             H_Hmax         kontroll=-0.0000    sav=[-0.0000, 0.2500]  Benne
+    noise_10shot_floor             transient_H    kontroll=0.0000     sav=[0.0000, 0.0311]  Benne
+    noise_1024shot_floor           distinct_modes kontroll=1.0000     sav=[1.0000, 1.0000]  Benne
+    noise_1024shot_floor           brain_ratio    kontroll=1.0000     sav=[1.0000, 1.0000]  Benne
+    noise_1024shot_floor           H_Hmax         kontroll=-0.0000    sav=[-0.0000, -0.0000]  Benne
+    noise_1024shot_floor           transient_H    kontroll=0.0000     sav=[0.0000, 0.0000]  Benne
+
+
+-- 20 iteracio, varying_init kor --
+  ag                                     lattogatott modok      Brain-aran             H/Hmax                 atmeneti H            
+  classical                              1  [1, 1]              1  [1, 1]              0  [0, 0]              0  [0, 0]             
+  exact                                  1  [1, 1]              1  [1, 1]              0  [0, 0]              0  [0, 0]             
+  noise_10shot_symmetric                 2  [1, 3]              0.9500  [0.6500, 1.0000] 0.0716  [-0.0000, 0.2500] 0.0048  [0.0000, 0.0300]
+  noise_1024shot_symmetric               1  [1, 1]              1  [1, 1]              0  [0, 0]              0  [0, 0]             
+  noise_10shot_floor                     2  [1, 3]              0.9000  [0.6000, 1.0000] 0.1172  [-0.0000, 0.2892] 0.0080  [0.0000, 0.0348]
+  noise_1024shot_floor                   1  [1, 1]              1  [1, 1]              0  [0, 0]              0  [0, 0]             
+  hardware_residual_20261027T010656Z     5  [5, 6]              0.3500  [0.3000, 0.4000] 0.5226  [0.5022, 0.5476] 0.0840  [0.0684, 0.0951]
+  hardware_residual_20261027T015558Z     3  [3, 3]              0.2500  [0.2500, 0.2500] 0.3849  [0.3849, 0.3849] 0.0702  [0.0702, 0.0702]
+  hardware_rescaled_20261027T010656Z     1  [1, 1]              1  [1, 1]              0  [0, 0]              0  [0, 0]             
+  hardware_rescaled_20261027T015558Z     1  [1, 1]              1  [1, 1]              0  [0, 0]              0  [0, 0]             
+  hardware_permuted_20261027T010656Z     5  [4, 6]              0.3500  [0.1500, 0.5500] 0.5221  [0.4003, 0.6058] 0.0655  [0.0362, 0.1034]
+  hardware_permuted_20261027T015558Z     3  [3, 3]              0.3000  [0.1500, 0.4500] 0.3782  [0.3197, 0.3953] 0.0579  [0.0368, 0.0702]
+
+  A klasszikus kontroll a zajos agak savjan belul van?
+    noise_10shot_symmetric         distinct_modes kontroll=1.0000     sav=[1.0000, 3.0000]  Benne
+    noise_10shot_symmetric         brain_ratio    kontroll=1.0000     sav=[0.6500, 1.0000]  Benne
+    noise_10shot_symmetric         H_Hmax         kontroll=-0.0000    sav=[-0.0000, 0.2500]  Benne
+    noise_10shot_symmetric         transient_H    kontroll=0.0000     sav=[0.0000, 0.0300]  Benne
+    noise_1024shot_symmetric       distinct_modes kontroll=1.0000     sav=[1.0000, 1.0000]  Benne
+    noise_1024shot_symmetric       brain_ratio    kontroll=1.0000     sav=[1.0000, 1.0000]  Benne
+    noise_1024shot_symmetric       H_Hmax         kontroll=-0.0000    sav=[-0.0000, -0.0000]  Benne
+    noise_1024shot_symmetric       transient_H    kontroll=0.0000     sav=[0.0000, 0.0000]  Benne
+    noise_10shot_floor             distinct_modes kontroll=1.0000     sav=[1.0000, 3.0000]  Benne
+    noise_10shot_floor             brain_ratio    kontroll=1.0000     sav=[0.6000, 1.0000]  Benne
+    noise_10shot_floor             H_Hmax         kontroll=-0.0000    sav=[-0.0000, 0.2892]  Benne
+    noise_10shot_floor             transient_H    kontroll=0.0000     sav=[0.0000, 0.0348]  Benne
+    noise_1024shot_floor           distinct_modes kontroll=1.0000     sav=[1.0000, 1.0000]  Benne
+    noise_1024shot_floor           brain_ratio    kontroll=1.0000     sav=[1.0000, 1.0000]  Benne
+    noise_1024shot_floor           H_Hmax         kontroll=-0.0000    sav=[-0.0000, -0.0000]  Benne
+    noise_1024shot_floor           transient_H    kontroll=0.0000     sav=[0.0000, 0.0000]  Benne
+
+
+-- 68 iteracio, fixed_init kor --
+  ag                                     lattogatott modok      Brain-aran             H/Hmax                 atmeneti H            
+  classical                              1  [1, 1]              1  [1, 1]              0  [0, 0]              0  [0, 0]             
+  exact                                  1  [1, 1]              1  [1, 1]              0  [0, 0]              0  [0, 0]             
+  noise_10shot_symmetric                 2  [1, 3]              0.9265  [0.7941, 1.0000] 0.0947  [-0.0000, 0.2361] 0.0180  [0.0000, 0.0406]
+  noise_1024shot_symmetric               1  [1, 1]              1  [1, 1]              0  [0, 0]              0  [0, 0]             
+  noise_10shot_floor                     3  [2, 4]              0.8824  [0.7206, 0.9706] 0.1418  [0.0479, 0.2740] 0.0212  [0.0031, 0.0428]
+  noise_1024shot_floor                   1  [1, 1]              1  [1, 1]              0  [0, 0]              0  [0, 0]             
+  hardware_residual_20261027T003737Z     7  [7, 7]              0.3971  [0.3971, 0.3971] 0.6141  [0.6141, 0.6141] 0.1220  [0.1220, 0.1220]
+  hardware_rescaled_20261027T003737Z     1  [1, 1]              1  [1, 1]              0  [0, 0]              0  [0, 0]             
+  hardware_permuted_20261027T003737Z     5  [3, 6]              0.3529  [0.1618, 0.5735] 0.4313  [0.3192, 0.5368] 0.0547  [0.0281, 0.0920]
+
+  A klasszikus kontroll a zajos agak savjan belul van?
+    noise_10shot_symmetric         distinct_modes kontroll=1.0000     sav=[1.0000, 3.0000]  Benne
+    noise_10shot_symmetric         brain_ratio    kontroll=1.0000     sav=[0.7941, 1.0000]  Benne
+    noise_10shot_symmetric         H_Hmax         kontroll=-0.0000    sav=[-0.0000, 0.2361]  Benne
+    noise_10shot_symmetric         transient_H    kontroll=0.0000     sav=[0.0000, 0.0406]  Benne
+    noise_1024shot_symmetric       distinct_modes kontroll=1.0000     sav=[1.0000, 1.0000]  Benne
+    noise_1024shot_symmetric       brain_ratio    kontroll=1.0000     sav=[1.0000, 1.0000]  Benne
+    noise_1024shot_symmetric       H_Hmax         kontroll=-0.0000    sav=[-0.0000, -0.0000]  Benne
+    noise_1024shot_symmetric       transient_H    kontroll=0.0000     sav=[0.0000, 0.0000]  Benne
+    noise_10shot_floor             distinct_modes kontroll=1.0000     sav=[2.0000, 4.0000]  KIVUL
+    noise_10shot_floor             brain_ratio    kontroll=1.0000     sav=[0.7206, 0.9706]  KIVUL
+    noise_10shot_floor             H_Hmax         kontroll=-0.0000    sav=[0.0479, 0.2740]  KIVUL
+    noise_10shot_floor             transient_H    kontroll=0.0000     sav=[0.0031, 0.0428]  KIVUL
+    noise_1024shot_floor           distinct_modes kontroll=1.0000     sav=[1.0000, 1.0000]  Benne
+    noise_1024shot_floor           brain_ratio    kontroll=1.0000     sav=[1.0000, 1.0000]  Benne
+    noise_1024shot_floor           H_Hmax         kontroll=-0.0000    sav=[-0.0000, -0.0000]  Benne
+    noise_1024shot_floor           transient_H    kontroll=0.0000     sav=[0.0000, 0.0000]  Benne
+
+
+-- 68 iteracio, varying_init kor --
+  ag                                     lattogatott modok      Brain-aran             H/Hmax                 atmeneti H            
+  classical                              1  [1, 1]              1  [1, 1]              0  [0, 0]              0  [0, 0]             
+  exact                                  1  [1, 1]              1  [1, 1]              0  [0, 0]              0  [0, 0]             
+  noise_10shot_symmetric                 2  [1, 4]              0.9265  [0.7941, 1.0000] 0.1076  [-0.0000, 0.2349] 0.0190  [0.0000, 0.0401]
+  noise_1024shot_symmetric               1  [1, 1]              1  [1, 1]              0  [0, 0]              0  [0, 0]             
+  noise_10shot_floor                     3  [2, 4]              0.8824  [0.7500, 0.9853] 0.1458  [0.0276, 0.2574] 0.0215  [0.0018, 0.0427]
+  noise_1024shot_floor                   1  [1, 1]              1  [1, 1]              0  [0, 0]              0  [0, 0]             
+  hardware_residual_20261027T003737Z     7  [6, 7]              0.5147  [0.3824, 0.6324] 0.4993  [0.4271, 0.5686] 0.0843  [0.0725, 0.1118]
+  hardware_rescaled_20261027T003737Z     1  [1, 1]              1  [1, 1]              0  [0, 0]              0  [0, 0]             
+  hardware_permuted_20261027T003737Z     5  [3, 6]              0.3529  [0.1618, 0.6029] 0.4364  [0.3381, 0.5466] 0.0557  [0.0316, 0.0895]
+
+  A klasszikus kontroll a zajos agak savjan belul van?
+    noise_10shot_symmetric         distinct_modes kontroll=1.0000     sav=[1.0000, 4.0000]  Benne
+    noise_10shot_symmetric         brain_ratio    kontroll=1.0000     sav=[0.7941, 1.0000]  Benne
+    noise_10shot_symmetric         H_Hmax         kontroll=-0.0000    sav=[-0.0000, 0.2349]  Benne
+    noise_10shot_symmetric         transient_H    kontroll=0.0000     sav=[0.0000, 0.0401]  Benne
+    noise_1024shot_symmetric       distinct_modes kontroll=1.0000     sav=[1.0000, 1.0000]  Benne
+    noise_1024shot_symmetric       brain_ratio    kontroll=1.0000     sav=[1.0000, 1.0000]  Benne
+    noise_1024shot_symmetric       H_Hmax         kontroll=-0.0000    sav=[-0.0000, -0.0000]  Benne
+    noise_1024shot_symmetric       transient_H    kontroll=0.0000     sav=[0.0000, 0.0000]  Benne
+    noise_10shot_floor             distinct_modes kontroll=1.0000     sav=[2.0000, 4.0000]  KIVUL
+    noise_10shot_floor             brain_ratio    kontroll=1.0000     sav=[0.7500, 0.9853]  KIVUL
+    noise_10shot_floor             H_Hmax         kontroll=-0.0000    sav=[0.0276, 0.2574]  KIVUL
+    noise_10shot_floor             transient_H    kontroll=0.0000     sav=[0.0018, 0.0427]  KIVUL
+    noise_1024shot_floor           distinct_modes kontroll=1.0000     sav=[1.0000, 1.0000]  Benne
+    noise_1024shot_floor           brain_ratio    kontroll=1.0000     sav=[1.0000, 1.0000]  Benne
+    noise_1024shot_floor           H_Hmax         kontroll=-0.0000    sav=[-0.0000, -0.0000]  Benne
+    noise_1024shot_floor           transient_H    kontroll=0.0000     sav=[0.0000, 0.0000]  Benne
+
+==============================================================================
+A HARDVERES FUTASOK HELYE A SAVBAN
+==============================================================================
+
+A hardver a LEGACY solverrel futott, ezert a legacy savba kerul.
+A 'szazalek' a hardver merőszamanak helye a CPU-ag savjaban.
+
+  20261027T010656Z  (20 iteracio, raw visszacsatolas)
+    current solver:
+      lattogatott modok = 3 | Brain-aran = 0.6500 | H/Hmax = 0.2853 | atmeneti H = 0.0319
+      fixed_init kor:
+        classical                              distinct_modes=100.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
+        exact                                  distinct_modes=100.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
+        hardware_permuted_20261027T010656Z     distinct_modes=99.5%  brain_ratio=3.5%  H_Hmax=93.0%  transient_H=88.0%
+        hardware_permuted_20261027T015558Z     distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        hardware_rescaled_20261027T010656Z     distinct_modes=100.0%  brain_ratio=100.0%  H_Hmax=100.0%  transient_H=100.0%
+        hardware_rescaled_20261027T015558Z     distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        hardware_residual_20261027T010656Z     distinct_modes=100.0%  brain_ratio=100.0%  H_Hmax=100.0%  transient_H=100.0%
+        hardware_residual_20261027T015558Z     distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        noise_1024shot_floor                   distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        noise_1024shot_symmetric               distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=99.5%
+        noise_10shot_floor                     distinct_modes=93.5%  brain_ratio=5.5%  H_Hmax=89.5%  transient_H=85.5%
+        noise_10shot_symmetric                 distinct_modes=92.0%  brain_ratio=5.0%  H_Hmax=89.5%  transient_H=84.5%
+      varying_init kor:
+        classical                              distinct_modes=66.7%  brain_ratio=90.0%  H_Hmax=13.3%  transient_H=20.0%
+        exact                                  distinct_modes=66.7%  brain_ratio=90.0%  H_Hmax=13.3%  transient_H=20.0%
+        hardware_permuted_20261027T010656Z     distinct_modes=92.8%  brain_ratio=0.6%  H_Hmax=95.0%  transient_H=92.8%
+        hardware_permuted_20261027T015558Z     distinct_modes=98.9%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        hardware_rescaled_20261027T010656Z     distinct_modes=90.0%  brain_ratio=10.0%  H_Hmax=76.7%  transient_H=73.3%
+        hardware_rescaled_20261027T015558Z     distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        hardware_residual_20261027T010656Z     distinct_modes=90.0%  brain_ratio=10.0%  H_Hmax=76.7%  transient_H=73.3%
+        hardware_residual_20261027T015558Z     distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        noise_1024shot_floor                   distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        noise_1024shot_symmetric               distinct_modes=92.8%  brain_ratio=0.0%  H_Hmax=97.2%  transient_H=88.3%
+        noise_10shot_floor                     distinct_modes=85.6%  brain_ratio=4.4%  H_Hmax=89.4%  transient_H=83.3%
+        noise_10shot_symmetric                 distinct_modes=90.6%  brain_ratio=3.3%  H_Hmax=91.7%  transient_H=86.7%
+    legacy solver:
+      lattogatott modok = 5 | Brain-aran = 0.3500 | H/Hmax = 0.5160 | atmeneti H = 0.0899
+      fixed_init kor:
+        classical                              distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        exact                                  distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        hardware_permuted_20261027T010656Z     distinct_modes=59.5%  brain_ratio=55.5%  H_Hmax=46.5%  transient_H=84.0%
+        hardware_permuted_20261027T015558Z     distinct_modes=100.0%  brain_ratio=72.0%  H_Hmax=100.0%  transient_H=100.0%
+        hardware_rescaled_20261027T010656Z     distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        hardware_rescaled_20261027T015558Z     distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        hardware_residual_20261027T010656Z     distinct_modes=100.0%  brain_ratio=100.0%  H_Hmax=100.0%  transient_H=100.0%
+        hardware_residual_20261027T015558Z     distinct_modes=100.0%  brain_ratio=100.0%  H_Hmax=100.0%  transient_H=100.0%
+        noise_1024shot_floor                   distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        noise_1024shot_symmetric               distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        noise_10shot_floor                     distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        noise_10shot_symmetric                 distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+      varying_init kor:
+        classical                              distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        exact                                  distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        hardware_permuted_20261027T010656Z     distinct_modes=61.1%  brain_ratio=55.6%  H_Hmax=47.2%  transient_H=81.1%
+        hardware_permuted_20261027T015558Z     distinct_modes=100.0%  brain_ratio=74.4%  H_Hmax=100.0%  transient_H=100.0%
+        hardware_rescaled_20261027T010656Z     distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        hardware_rescaled_20261027T015558Z     distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        hardware_residual_20261027T010656Z     distinct_modes=56.7%  brain_ratio=60.0%  H_Hmax=46.7%  transient_H=80.0%
+        hardware_residual_20261027T015558Z     distinct_modes=100.0%  brain_ratio=100.0%  H_Hmax=100.0%  transient_H=100.0%
+        noise_1024shot_floor                   distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        noise_1024shot_symmetric               distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        noise_10shot_floor                     distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        noise_10shot_symmetric                 distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+
+  20261027T015558Z  (20 iteracio, raw visszacsatolas)
+    current solver:
+      lattogatott modok = 2 | Brain-aran = 0.9000 | H/Hmax = 0.1172 | atmeneti H = 0.0082
+      fixed_init kor:
+        classical                              distinct_modes=0.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
+        exact                                  distinct_modes=0.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
+        hardware_permuted_20261027T010656Z     distinct_modes=64.0%  brain_ratio=87.0%  H_Hmax=24.0%  transient_H=23.5%
+        hardware_permuted_20261027T015558Z     distinct_modes=83.0%  brain_ratio=52.0%  H_Hmax=76.0%  transient_H=73.0%
+        hardware_rescaled_20261027T010656Z     distinct_modes=0.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
+        hardware_rescaled_20261027T015558Z     distinct_modes=100.0%  brain_ratio=100.0%  H_Hmax=100.0%  transient_H=100.0%
+        hardware_residual_20261027T010656Z     distinct_modes=0.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
+        hardware_residual_20261027T015558Z     distinct_modes=100.0%  brain_ratio=100.0%  H_Hmax=100.0%  transient_H=100.0%
+        noise_1024shot_floor                   distinct_modes=95.0%  brain_ratio=28.5%  H_Hmax=95.0%  transient_H=76.5%
+        noise_1024shot_symmetric               distinct_modes=72.5%  brain_ratio=80.5%  H_Hmax=64.5%  transient_H=39.5%
+        noise_10shot_floor                     distinct_modes=45.0%  brain_ratio=81.5%  H_Hmax=29.0%  transient_H=22.0%
+        noise_10shot_symmetric                 distinct_modes=62.5%  brain_ratio=57.0%  H_Hmax=54.0%  transient_H=48.0%
+      varying_init kor:
+        classical                              distinct_modes=6.7%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
+        exact                                  distinct_modes=6.7%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
+        hardware_permuted_20261027T010656Z     distinct_modes=43.3%  brain_ratio=85.6%  H_Hmax=28.9%  transient_H=29.4%
+        hardware_permuted_20261027T015558Z     distinct_modes=86.7%  brain_ratio=26.7%  H_Hmax=85.6%  transient_H=83.3%
+        hardware_rescaled_20261027T010656Z     distinct_modes=30.0%  brain_ratio=100.0%  H_Hmax=6.7%  transient_H=3.3%
+        hardware_rescaled_20261027T015558Z     distinct_modes=76.7%  brain_ratio=43.3%  H_Hmax=73.3%  transient_H=73.3%
+        hardware_residual_20261027T010656Z     distinct_modes=30.0%  brain_ratio=100.0%  H_Hmax=6.7%  transient_H=3.3%
+        hardware_residual_20261027T015558Z     distinct_modes=76.7%  brain_ratio=43.3%  H_Hmax=73.3%  transient_H=73.3%
+        noise_1024shot_floor                   distinct_modes=96.7%  brain_ratio=9.4%  H_Hmax=96.7%  transient_H=93.3%
+        noise_1024shot_symmetric               distinct_modes=49.4%  brain_ratio=90.0%  H_Hmax=34.4%  transient_H=29.4%
+        noise_10shot_floor                     distinct_modes=52.2%  brain_ratio=62.8%  H_Hmax=48.9%  transient_H=42.2%
+        noise_10shot_symmetric                 distinct_modes=63.9%  brain_ratio=52.8%  H_Hmax=56.1%  transient_H=53.9%
+    legacy solver:
+      lattogatott modok = 3 | Brain-aran = 0.2500 | H/Hmax = 0.3849 | atmeneti H = 0.0702
+      fixed_init kor:
+        classical                              distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        exact                                  distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        hardware_permuted_20261027T010656Z     distinct_modes=1.0%  brain_ratio=23.5%  H_Hmax=3.0%  transient_H=47.5%
+        hardware_permuted_20261027T015558Z     distinct_modes=99.5%  brain_ratio=36.0%  H_Hmax=72.5%  transient_H=95.0%
+        hardware_rescaled_20261027T010656Z     distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        hardware_rescaled_20261027T015558Z     distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        hardware_residual_20261027T010656Z     distinct_modes=0.0%  brain_ratio=0.0%  H_Hmax=0.0%  transient_H=0.0%
+        hardware_residual_20261027T015558Z     distinct_modes=100.0%  brain_ratio=100.0%  H_Hmax=100.0%  transient_H=100.0%
+        noise_1024shot_floor                   distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        noise_1024shot_symmetric               distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        noise_10shot_floor                     distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=99.5%  transient_H=100.0%
+        noise_10shot_symmetric                 distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+      varying_init kor:
+        classical                              distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        exact                                  distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        hardware_permuted_20261027T010656Z     distinct_modes=0.6%  brain_ratio=25.6%  H_Hmax=1.7%  transient_H=56.1%
+        hardware_permuted_20261027T015558Z     distinct_modes=98.9%  brain_ratio=41.1%  H_Hmax=70.0%  transient_H=95.6%
+        hardware_rescaled_20261027T010656Z     distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        hardware_rescaled_20261027T015558Z     distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        hardware_residual_20261027T010656Z     distinct_modes=0.0%  brain_ratio=0.0%  H_Hmax=0.0%  transient_H=10.0%
+        hardware_residual_20261027T015558Z     distinct_modes=100.0%  brain_ratio=100.0%  H_Hmax=100.0%  transient_H=100.0%
+        noise_1024shot_floor                   distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        noise_1024shot_symmetric               distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        noise_10shot_floor                     distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        noise_10shot_symmetric                 distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+
+  20261027T003737Z  (68 iteracio, corrected visszacsatolas)
+    current solver:
+      lattogatott modok = 2 | Brain-aran = 0.9412 | H/Hmax = 0.0807 | atmeneti H = 0.0170
+      fixed_init kor:
+        classical                              distinct_modes=0.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
+        exact                                  distinct_modes=0.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
+        hardware_permuted_20261027T003737Z     distinct_modes=64.5%  brain_ratio=49.0%  H_Hmax=59.5%  transient_H=51.0%
+        hardware_rescaled_20261027T003737Z     distinct_modes=100.0%  brain_ratio=100.0%  H_Hmax=100.0%  transient_H=100.0%
+        hardware_residual_20261027T003737Z     distinct_modes=100.0%  brain_ratio=100.0%  H_Hmax=100.0%  transient_H=100.0%
+        noise_1024shot_floor                   distinct_modes=95.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=76.5%
+        noise_1024shot_symmetric               distinct_modes=11.5%  brain_ratio=73.5%  H_Hmax=26.5%  transient_H=17.5%
+        noise_10shot_floor                     distinct_modes=1.0%  brain_ratio=98.0%  H_Hmax=2.0%  transient_H=5.0%
+        noise_10shot_symmetric                 distinct_modes=8.5%  brain_ratio=85.0%  H_Hmax=15.0%  transient_H=12.5%
+      varying_init kor:
+        classical                              distinct_modes=0.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
+        exact                                  distinct_modes=0.0%  brain_ratio=100.0%  H_Hmax=0.0%  transient_H=0.0%
+        hardware_permuted_20261027T003737Z     distinct_modes=62.8%  brain_ratio=34.4%  H_Hmax=70.6%  transient_H=60.6%
+        hardware_rescaled_20261027T003737Z     distinct_modes=60.0%  brain_ratio=20.0%  H_Hmax=86.7%  transient_H=90.0%
+        hardware_residual_20261027T003737Z     distinct_modes=60.0%  brain_ratio=20.0%  H_Hmax=86.7%  transient_H=90.0%
+        noise_1024shot_floor                   distinct_modes=96.7%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=93.3%
+        noise_1024shot_symmetric               distinct_modes=20.0%  brain_ratio=39.4%  H_Hmax=57.2%  transient_H=30.6%
+        noise_10shot_floor                     distinct_modes=5.0%  brain_ratio=92.8%  H_Hmax=7.2%  transient_H=12.8%
+        noise_10shot_symmetric                 distinct_modes=9.4%  brain_ratio=83.3%  H_Hmax=17.2%  transient_H=16.7%
+    legacy solver:
+      lattogatott modok = 7 | Brain-aran = 0.3971 | H/Hmax = 0.6141 | atmeneti H = 0.1220
+      fixed_init kor:
+        classical                              distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        exact                                  distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        hardware_permuted_20261027T003737Z     distinct_modes=100.0%  brain_ratio=62.0%  H_Hmax=100.0%  transient_H=100.0%
+        hardware_rescaled_20261027T003737Z     distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        hardware_residual_20261027T003737Z     distinct_modes=100.0%  brain_ratio=100.0%  H_Hmax=100.0%  transient_H=100.0%
+        noise_1024shot_floor                   distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        noise_1024shot_symmetric               distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        noise_10shot_floor                     distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        noise_10shot_symmetric                 distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+      varying_init kor:
+        classical                              distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        exact                                  distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        hardware_permuted_20261027T003737Z     distinct_modes=100.0%  brain_ratio=63.9%  H_Hmax=100.0%  transient_H=100.0%
+        hardware_rescaled_20261027T003737Z     distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        hardware_residual_20261027T003737Z     distinct_modes=100.0%  brain_ratio=13.3%  H_Hmax=100.0%  transient_H=100.0%
+        noise_1024shot_floor                   distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        noise_1024shot_symmetric               distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        noise_10shot_floor                     distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+        noise_10shot_symmetric                 distinct_modes=100.0%  brain_ratio=0.0%  H_Hmax=100.0%  transient_H=100.0%
+
+==============================================================================
+KOVETKEZTETES
+==============================================================================
+
+  current solver, 20 iteracio, fixed_init kor: a klasszikus kontroll a zajos agak savjan KIVUL van
+  current solver, 20 iteracio, varying_init kor: a klasszikus kontroll a zajos agak savjan KIVUL van
+  current solver, 68 iteracio, fixed_init kor: a klasszikus kontroll a zajos agak savjan KIVUL van
+  current solver, 68 iteracio, varying_init kor: a klasszikus kontroll a zajos agak savjan KIVUL van
+  legacy solver, 20 iteracio, fixed_init kor: a klasszikus kontroll a zajos agak savjan BELUL van
+  legacy solver, 20 iteracio, varying_init kor: a klasszikus kontroll a zajos agak savjan BELUL van
+  legacy solver, 68 iteracio, fixed_init kor: a klasszikus kontroll a zajos agak savjan KIVUL van
+  legacy solver, 68 iteracio, varying_init kor: a klasszikus kontroll a zajos agak savjan KIVUL van
+
+A nyers adatok: measurement_cpu/control_comparison.json
+
