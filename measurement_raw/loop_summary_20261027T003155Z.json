@@ -8,7 +8,6 @@
  "total_qpu_seconds": 0.0,
  "total_wall_seconds": 123.60073733329773,
  "usage_before": {
-  "instance_id": "crn:v1:bluemix:public:quantum-computing:us-east:a/80849ad63b404c24b359b0a41e60eb3f:c2953219-1278-4712-b94b-2ea6d5689438::",
   "plan_id": "850b21a7-71de-4e53-9441-1abdd202f35d",
   "usage_consumed_seconds": 229,
   "usage_consumed_ru": 3.491614,
@@ -22,7 +21,6 @@
   "usage_remaining_seconds": 371
  },
  "usage_after": {
-  "instance_id": "crn:v1:bluemix:public:quantum-computing:us-east:a/80849ad63b404c24b359b0a41e60eb3f:c2953219-1278-4712-b94b-2ea6d5689438::",
   "plan_id": "850b21a7-71de-4e53-9441-1abdd202f35d",
   "usage_consumed_seconds": 238,
   "usage_consumed_ru": 3.629974,
