@@ -152,16 +152,44 @@ def coherence(psi):
 # A GPE -> (A, f, phi) KINYERES
 # A GPE hexagonalis 16 modjabol:
 #   A    : a dominancia (max E) a maximumhoz kepest -> [0,1]
-#   f    : az energiákkal sulyozott atlagos MOD-INDEX / 16 -> [0,1]
+#   f    : az energiákkal sulyozott atlagos MOD-INDEX -> [0,15]
 #   phi  : az energiákkal sulyozott atlagos HEXAGONALIS SZOG / 2pi -> [0,1]
 # Majd a KODOLASI TARTOMANYBA:
-#   A_kod = pi * A      -> P(q0=1) = sin^2(A_kod/2)
-#   f_kod = 0.5 * f     -> P(q0=1) = sin^2(pi*f_kod)   [dekodalas [0,0.5]]
-#   ph_kod = pi * phi   -> P(q0=1) = sin^2(ph_kod/2)
+#   A_kod = pi * A      -> P(q0=1) = sin^2(A_kod/2)          [A_kod in [0,pi]]
+#   f_kod = 0.5 * f/15  -> P(q0=1) = sin^2(pi*f_kod)          [f_kod in [0,0.5]]
+#   ph_kod = pi * phi   -> P(q0=1) = sin^2(ph_kod/2)          [ph_kod in [0,pi]]
+#
+# 🧬 AZ `f` NORMALIZÁLÁS MIÉRT KELL (2026-11-01, T1):
+#   az `extract()` az f-et a MOD-INDEX sulyozott átlagaként adja, tehát
+#   [0, 15] tartomanyban. A ketkvantumos frekvenciadekodolas
+#   (`f = arcsin(sqrt(P))/pi`) CSAK [0, 0.5]-on egyertelmu: a
+#   sin^2(pi*f) periodikus, ezert a f > 0.5 ertekek visszahooznek
+#   (f_kod=1.235 -> 0.235). A hardveres nyers fajlokban a f_kod
+#   1.24-3.81 volt (111/111 iteracioban > 0.5), tehát MINDEN
+#   iteracioban osszzehajtott. A javitas: a kódolas elott a f-et a
+#   16 mod index-tartomanyara normalizaljuk, a visszafejtes pedig
+#   visszaszorozza a 15-tel.
 # ------------------------------------------------------------------
 MODE_ANGLES = np.array([math.atan2(my - N/2.0, mx - N/2.0) % (2*pi) for (mx, my) in MODES])
 MODE_RADII = np.array([math.hypot(mx - N/2.0, my - N/2.0) for (mx, my) in MODES])
 RMAX = MODE_RADII.max()
+
+# A 16 mod legnagyobb indexe: az `f` normalizalas nevezoje.
+# A `f` a MOD-INDEX sulyozott atlag, tehat a legnagyobb erteke 15.
+F_MODE_INDEX_MAX = 15.0
+# A frekvenciadekodolas egyertelmu tartomanya.
+F_DECODE_MAX = 0.5
+
+
+def normalize_f(f: float) -> float:
+    """Az `f` (mod-index, [0,15]) -> a kodolas egyertelmu tartomany [0,0.5]."""
+    return F_DECODE_MAX * f / F_MODE_INDEX_MAX
+
+
+def denormalize_f(f_decoded: float) -> float:
+    """A dekoded `f` [0,0.5] -> vissza a mod-index tartomanyba [0,15]."""
+    return f_decoded / F_DECODE_MAX * F_MODE_INDEX_MAX
+
 
 def extract(psi):
     E = mode_energies(psi)
@@ -196,12 +224,14 @@ def quantum_shot(A, f, phi):
     p0_true = math.cos(A_kod/2.0)**2
     A_back = decode_amplitude(1.0 - q_measure(p0_true))
     # f: RY(2*pi*f_kod) + CNOT -> P(q0=1) = sin^2(pi*f_kod)
-    f_kod = 0.5 * f
+    # 🧬 a f eloszlik a mod-index tartomanyon [0,15], a DEKODOLAS viszont
+    # csak [0,0.5]-on egyertelmu -> a kodolas elott normalizalunk.
+    f_kod = normalize_f(f)
     f_back = decode_frequency(q_measure(math.sin(pi*f_kod)**2))
     # phi: RY(phi_kod) + CNOT -> P(q0=1) = sin^2(phi_kod/2)
     ph_kod = pi * phi
     ph_back = decode_phase(q_measure(math.sin(ph_kod/2.0)**2))
-    return A_back/pi, f_back/0.5, ph_back/pi
+    return A_back/pi, denormalize_f(f_back), ph_back/pi
 
 def excite(psi, A, f, phi):
     """A dekodolt (A, f, phi) visszatoltese a folyadékba:

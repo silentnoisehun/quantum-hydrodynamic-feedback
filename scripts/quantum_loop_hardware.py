@@ -144,7 +144,13 @@ def run_hardware_loop(args, cli, qc, service, backend, sampler, raw_dir, tag):
     for it in range(args.iterations):
         a, f, phi, energies = fluid.extract(psi)
         a_kod = math.pi * a
-        f_kod = 0.5 * f
+        # 🧬 A `f` NORMALIZÁLÁS (2026-11-01, T1): az `extract()` az f-et a
+        # MOD-INDEX sulyozott átlagaként adja ([0,15]), de a ketkvantumos
+        # frekvenciadekodolas CSAK [0,0.5]-on egyertelmu (sin^2 periodikus).
+        # A hardveres nyers fajlokban a f_kod 1.24-3.81 volt (111/111
+        # iteracioban > 0.5) -> MINDEN iteracioban osszzehajtott. A javitas:
+        # a kodolas elott normalizalunk, a visszafejtes visszaszoroz.
+        f_kod = fluid.normalize_f(f)
         ph_kod = math.pi * phi
 
         with_anchor = (it % args.anchor_every == 0) or (it == args.iterations - 1)
@@ -225,7 +231,9 @@ def run_hardware_loop(args, cli, qc, service, backend, sampler, raw_dir, tag):
             a_fb, f_fb, ph_fb = a_raw, f_raw, ph_raw
         else:
             a_fb, f_fb, ph_fb = a_cor, f_cor, ph_cor
-        psi = fluid.excite(psi, a_fb / math.pi, f_fb / 0.5, ph_fb / math.pi)
+        psi = fluid.excite(psi, a_fb / math.pi,
+                           f_fb / fluid.F_DECODE_MAX * fluid.F_MODE_INDEX_MAX,
+                           ph_fb / math.pi)
         for _ in range(args.gpe_steps):
             psi = fluid.gpe_step(psi, live=True)
 

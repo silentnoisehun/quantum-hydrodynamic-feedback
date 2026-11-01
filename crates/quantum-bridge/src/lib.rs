@@ -82,6 +82,27 @@ pub mod measured {
     pub const MEASURED_CLASSICAL_ACCURACY: f64 = 1.0;
 }
 
+/// A frekvencia (`f`) kódolási tartománya.
+///
+/// 🧬 MIÉRT (2026-11-01, T1): a GPE-ből kinyert `f` a 16 mód
+/// indexének súlyozott átlaga, tehát `[0, 15]`. A kétkvantumos
+/// interferencia-dekódolás (`f = arcsin(√P)/π`) CSAK `[0, 0.5]`-en
+/// egyértelmű, mert a `sin²(πf)` periodikus. Ezért a kódolás előtt a
+/// `f`-et normalizáljuk, a dekódolás után visszaszorozzuk.
+pub const F_MODE_INDEX_MAX: f64 = 15.0;
+/// A frekvenciadekódolás egyértelmű tartománya.
+pub const F_DECODE_MAX: f64 = 0.5;
+
+/// Az `f` (mód-index, `[0, 15]`) → a kódolás egyértelmű tartománya `[0, 0.5]`.
+pub fn normalize_f(f: f64) -> f64 {
+    F_DECODE_MAX * f / F_MODE_INDEX_MAX
+}
+
+/// A dekódolt `f` `[0, 0.5]` → vissza a mód-index tartományba `[0, 15]`.
+pub fn denormalize_f(f_decoded: f64) -> f64 {
+    f_decoded / F_DECODE_MAX * F_MODE_INDEX_MAX
+}
+
 /// Quantum backend target.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum QuantumBackend {
@@ -738,6 +759,71 @@ mod tests {
             strong,
             weak
         );
+    }
+
+    /// 🧬 A `f` KODOLÁS → DEKÓDOLÁS ROUNDTRIP (2026-11-01, T1).
+    ///
+    /// A GPE-ből kinyert `f` a 16 mód indexének súlyozott átlaga, tehát
+    /// `[0, 15]`. A kétkvantumos interferencia-dekódolás (`f =
+    /// arcsin(√P)/π`) CSAK `[0, 0.5]`-en egyértelmű, mert a `sin²(πf)`
+    /// periodikus. A normalizálás nélkül a `f = 1.235` kódolás `0.235`-öt
+    /// ad vissza — a hurok minden iterációban összehajtott.
+    ///
+    /// A teszt a teljes `[0, 15]` tartományon ellenőrzi, hogy a hibátlan
+    /// csatorna 1e-9-en belül visszaadja az inputot.
+    #[test]
+    fn frequency_roundtrip_over_the_full_mode_index_range() {
+        let mut worst = 0.0_f64;
+        for step in 0..=1500 {
+            let f_index = step as f64 / 100.0; // 0.00 .. 15.00
+            assert!(
+                (0.0..=F_MODE_INDEX_MAX).contains(&f_index),
+                "a vizsgált f a mod-index tartomanyaban kell legyen; f={f_index}"
+            );
+
+            // a kódolás: f_kod a [0, 0.5] egyertelmu tartomanyba
+            let f_kod = normalize_f(f_index);
+            assert!(
+                (0.0..=F_DECODE_MAX).contains(&f_kod),
+                "a kodolt f a dekodolasi tartomanyaban kell legyen; f_kod={f_kod}"
+            );
+
+            // az idealis aramkor: P(q0=1) = sin^2(pi * f_kod)
+            let p_q0_one = (std::f64::consts::PI * f_kod).sin().powi(2);
+
+            // a dekodolas, majd a visszafejtes a mod-index tartomanyba
+            let f_decoded = decode_frequency_from_p(p_q0_one);
+            let f_back = denormalize_f(f_decoded);
+
+            let error = (f_back - f_index).abs();
+            if error > worst {
+                worst = error;
+            }
+            assert!(
+                error < 1e-9,
+                "az f roundtrip hibaja tul nagy; f_index={f_index} -> {f_back} (hiba {error})"
+            );
+        }
+        assert!(
+            worst < 1e-9,
+            "az f roundtrip legnagyobb hibaja tul nagy; worst={worst}"
+        );
+    }
+
+    /// A `normalize_f` a `[0, 15]`-et `[0, 0.5]`-re képezi, a
+    /// `denormalize_f` az ellenkezőjét.
+    #[test]
+    fn frequency_normalisation_is_invertible() {
+        assert!((normalize_f(0.0) - 0.0).abs() < 1e-12);
+        assert!((normalize_f(F_MODE_INDEX_MAX) - F_DECODE_MAX).abs() < 1e-12);
+        for step in 0..=150 {
+            let f_index = step as f64 / 10.0;
+            let back = denormalize_f(normalize_f(f_index));
+            assert!(
+                (back - f_index).abs() < 1e-12,
+                "a normalizalas nem inverz; f={f_index} -> {back}"
+            );
+        }
     }
 
     #[test]
