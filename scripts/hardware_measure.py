@@ -207,8 +207,17 @@ def run_spec(runner, spec: CircuitSpec, shots: int, label: str):
     A transzpilálást és a sampler primitívet a scs_quantum `tkr_ibm`
     implementációja végzi; a spec → Qiskit konverzió itt, a 2.x
     paramétersorrend szerint.
+
+    🧬 A MÉRÉS IDŐZÍTÉSE (2026-11-01): a visszatérés a QPU-időt és a
+    falióra-időt is tartalmazza, a nyers fájl pedig elmenti őket.
+    Ennek oka: a 16 módos mérés 3σ-hoz ~481 jobból álló kampánya
+    (492 000 lövés / 1024), és hogy a kampány a kvótába fér-e, azt a
+    JOBONKÉNTI QPU-IDŐ dönti el. A 2 kvubitos hurkóramkör mért ideje
+    (3,00 mp/iter, 4 tömörített áramkörrel) nem extrapolálható egy 16
+    kvubitos áramkörre. A mérés a maga dolga: mérjük, ne tippeljünk.
     """
     qc = to_qiskit(spec, runner.QuantumCircuit)
+    t0 = time.time()
     if runner.local:
         job = runner.backend.run([qc], shots=shots)
         counts = job.result()[0].data.c.get_counts()
@@ -221,10 +230,20 @@ def run_spec(runner, spec: CircuitSpec, shots: int, label: str):
         job_id = job.job_id()
         backend_name = getattr(runner.backend, "name", "unknown")
         counts = job.result()[0].data.c.get_counts()
-    return counts, job_id, backend_name
+    wall = time.time() - t0
+    qpu = 0.0
+    try:
+        qpu = float(job.usage())
+    except Exception:
+        try:
+            qpu = float((job.metrics() or {}).get("run_time", 0.0) or 0.0)
+        except Exception:
+            qpu = 0.0
+    return counts, job_id, backend_name, qpu, wall
 
 
-def save_raw(label, counts, job_id, backend_name, shots, extra=None):
+def save_raw(label, counts, job_id, backend_name, shots, extra=None,
+             qpu_seconds=None, wall_seconds=None):
     """A nyers mérési adat mentése (audit trail) — NEM verziókövetve."""
     raw_dir = Path("measurement_raw")
     raw_dir.mkdir(exist_ok=True)
@@ -238,6 +257,12 @@ def save_raw(label, counts, job_id, backend_name, shots, extra=None):
         "timestamp_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "counts_raw": {str(k): int(v) for k, v in counts.items()},
     }
+    # 🧬 A MÉRÉS IDŐZÍTÉSE (2026-11-01): a nyers fájl hordozza a QPU-időt
+    # és a falióra-időt is, hogy a kvóta-kérdés mértből legyen eldönthető.
+    if qpu_seconds is not None:
+        data["qpu_seconds"] = qpu_seconds
+    if wall_seconds is not None:
+        data["wall_seconds"] = wall_seconds
     if extra:
         data.update(extra)
     with open(path, "w", encoding="utf-8") as f:
@@ -254,7 +279,7 @@ def measure_hardware_fidelity(runner, shots: int):
     mért fidelitás. Ez az a paraméter, amit a szimuláció `c`-ként használ.
     """
     spec = tkr_measure.ref_bell(2)
-    counts, job_id, backend_name = run_spec(runner, spec, shots, "bell")
+    counts, job_id, backend_name, qpu, wall = run_spec(runner, spec, shots, "bell")
     total = sum(counts.values())
     bal = 0
     for key, n in counts.items():
@@ -264,7 +289,8 @@ def measure_hardware_fidelity(runner, shots: int):
             bal += n
     fidelity = bal / total if total else 0.0
     save_raw("bell", counts, job_id, backend_name, shots,
-             {"fidelity": fidelity, "counts_normalized": {str(k): int(v) for k, v in counts.items()}})
+             {"fidelity": fidelity, "counts_normalized": {str(k): int(v) for k, v in counts.items()}},
+             qpu, wall)
     return fidelity, counts, job_id, backend_name
 
 
@@ -280,7 +306,7 @@ def measure_mode_argmax(runner, shots: int, trials: int):
     correct = 0
     winners = {}
     for t in range(trials):
-        counts, job_id, backend_name = run_spec(runner, spec, shots, "modes")
+        counts, job_id, backend_name, qpu, wall = run_spec(runner, spec, shots, "modes")
         # minden qubit q=1 találatainak száma
         hits = [0] * 16
         total = 0
@@ -296,7 +322,8 @@ def measure_mode_argmax(runner, shots: int, trials: int):
             correct += 1
         if t == 0:
             save_raw("modes", counts, job_id, backend_name, shots,
-                     {"hits": hits, "classical_idx": classical_idx, "quantum_idx": best})
+                     {"hits": hits, "classical_idx": classical_idx, "quantum_idx": best},
+                     qpu, wall)
         print(f"  futás {t+1}/{trials}: nyertes #{best} ({MODE_NAMES[best]}), "
               f"klasszikus #{classical_idx} ({MODE_NAMES[classical_idx]})")
     accuracy = correct / trials if trials else 0.0
@@ -312,10 +339,10 @@ def measure_wavepacket(runner, shots: int):
         ("f", encode_frequency(f_true), lambda c: decode_frequency(_p_q0_one(c)), f_true),
         ("phi", encode_phase(phi_true), lambda c: decode_phase(_p_q0_one(c)), phi_true),
     ]:
-        counts, job_id, backend_name = run_spec(runner, spec, shots, f"wave_{name}")
+        counts, job_id, backend_name, qpu, wall = run_spec(runner, spec, shots, f"wave_{name}")
         got = decoder(counts)
         results[name] = {"true": true_val, "decoded": got, "error": got - true_val}
-        save_raw(f"wave_{name}", counts, job_id, backend_name, shots, results[name])
+        save_raw(f"wave_{name}", counts, job_id, backend_name, shots, results[name], qpu, wall)
         print(f"  {name}: beküldött {true_val:.4f} → vissza {got:.4f} "
               f"(hiba {got - true_val:+.4f})")
     return results

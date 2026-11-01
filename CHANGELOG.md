@@ -64,9 +64,22 @@ support. Four of them did not hold, and this release removes them.
 - **`measurement_cpu/`** — the CPU-side measurements are version controlled,
   so the numbers the paper quotes are traceable the same way the `docs/`
   numbers are.
+- **The hardware measurement script records the time of every job**
+  (`scripts/hardware_measure.py`): the QPU seconds and the wall seconds
+  are now measured per job and stored in the raw file, like the loop
+  measurement already did. The reason is a measured gap: the 3σ
+  measurement of the 16-mode gap needs about 481 jobs (492 000 shots /
+  1024), and whether that campaign fits into the 600 s quota is decided
+  by the QPU time per job — which had never been measured, because the
+  modes job is a 16 qubit circuit while the only measured circuit time
+  (0.74 s) comes from the 2 qubit loop circuits. The measurement was
+  extrapolated across circuit sizes; now it will be measured.
 
 ### CI
 
+- **Every script is byte-compiled in the CI.** The hardware scripts need
+  `scs_quantum` and `qiskit`, so the CI cannot run them, and a syntax
+  error in them would have stayed invisible until the next real QPU run.
 - **The byte-identity gate on the CPU measurement was wrong, and the CI
   itself proved it.** Run 41300523065 failed on the Linux runner while the
   same commit was byte identical on Windows. The measured cause is the

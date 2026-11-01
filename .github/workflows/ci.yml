@@ -61,6 +61,13 @@ jobs:
         # the pin also keeps the committed file byte-stable, so a real change
         # shows up as a visible diff instead of a tolerance-sized one.
         run: pip install "numpy==2.4.6"
+      - name: "every measurement script must compile"
+        # The hardware scripts (scripts/hardware_measure.py,
+        # scripts/quantum_loop_hardware.py) need scs_quantum and qiskit, so
+        # the CI cannot run them.  A syntax error in them would therefore
+        # stay invisible until the next real QPU run.  Byte-compiling every
+        # script closes that gap at zero cost.
+        run: python -m compileall -q scripts
       - name: "the 10-shot mathematics"
         run: python scripts/quantum_10shot_math.py
       - name: "the fluid awakening measurement"
