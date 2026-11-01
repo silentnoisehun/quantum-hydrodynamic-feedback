@@ -54,7 +54,14 @@ jobs:
         with:
           python-version: "3.11"
       - name: "install dependencies"
-        run: pip install numpy
+        # The numpy version is pinned on purpose. Measured 2026-11-01: the
+        # simulation output is byte identical under numpy 2.4.6 (what Python
+        # 3.11 resolves to) and numpy 2.5.4, but NOT under numpy 1.26.4 --
+        # numpy's Generator.binomial stream differs between the 1.x and the
+        # 2.x line. Without the pin, a numpy release could change the
+        # committed measurement file and the "git diff --exit-code" gate
+        # below would fail for a third party reason.
+        run: pip install "numpy==2.4.6"
       - name: "the 10-shot mathematics"
         run: python scripts/quantum_10shot_math.py
       - name: "the fluid awakening measurement"

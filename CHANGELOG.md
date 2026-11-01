@@ -65,6 +65,17 @@ support. Four of them did not hold, and this release removes them.
   so the numbers the paper quotes are traceable the same way the `docs/`
   numbers are.
 
+### CI
+
+- **The numpy version is pinned in the measurement job.** Measured on
+  2026-11-01 in isolated environments: the 1000 iteration simulation
+  produces a byte identical result under numpy 2.4.6 (what Python 3.11
+  resolves to) and numpy 2.5.4, but not under numpy 1.26.4 — numpy's
+  `Generator.binomial` stream differs between the 1.x and the 2.x line.
+  The CI gate compares the regenerated file with the committed one byte
+  by byte, so without the pin a numpy release could break the build for
+  a third party reason.
+
 ### Changed
 
 - **The claim that the quantum feedback causes the mode switching is
