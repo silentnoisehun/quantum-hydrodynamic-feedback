@@ -38,6 +38,25 @@ support. Four of them did not hold, and this release removes them.
   a deprecated alias. The `--correct` flag is now off by default, because
   the measurement shows the symmetric correction makes the amplitude
   channel worse (raw error 0.026, "corrected" 0.212).
+- **The `hardware_residual` arm used recorded decoded values instead of
+  true residuals** (`scripts/control_comparison.py`): the arm previously
+  replayed the hardware's recorded decoded values on the corrected f-scale,
+  but the correct residual is `decoded_raw − ideal` per iteration on the
+  corrected f-scale with the corrected solver. The old arm is renamed to
+  `hardware_recorded_replay`; the new `hardware_residual` computes the
+  true residual and runs only with the corrected solver.
+- **README claim "4 of 4 metrics within noise band" was incorrect** — it
+  applied only to the `hardware_rescaled` hybrid arm (recorded feedback on
+  corrected f-scale), not to the true residual. The README and Hungarian
+  README are updated to state what the true residual arm shows: M1 and M2
+  fall outside the noise bands on all three hardware runs.
+- **Account identifiers (CRN/instance_id) removed from raw
+  `measurement_raw/loop_summary_*.json`** files in a separate documented
+  commit. The `counts` data remains untouched; only the `usage_before`
+  and `usage_after` metadata blocks are sanitised.
+- **Typo fixes in `docs/QPU-RUN-DECISION-RULE.txt`**: "f不加" → "f-korlataival";
+  "pre-regisztrált" / "PRE-REGISZTRALT" → "előre rögzített" / "ELŐRE
+  ROGZITETT".
 
 ### Added
 
@@ -102,13 +121,13 @@ support. Four of them did not hold, and this release removes them.
 
 ### Changed
 
-- **The claim that the quantum feedback causes the mode switching is
-  withdrawn.** The control comparison measures it: with the hardware's own
-  recorded feedback replayed at the corrected frequency scale, the mode
-  pattern lands inside the band that measurement noise alone produces, on
-  all four statistics, for all three hardware runs. The multi-mode pattern
-  of the 2026-10-27 runs was produced by the frequency-scale defect, not by
-  the quantum channel.
+- **The claim about quantum feedback causing mode switching is
+  revised.** The control comparison now measures the true residual
+  (`decoded_raw − ideal` on corrected f-scale with corrected solver): the
+  true residual arm's M1 (distinct_modes) and M2 (brain_ratio) fall
+  outside the noise bands on all three hardware runs (both 20 and 68
+  iterations, fixed and varying initial states). Per
+  `docs/QPU-RUN-DECISION-RULE.txt`, a new QPU run is justified.
 - **The paper's CPU figures are recomputed.** The amplitude fix changed
   them: the quantum branch's marginal concentration is 0.2198 against the
   classical branch's 0.0993 (was 0.5268), the total-variation distance is
@@ -137,9 +156,13 @@ support. Four of them did not hold, and this release removes them.
   iterations the noise-free control visits 3 modes (Brain 0.35, H/Hmax
   0.395), while every noisy branch concentrates on a single mode (Brain
   0.85–0.95, H/Hmax 0.07–0.19).
-- The recorded feedback of the hardware runs, at the frequency scale the
-  hardware actually used, is outside the noise band on all four
-  statistics; at the corrected scale it is inside on all four.
+- The **true residual** (`decoded_raw − ideal` on corrected f-scale with
+  corrected solver) for all three hardware runs falls **outside** the noise
+  bands on M1 (distinct_modes) and M2 (brain_ratio), both 20 and 68
+  iterations, fixed and varying initial states. The recorded feedback at
+  the hardware's original f-scale was outside the band; the recorded
+  feedback at the corrected f-scale (`hardware_rescaled`) is inside the
+  band — the multi-mode pattern was caused by the f-scale bug.
 - The full git history (33 commits, 413 objects) was scanned for IBM API
   keys: none is present. No key rotation is required.
 
