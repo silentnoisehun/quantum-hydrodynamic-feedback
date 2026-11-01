@@ -96,10 +96,18 @@ fogyott 465 mp volt (155 -> 135 mp a 16 modos meres utan).
 A KVOTA ALLAPOTA A FUTASOK UTAN (a nyers loop_summary fajlok usage_before/
 usage_after mezoiből, mérve):
   229 -> 238 mp  a 3 iterációs futás után
+                      (loop_summary_20261027T003155Z.json)
   238 -> 439 mp  a 68 iterációs futás után (201 mp)
+                      NINCS commitolt loop_summary ehhez a futashoz; a 201 mp
+                      a 68 commitolt iteracios rekord qpu_seconds osszegével
+                      egyezik (201,00 s, 2,956 s/iter)
   439 -> 465 mp  a 16 módos mérés után
+                      (a 465 mp a loop_summary_20261027T010656Z.json
+                      usage_before mezője)
   465 -> 525 mp  az első 20 iterációs futás után (60 mp)
+                      (loop_summary_20261027T010656Z.json)
   527 -> 587 mp  a második 20 iterációs futás után (60 mp)
+                      (loop_summary_20261027T015558Z.json)
   => A MERES VEGEN 587 mp FOGYOTT, 13 mp MARADT.
 
 A SESSION NEM ELERHETO AZ OPEN CSOMAGON — ezt a platform mondta, nem mi:
