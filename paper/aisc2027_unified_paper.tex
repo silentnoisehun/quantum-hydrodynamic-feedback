@@ -180,7 +180,7 @@ files by \texttt{scripts/summarize\_hardware\_run.py}, which also runs in CI.
 
 \subsection{Platform Constraints}
 
-IBM Quantum open plan (3 accounts: \texttt{z89zu}, \texttt{SILENT}, \texttt{jthr} --- separate CRNs, separate 600 s quotas):
+IBM Quantum open plan (three separate instances --- separate instance identifiers, separate 600 s quotas):
 \begin{itemize}
 \item No Runtime Sessions: HTTP 400 code 1352 ("not authorized"). The loop script requests a session and falls back to job mode; the measured queue wait proves the fallback (the summary records \texttt{session\_requested=true} but \texttt{execution\_mode=job}).
 \item Job-mode queue wait: 6.8--137.5 s (avg 17.9 s/iter).
@@ -528,7 +528,7 @@ python scripts/hardware_measure.py --local --shots 256 --mode-trials 2
 
 # Hardware (requires IBM_QUANTUM_API_TOKEN)
 python scripts/hardware_measure.py --backend ibm_fez --shots 1024 --mode-trials 6
-python scripts/quantum_loop_hardware.py --backend ibm_fez --iterations 100 --shots 1024 --anchor-every 5 --token-file apikey.json
+python scripts/quantum_loop_hardware.py --backend ibm_fez --iterations 100 --shots 1024 --anchor-every 5 --token-file <token-file>.json
 \end{verbatim}
 \item \textbf{CI}: 7 consecutive green runs (fmt, clippy, tests, measurement scripts, paper PDF)
 \end{itemize}

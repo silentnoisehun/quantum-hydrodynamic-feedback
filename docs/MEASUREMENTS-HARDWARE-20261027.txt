@@ -36,10 +36,11 @@ Ez a jelentés a harom reteget MERI — ahol lehet, determinisztikusan.
 0. A KORNYEZET — A MERT TENNYEK
 --------------------------------------------------------------------------------
 
-A kulcsok (mind harom ervenyes, a felsorolt fajlokbol):
-  - z89zu   (apikey.json)       -> ervenyes
-  - SILENT  (apikey (1).json)   -> ervenyes
-  - jthr    (apikey (2).json)   -> ervenyes
+A kulcsok (mind harom ervenyes, a felsorolt fajlokbol). 🧬 A KULCSOK
+NEVEBENKENT ANONIMIZALVA (2026-11-01, T6) — a felsorolas a sorszamokra:
+  - 1. kulcs                    -> ervenyes
+  - 2. kulcs                    -> ervenyes
+  - 3. kulcs                    -> ervenyes
 
 A kulcsok mind ugyanazokat a backendeket latjak (open csomag):
 
@@ -71,14 +72,18 @@ job-módban fut tovább — a sor-VARAKOZAST MERVE, nem feltetelezve.
 A kulcsok NEM osztoznak egy kvótán: mindhárom külön instance (külön CRN),
 a plan_id viszont ugyanaz. A kvóta KONTÓNKÉNT számol.
 
-  kulcs    instance (CRN)                        kvóta maradt  fogyott
-  z89zu    .../a/80849ad63b404c24b359b0a41e60eb3f:c2953219-...   75 mp  525 mp
-  SILENT   .../a/2d96f97640b049e3ab4393a4881a8c15:4e4defd5-...    0 mp  622 mp
-  jthr     .../a/32e09e323d2741469a8bb67015fe4b5a:4bdd9fda-...    0 mp  600 mp
+  kulcs    instance (a CRN REDAKTALVA)            kvóta maradt  fogyott
+  1.       a/<redaktalva>                                  75 mp   525 mp
+  2.       a/<redaktalva>                                   0 mp   622 mp
+  3.       a/<redaktalva>                                   0 mp   600 mp
 
-KÖVETKEZÉS: a kulcsokkal PARHUZAMOSAN is lehet mérni (kulcs -> külön
-process, külön backend), a falióra-idő átvitel 2-3× lenne. DE most a két
-másik kontón nincs keret — a mérés ezen az egy konton (z89zu) futott.
+🧬 A HÁROM INSTANCE AZONOS PLAN_ID-T OSZT (2026-11-01, T6): az open
+csomag minden felhasztonak ugyanaz a planja, de a KVOTA INSTANCE-ENKENT
+szamit. A fenti ertekek a meres UTANI allapotok.
+
+A MERES EGYETLEN KONTON FUTOTT (az 1. kulcson): a 2. és a 3. konton a
+kvota ekkor már kimerult volt (622 mp, illetve 600 mp fogyott a 600 mp-es
+limitbol), ezert azokon nem lehetett volna futtatni.
 
 A KIMERÜLT KVÓTA CSAPDA (a legveszélyesebb, amit a mérés kitett):
   a platform a kimerült instance-n is ELFOGADJA a jobot (visszaad job ID-t),
