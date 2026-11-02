@@ -1,5 +1,124 @@
 # Changelog
 
+## [0.2.3] — 2026-11-02
+
+A second hardware campaign on a fourth account, and the audit of the rule that
+authorised it. The audit changes the answer: **the trigger does not fire.**
+
+### Fixed
+
+- **The `hardware_permuted` arm of the varying-initial-state round ran on the
+  wrong hardware run** (`scripts/control_comparison.py`): in `build_tasks` the
+  block that appends the permuted-feedback arms was indented one level out of
+  the `for hw in HARDWARE_RUNS` loop, so it used the **leaked** loop variable —
+  the last entry of `HARDWARE_RUNS` — instead of the run being iterated. Two
+  measured consequences: (1) in the committed 20-iteration section the arm
+  `hardware_permuted_20261027T003737Z` replayed the **68-iteration** run's
+  feedback truncated to 20 iterations, a bogus arm that has no counterpart in
+  the fixed-initial-state round, while the two genuine 20-run permuted arms
+  were missing from that round; (2) at 100 iterations the 68-entry feedback
+  list was indexed past its end and `IndexError: list index out of range`
+  killed the whole 13 377-run comparison at about 6 200 runs. The block is
+  now inside the loop, and `run_task` raises a descriptive error
+  (`_require_length`) instead of an `IndexError` if a list is ever too short.
+- **The per-iteration QPU time was silently zero**
+  (`scripts/quantum_loop_hardware.py`): `job.usage()` is not yet available
+  when `result()` returns. Measured on a 2-iteration smoke test: both
+  iterations recorded 0.0 s while the account quota showed exactly 6.0 s
+  (2 × 3.0 s) — the zero was the API's availability, not the measurement. The
+  new `job_qpu_seconds()` polls until a positive value appears, so the
+  per-iteration QPU time stays traceable in the raw files.
+- **The replay gate assumed every run was made with the legacy solver**
+  (`scripts/replay_hardware_log.py`): the expectation is now per run. The
+  three 2026-10-27 runs were made with the legacy solver, the 2026-11-02 run
+  with the corrected one. Measured on the new run's first 10 iterations: the
+  corrected solver reproduces the logged mode sequence **10/10**, the legacy
+  solver only 2/10.
+
+### Changed
+
+- **The decision rule is amended, dated and BEFORE the run**
+  (`docs/QPU-RUN-DECISION-RULE.txt`, new point 0): a measurement may now
+  consist of the registered 20–30 iterations **plus one 100-iteration run**.
+  The justification as it stood on 2026-11-01 was measured: the trigger
+  (M1/M2 outside the `true_residual_permuted` band) fired only for the
+  68-iteration hardware run, and the 20-iteration cases are inside the band,
+  so a 20–30 iteration run cannot answer the question the rule asks. 100
+  iterations is also the *designed* length of the 2026-10-27 run (the RUNLOG
+  shows `iter N/100`), so this completes the original protocol rather than
+  inventing a new one. The amendment caps the deviation: the quota gate must
+  pass before the submission, the run costs 296 s of the 600 s free on that
+  account, and if the gate says no, the run does not start.
+  ⚠ **The premise of this amendment was itself a 10-permutation band.** See
+  the entry below: with the rule's own required 200 permutations the trigger
+  does not fire at all.
+  A second dated amendment (2026-11-02, also before the run) fixes only the
+  **account and the date**: the run executes on the "hope" account
+  (`E:\apikey.json`, 600 s free) on 2026-11-02, because the 556 s on the
+  SILENT account does not exist before 2026-11-06. The protocol itself is
+  unchanged (100 iterations = 296 s of QPU time, 356 s with the 20-iteration
+  control run), the hardware is the same (`ibm_fez`), and the decisive
+  comparator is untouched — the length guard in `scripts/control_comparison.py`
+  always protected the `true_residual_permuted` arm.
+- **The control comparison is regenerated with the full parameter set.**
+  The committed `measurement_cpu/control_comparison.json` had been replaced by
+  a reduced run (10 noise seeds, 5 initial states, one solver, 348 runs),
+  which made the `true_residual_permuted` band a 10-sample band — not a valid
+  5–95% band. It is regenerated with the original parameters (200 noise
+  seeds, 30 initial states, 6 noise seeds per initial state, both solvers,
+  13 377 runs) and now covers 20, 68 and 100 iterations.
+- **The trigger does not fire with the band the rule itself requires.**
+  `docs/QPU-RUN-DECISION-RULE.txt` point 1 defines the decision band as the
+  `true_residual_permuted` arm with **≥200 permutations per hardware run**.
+  The band in the committed report had **10** permutations, so the rule's own
+  exception applied ("ha a sav nincs rendben... a szabaly NEM dont — a hiba
+  elott nem szabad QPU-idot burnelni"). Regenerated with the required 200
+  permutations (13 377 runs, 30 varying initial states, 6 noise seeds per
+  initial state, both solvers, lengths 20/68/100), the hardware's true
+  residual is **inside** the band for every run. The exact permutation test
+  (computed from the 200 individual runs stored in the JSON, not from the
+  band): for the 68-iteration run, M1 — 135/200 permutations reach the
+  hardware value (p=0.675), M2 — 11/200 (p=0.055), both at once — 3/200
+  (p=0.015). The old 10-permutation band had M2 p95=0.6765 and put the same
+  hardware value outside; a 10-sample percentile underestimates the 95th
+  percentile. **The trigger was an artifact of the too-small band.**
+  `docs/MEASUREMENTS-HARDWARE-20261102.txt` records the measured result.
+- **The protocol deviation is recorded, not rationalised.**
+  `docs/QPU-RUN-DECISION-RULE.txt` carries three dated amendments, the third
+  written *before* the run finished: the corrected band does not fire the
+  trigger, the run was submitted at 13:07 — before the corrected band was
+  ready at 13:20 — and the run is therefore **exploratory**. Its analysis
+  plan is fixed in advance (compare against the band at the same length;
+  report the exact permutation p-values; report the outcome either way), and
+  its result cannot on its own support the paper's "the quantum channel
+  causes the mode switching" claim; that would need a new pre-registered
+  confirmation.
+
+### Added
+
+- **`scripts/check_qpu_quota.py`** — the quota gate that
+  `docs/QPU-RUN-DECISION-RULE.txt` point h) requires *before* a measurement is
+  submitted ("on an exhausted account the job never runs"). It reads the quota
+  from the IBM Quantum Platform API, resolves the instance CRN, and exits
+  non-zero when no account can cover the requested QPU time. `--self-test`
+  proves the decision logic on injected payloads without touching the network.
+- **`docs/QPU-QUOTA-20261102.txt`** — the measured quota state of the four
+  accounts, the release calendar and the run plan. The quota model was
+  measured, not assumed: it is a **rolling 28-day window**, not a monthly
+  reset. `usage_consumed_seconds` is the trailing 28 days of QPU time,
+  `time_available_at` is when the oldest usage rolls out of the window, and
+  the free seconds therefore return gradually, one job at a time. A fourth
+  account (`E:\apikey.json`, "hope") was found on 2026-11-02 with **0 s
+  consumed and 600 s free**, which is what makes the run possible on that day.
+- **`docs/MEASUREMENTS-HARDWARE-20261102.txt`** — the campaign report: the
+  measured trigger result, the exact permutation p-values, the protocol
+  deviation and the quota table.
+- **The CPU control comparison covers 100 iterations**
+  (`scripts/control_comparison.py`): the 2026-10-27 hardware run was designed
+  for 100 iterations (the RUNLOG shows `iter N/100`; it stopped at 68), and
+  the decision compares the hardware result against the magnitude-matched
+  band **at the same length**, so the band has to exist for 100 iterations too.
+
 ## [0.2.2] — 2026-11-01
 
 The audit behind this release measured which claims the repository's own data
@@ -65,23 +184,6 @@ support. Four of them did not hold, and this release removes them.
 - **`ideal.f` fallback uses `abs(encoded.f - round(encoded.f))`** instead of
   `encoded.f % 0.5`. This matches the recorded `ideal.f` on all 20-iteration
   runs (verified against the `ideal` field in raw files).
-- **The `hardware_permuted` arm of the varying-initial-state round ran on the
-  wrong hardware run** (`scripts/control_comparison.py`): in `build_tasks` the
-  block that appends the permuted-feedback arms was indented one level out of
-  the `for hw in HARDWARE_RUNS` loop, so it used the **leaked** loop variable —
-  the last entry of `HARDWARE_RUNS` — instead of the run being iterated. Two
-  measured consequences: (1) in the committed 20-iteration section the arm
-  `hardware_permuted_20261027T003737Z` replayed the **68-iteration** run's
-  feedback truncated to 20 iterations, a bogus arm that has no counterpart in
-  the fixed-initial-state round, while the two genuine 20-run permuted arms
-  were missing from that round; (2) at 100 iterations the 68-entry feedback
-  list was indexed past its end and `IndexError: list index out of range`
-  killed the whole 13 377-run comparison at about 6 200 runs. The block is
-  now inside the loop, and `run_task` raises a descriptive error
-  (`_require_length`) instead of an `IndexError` if a list is ever too short.
-  **The decisive comparator is unaffected**: the length guard always
-  protected the `true_residual_permuted` arm, so the decision band did not
-  change. The control comparison is regenerated with the corrected code.
 
 ### Added
 
@@ -123,28 +225,6 @@ support. Four of them did not hold, and this release removes them.
   modes job is a 16 qubit circuit while the only measured circuit time
   (0.74 s) comes from the 2 qubit loop circuits. The measurement was
   extrapolated across circuit sizes; now it will be measured.
-- **`scripts/check_qpu_quota.py`** — the quota gate that `docs/QPU-RUN-DECISION-RULE.txt`
-  point h) requires *before* a measurement is submitted ("on an exhausted
-  account the job never runs"). It reads the quota from the IBM Quantum
-  Platform API, resolves the instance CRN, and exits non-zero when no
-  account can cover the requested QPU time. `--self-test` proves the
-  decision logic on injected payloads without touching the network.
-- **`docs/QPU-QUOTA-20261102.txt`** — the measured quota state of the four
-  accounts, the release calendar, and the run plan for the 2026-11-02
-  measurement. The quota model was measured, not assumed: it is a
-  **rolling 28-day window**, not a monthly reset. `usage_consumed_seconds`
-  is the trailing 28 days of QPU time, `time_available_at` is when the
-  oldest usage rolls out of the window, and the free seconds therefore
-  return gradually, one job at a time. A fourth account (`E:\apikey.json`,
-  "hope") was found on 2026-11-02 with **0 s consumed and 600 s free**, which
-  is what makes the run possible on that day instead of waiting for the
-  2026-11-06 release.
-- **The CPU control comparison covers 100 iterations**
-  (`scripts/control_comparison.py`): the 2026-10-27 hardware run was
-  designed for 100 iterations (the RUNLOG shows `iter N/100`; it stopped at
-  68), and the decision compares the hardware result against the
-  magnitude-matched band **at the same length**, so the band has to exist
-  for 100 iterations too.
 
 ### CI
 
@@ -173,33 +253,6 @@ support. Four of them did not hold, and this release removes them.
 
 ### Changed
 
-- **The decision rule is amended, dated and BEFORE the run**
-  (`docs/QPU-RUN-DECISION-RULE.txt`, new point 0): a measurement may now
-  consist of the registered 20–30 iterations **plus one 100-iteration run**.
-  The justification is measured: the trigger (M1/M2 outside the
-  `true_residual_permuted` band) fired only for the 68-iteration hardware
-  run, and the 20-iteration cases are inside the band, so a 20–30 iteration
-  run cannot answer the question the rule asks. 100 iterations is also the
-  *designed* length of the 2026-10-27 run (the RUNLOG shows `iter N/100`),
-  so this completes the original protocol rather than inventing a new one.
-  The amendment also caps the deviation: the quota gate must pass before
-  the submission, the run costs 296 s of the 600 s free on that account,
-  and if the gate says no, the run does not start.
-  A second dated amendment (2026-11-02, also before the run) fixes only the
-  **account and the date**: the run executes on the "hope" account
-  (`E:\apikey.json`, 600 s free) on 2026-11-02, because the 556 s on the
-  SILENT account does not exist before 2026-11-06. The protocol itself is
-  unchanged (100 iterations = 296 s of QPU time, 356 s with the 20-iteration
-  control run), the hardware is the same (`ibm_fez`), and the decisive
-  comparator is untouched — the length guard in `scripts/control_comparison.py`
-  always protected the `true_residual_permuted` arm.
-- **The control comparison is regenerated with the full parameter set.**
-  The committed `measurement_cpu/control_comparison.json` had been
-  replaced by a reduced run (10 noise seeds, 5 initial states, one solver,
-  348 runs), which made the `true_residual_permuted` band a 10-sample
-  band — not a valid 5–95% band. It is regenerated with the original
-  parameters (200 noise seeds, 30 initial states, 6 noise seeds per initial
-  state, both solvers) and now covers 20, 68 and 100 iterations.
 - **The claim about quantum feedback causing mode switching is
   re-evaluated with the true residual and magnitude-matched comparator.**
   The control comparison measures the true residual
@@ -213,6 +266,11 @@ support. Four of them did not hold, and this release removes them.
   - 68-iter fixed_init: M1=6, M2=0.7206 OUTSIDE the band → QPU run
     justified.
   - 68-iter varying_init: M1/M2 INSIDE the band → NOT justified.
+  ⚠ **CORRECTED IN 0.2.3:** the 68-iteration bullet above was computed from a
+  **10-permutation** band, which does not meet the rule's own requirement of
+  ≥200 permutations. With the required 200 permutations the same hardware
+  value falls **inside** the band, and the trigger does not fire. See
+  0.2.3 and `docs/MEASUREMENTS-HARDWARE-20261102.txt`.
   Overall: the true residual does NOT consistently fall outside the
   magnitude-matched noise band. A new QPU run is only conditionally
   justified for the 68-iter fixed-init case.
