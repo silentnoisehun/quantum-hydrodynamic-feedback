@@ -161,8 +161,45 @@ MIROK EZ A DOKUMENTUM
   (a futas vege utan kitoltve)
 
 --------------------------------------------------------------------------------
-5. A KOVETKEZTETES
+5. A KOVETKEZTETES — MIT LEHET ALLITANI
 --------------------------------------------------------------------------------
-  (a futas vege utan kitoltve)
+
+5a. A PRE-REGISZTRALT ELEMZESBŐL (ez a dontes, nem a 100-as futas)
+  A hardveres valodi reziduum a MAGNITUDO-ILLESZTETT KOMPARATOR savjan
+  BELUL van, egyik futasnal sem. A trigger NEM teljesul, igy a szabaly
+  2. pontja szerint:
+    - a hardveres mod-mintazat a meresi zaj produkuma;
+    - a kvantum-visszacsatolas NEM felelos a modvaltasert;
+    - a papirban ezt a "What this does NOT show" szekciaban kell kimondani,
+      a "kvantum felel a modvaltasert" allitas TORLENDO.
+
+5b. A PONTOSSAG, AMIT NEM SZABAD ELHANYAGOLNI
+  A 68-as futas NEM a savon kozepen van, hanem A HATARAPON:
+    - M2-re 11/200 permutacio eleri vagy meghaladja (p=0.055);
+    - a KETTŐ metrikara egyuttesen 3/200 (p=0.015).
+  A savszintu dontes "BELUL", de ez NEM ugyanaz, mint "bizonyitva nem": a
+  hatarhelyzet azt jelenti, hogy a hardver sorrendje a permutacio-
+  eloszlas szegen van, nem kozepen. Aki a papirban azt irja, hogy "a
+  kvantum-csatorna NEM okozza a modvaltasert", az ezt TULZASAN allitja: a
+  meres a hatarapon nem kulonboztetheto meg a zajsavtól, de nem is zárja ki.
+  A szabaly sajat nyelven: a trigger nem teljesul, tehat ujabb QPU-futast a
+  szabaly nem indokolt — ez NEM azonos azzal, hogy a hatarapon allo
+  eredmeny ellentmondasa bizonyitott lenne.
+
+5c. MIT KELL VALTOZTATNI A PAPIRBAN
+  - A "kvantum felel a modvaltasert" tipusu allitas TÖRÖLENDŐ vagy
+    korlatozott. A szabaly 2. pontja ezt mar elkirta.
+  - A trigger hivatkozas (a 68-as futas "a savon KIVUL") TÖRÖLENDŐ: a
+    10-permutacios savon volt kivul, a szabaly sajat 200-permutacios
+    kovetelményén a SAVON BELUL van.
+  - A "What this does NOT show" szekciaban ki kell mondani, hogy a
+    hardveres mod-mintazat nem mutat a meresi zaj hatarapontjan tulmut
+    eltolast a magnitude-matched permutacios osszzehasonlitasban.
+  - A trigger hiba nem szulett volna, ha a sav a szabaly sajat definicioja
+    szerint keszult volna. A tanulsag a folyamatban van, nem a fizikában:
+    a sztandard elokeszites (>=200 permutacio) a dontes elott ellenorizendő.
+
+5d. A 100 ITERACIOS (EXPLORATOR) EREDMENY
+  (a futas vege utan kitoltve — a 3. szekcioban)
 
 ================================================================================
