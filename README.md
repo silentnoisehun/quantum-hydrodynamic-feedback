@@ -1,4 +1,4 @@
-﻿# Quantum Organic Intelligence
+# Quantum Organic Intelligence
 
 A Gross-Pitaevskii fluid, a quantum bridge whose encoding and decoding are verified against recorded hardware measurements, and the measurements that document — and limit — the system's dynamical behaviour. This repository rests on three measurable components:
 
@@ -50,8 +50,19 @@ The simulation protocol takes the $(A, f, \varphi)$ parameters extracted on the 
 * **Two qubits do not buy a quantum advantage here.** The frequency and phase circuits are an `RY` on the control qubit plus a `CNOT` that copies it into the readout qubit. The probability law is $P(q_0=1) = \sin^2(\theta/2)$ — the same law as a single-qubit rotation. The extra qubit adds circuit size (and QPU time), not information.
 * **$A$, $f$ and $\varphi$ are the same measurement.** All three reduce to "one rotation angle $\theta$, measure $P(q_0=1)$, invert $\sin^2(\theta/2)$". $A$ and $\varphi$ are literally the same inverse, $2\arcsin(\sqrt{P})$; $f$ is the same form scaled by $1/\pi$. The "phase" is therefore **not a quantum phase** — it is a rotation angle, measured with the same statistics as the amplitude.
 
+### The 2026-11-02 Hardware Run (`ibm_marrakesh`, Heron r2) and Excite Fix
+
+* **The `excite()` mathematical fix (2026-11-02):** The earlier simulation code had an unscaled frequency coordinate in `excite()` and an angular wrapping bug applied after Euclidean distance computation, which collapsed mode distances and silenced the $f$ and $\varphi$ quantum channels into ground mode #0. Following the fix, 30-step CPU swap tests showed an 83.3% sensitivity to $f \leftrightarrow \varphi$ swaps and expanded mode coverage from 4 to 15 distinct modes.
+* **The verified 80-iteration physical QPU run (`20261102T140630Z`):** Executed on `ibm_marrakesh` (156-qubit Heron r2 QPU) with 1024 shots per iteration, consuming exactly 240.0 s of QPU time with live Bell anchor parity ($c \in [0.9570, 0.9746]$).
+* **Hardware Replay Gate:** `scripts/replay_hardware_log.py` achieves an exact **80/80 (100.0%)** match with the corrected solver for `20261102T140630Z`, while confirming historical 2026-10-27 runs against the legacy solver (20/20, 20/20, 68/68).
+* **Statistical Control Band (14,672 simulations, 200 permutations):**
+  * The hardware run spent 50.0% of steps in ground mode #0 and 40.0% in hexagonal mode #6, visiting 5 distinct modes (#0, #1, #2, #5, #6).
+  * The normalized entropy $H/H_{max} = 0.3727$ is in the **3.0th percentile** ($p = 0.030$) of the 200-permutation residual distribution, showing marked temporal stability and attractor retention destroyed by random permutation.
+  * Detailed comparisons are in `docs/MEASUREMENTS-CPU-CONTROLS.txt` and `docs/MEASUREMENTS-HARDWARE-20261102.txt`.
+
 ### Known issues / What this does NOT show
 
+* **Historical 2026-10-27 runs predate the fixes:** They ran with the legacy unscaled solver. Their replay is preserved solely for provenance and gate testing.
 * **The 2026-10-27 hardware runs predate two fixes and were not re-run.** They used a solver whose kinetic step was not a Fourier transform, and they fed the frequency back on a broken scale. `scripts/replay_hardware_log.py` reproduces their recorded mode sequences exactly with the old solver (20/20, 20/20, 68/68) and with the current one with none of them (7/20, 4/20, 26/68) — that is the proof of which code they ran. Their mode histograms are therefore **not** evidence for the current model.
 * **The mode histograms in the hardware report are not evidence for the quantum channel.** With the recorded feedback replayed at the correct frequency scale, the hardware's own measurements give the same collapse onto a single mode that the classical control and the simulated noise give. What produced the multi-mode pattern in those runs was the frequency-scale bug.
 * **The 16-mode argmax measurement is not informative.** Six trials gave 0/6 agreement with the classical argmax. With $N = 6$ that number cannot separate "no quantum effect" from "a small quantum effect"; it is reported, not interpreted.
@@ -140,10 +151,11 @@ python scripts/quantum_loop_hardware.py --backend ibm_fez --iterations 100 --sho
 > queue wait instead of assuming it, and prints the QPU seconds and the wall
 > clock separately. A reserved window would need a different plan instance.
 
-> **The measurement report for the hardware run** —
-> `docs/MEASUREMENTS-HARDWARE-20261027.txt`, with the run logs in
-> `docs/RUNLOG-*.txt`. Every number in it is recomputable from the raw files
-> in `measurement_raw/` with `scripts/summarize_hardware_run.py`.
+> **The measurement reports for the hardware runs** —
+> `docs/MEASUREMENTS-HARDWARE-20261027.txt` (historical calibration runs) and
+> `docs/MEASUREMENTS-HARDWARE-20261102.txt` (the 80-iteration Heron run on `ibm_marrakesh`),
+> with the run logs in `docs/RUNLOG-*.txt`. Every number in it is recomputable from the raw files
+> in `measurement_raw/` with `scripts/summarize_hardware_run.py` and `scripts/replay_hardware_log.py`.
 
 > **Environment:** a clean virtual environment is recommended for the
 > measurement. Qiskit 1.x and 2.x cannot coexist in the same Python:
