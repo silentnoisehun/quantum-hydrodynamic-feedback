@@ -1,0 +1,175 @@
+================================================================================
+A QPU-KVOTA MEREVID ALLAPOTA — a fiókok, a gördülő ablak és a futás-terv
+Datum: 2026-11-02 (a futás előtt, a futás előtti napon)
+Forras: a IBM Quantum Platform API, scripts/check_qpu_quota.py
+================================================================================
+
+MIÉRT EZ A DOKUMENTUM
+  A 2026-10-27-i mérés egyetlen konton futott, mert a másik kettőn ekkor
+  már kimerült a kvóta (docs/MEASUREMENTS-HARDWARE-20261027.txt, 6. pont).
+  Az uj futas tervezeséhez ezért a kvótát NEM havi nulláról induló keretként
+  kell számolni, hanem gördülő 28 napos ablakként — és a fiókokat
+  külön-külön kell nézni.
+
+  A 2026-11-02-i állapot: NÉGY fiók, és az egyik (E:\apikey.json) TELJES
+  kerettel, 0 mp fogyással áll rendelkezésre. Ezzel a futás NEM NOVEMBER 6-RA
+  halasztandó, hanem 2026-11-02-án elindítható (lásd az 5. pont).
+
+--------------------------------------------------------------------------------
+1. A KVÓTA MODELLJE (mérve, nem feltételezve)
+--------------------------------------------------------------------------------
+
+  limit              600 s QPU-idő (a nyitott csomag = 10 perc)
+  window             gördülő 28 NAPOS ablak: a fogyasztás a TEVEGEN 28 nap
+                    összes QPU-ideje, nem egy havi számláló
+  usage_period       minden lekérdezéskor a "most"-ra tolódik (a start is)
+  time_available_at  az a pillanat, amikor a LEGRÉGEBB fogyasztás kiesik a
+                    ablakból -> onnantól szabadul újra idő
+  szabadulás         fOKOZATOS: minden job 28 nap múlva esik ki, nem
+                    egyszerre az egész keret
+
+  KOVETKEZMENY: a "melyik napon futhatok" kerdes nem datum, hanem a
+  job-lista ismerete. A scripts/check_qpu_quota.py ezt a gate-et adja.
+
+--------------------------------------------------------------------------------
+2. A NEGY FIOK, A MERT ALLAPOTBAN (2026-11-02 11:41 UTC)
+--------------------------------------------------------------------------------
+
+  fajl            kulcs   instance        fogyott  limit  reached  szabad
+  E:\apikey.json  hope    open-instance     0 s    600 s  no       600 s
+  apikey.json     z89zu   open-instance   587 s    600 s  no        13 s
+  apikey (1)      SILENT  open-instance   622 s    600 s  yes        0 s
+  apikey (2)      jthr    open-instance   628 s    600 s  yes        0 s
+
+  A fiókok KULON IBM Cloud fiókok (külön a/... azonosito, külön
+  open-instance), tehát a kereteik NEM oszthatok egy futason belul, de a
+  sorozat osztható több kulcsra.
+
+  A "hope" fiók (E:\apikey.json) 2026-11-02-én TELJESEN hasznalatlan: 0 mp
+  fogyasztott, 600 mp szabad, a limit nem elert. Ez a negyedik, korabban nem
+  ismert fiók — a 2026-11-02-i napon kerult elő. A gate ezen a fiókon
+  "CAN RUN"-t ad.
+
+  A z89zu a 2026-10-27-i KAMPANY kulcsa: 192 job, osszesen 587,0 s
+  QPU-ido — ez pontosan a docs kvotaja ("a meres VEGEN 587 mp fogyott").
+  A job-azonositok dbg... prefixuek, ugyanaz a forma, mint a
+  measurement_raw/loop_*_iter*_dbg*.json fajlok neve.
+
+  Backends mindhar fokon: ibm_fez, ibm_marrakesh, ibm_kingston.
+  A 2026-10-27-i kampany is az ibm_fez eszkozon futott, tehat az uj futas
+  a zsamez a fizikai eszkozon tortenik (a fiók nem mas hardvert ad).
+
+  AZ +180 PERCES AJANLAT NEM AKTIV: a limit 600 s, nem 11400 s. A
+  ibm_kingston viszont elerheto — az ajanlat resze.
+
+--------------------------------------------------------------------------------
+3. A KVOTA FELSZABADULASI NAPTAR (a job-listabol szamolt)
+--------------------------------------------------------------------------------
+
+  dátum    hope    SILENT   jthr   z89zu   osszesen szabad
+  nov 02    600 s   -22 s   -28 s    13 s        563 s   <- MA: a hope-on
+  nov 03    600 s   -22 s   -28 s    67 s        617 s
+  nov 04    600 s    38 s   -28 s    67 s        677 s
+  nov 05    600 s    38 s   -28 s    67 s        677 s
+  nov 06    600 s   556 s   523 s    67 s      1 746 s
+  nov 07    600 s   556 s   527 s    67 s      1 750 s
+  nov 08    600 s   600 s   600 s    67 s      1 867 s
+  nov 11    600 s   600 s   600 s   147 s      1 947 s
+  nov 15    600 s   600 s   600 s   242 s      2 042 s
+  nov 24    600 s   600 s   600 s   600 s      2 400 s
+
+  A "hope" oszlop mindig 600 s, amíg nem fogyaszt rajta — nincs nala egyetlen
+  korabbi job sem, ami kieshetne az ablakbol. A SILENT nov 4-en 38 s-ot kap
+  (az okt 7-i jobok esnek ki), nov 6-on 556 s-ot (az okt 9-i 518 s), nov 8-on
+  a teljes 600 s-ot. A jthr ugyanez ket nappal kesobben. A z89zu nov 3-on
+  67 s-ot (az okt 6-i 57 s), nov 11-en 147 s-ot (az okt 14-i), nov 24-en a
+  teljeset (a kampany).
+
+  A "hope" fiók nem korlatozott kulcs a felszabadulasi naptarban — a
+  korlata maga a 600 s keret. A kampany 356 s-t hasznal, igy 244 s tartalek
+  marad a fioton.
+
+--------------------------------------------------------------------------------
+4. AMIT EGY FUTAS KOSTOL (mert, a nyers fajlokbol)
+--------------------------------------------------------------------------------
+
+  1 iteracio       3,00 s QPU-ido (a horgony is ugyanabban a jobban van)
+  20 iteracios     60,0 s QPU-ido, 393-487 s falioraido (6,5-8,1 perc)
+  68 iteracios    201,0 s QPU-ido, 1 214,8 s falioraido (20,2 perc)
+                   (a varakozas atlaga 14,9 s/iter, max 134,5 s — a NYILVANOS
+                    csomagon nincs Runtime Session, ezert a sor a szuk keresztmetszet)
+  3 iteracios       0,0 s (megszakitva, nem fogyott kvotat)
+
+  A tervezett uj futas: 100 iteracio = 296 s QPU-ido (2,96 s/iter),
+  falioraido ~30 perc (a varakozas miatt). A 20 iteracios kontrollfutassal
+  egyutt 356 s.
+
+--------------------------------------------------------------------------------
+5. A TERVEZETT FUTAS (2026-11-02, a "hope" fiókon)
+--------------------------------------------------------------------------------
+
+  A 100 iteracios diszkriminativ futas + a regisztralt 20 iteracios
+  kontrollfutas a HOPE fiókon (E:\apikey.json, 600 s szabad -> 356 s kell,
+  244 s tartaleknak).
+
+  MIERT A HOPE FIOKON, ES MIERT NOVEMBER 2-AN:
+    - a SILENT fiókon nov 6-ig nincs elég kvota (556 s csak nov 6-tól, a
+      jthr-en 523 s nov 6-tól); a z89zu-on ma 13 s van, nov 3-tól 67 s — egyik
+      sem elég a 296 s-os futashoz idor. A hope-on viszont 600 s van MOST.
+    - a futas a szabaly 0. pontjanak hatarai kozott marad (296 s, a 20-as
+      kontrollfutassal 356 s), es a kvota-gate 0-s kilepessel enged.
+    - a hardware ugyanaz (ibm_fez), a kulcs nem valtoztat semmit a
+      meres tartalman.
+
+  A KVOTA-ELLENORZES ELOTT (a szabaly h) pontja):
+
+    cd <repo>
+    python scripts/check_qpu_quota.py `
+        --token-file "E:\apikey.json" `
+        --token-file "C:\Users\mater\Downloads\apikey (1).json" `
+        --token-file "C:\Users\mater\Downloads\apikey (2).json" `
+        --token-file "C:\Users\mater\Downloads\apikey.json" `
+        --need-iterations 100 --seconds-per-iteration 2.96
+
+    A gate 0-s kilepessel csak akkor enged, ha valamelyik fokon elfer a
+    296 s. Ha 1, akkor NEM szabad bekuldeni.
+
+  A KULCS A KORNYEZETI VALTOZOBAN (SO SE fajlban, SO SE parancssorban):
+
+    $env:IBM_QUANTUM_API_TOKEN = "<a kulcs>"
+    $env:SCS_QUANTUM_PATH = "C:\Users\mater\AppData\Roaming\Python\Python314\site-packages\python"
+
+    A qiskit_ibm_runtime a peldanyt maga valasztja ki (open-instance, open
+    csomag) — az IBM_QUANTUM_INSTANCE env-vart nem kell beallítani, ha a
+    fiókban egyetlen nyitott instance van.
+
+  A 100 ITERACIOS FUTAS:
+
+    python scripts/quantum_loop_hardware.py --backend ibm_fez `
+        --iterations 100 --shots 1024 --anchor-every 5 --seed 20261026 `
+        --feedback raw --classical-control `
+        --token-file "E:\apikey.json"
+
+  A 20 ITERACIOS KONTROLLFUTAS (ugyanaz a seed, a klasszikus parral):
+
+    python scripts/quantum_loop_hardware.py --backend ibm_fez `
+        --iterations 20 --shots 1024 --anchor-every 5 --seed 20261026 `
+        --feedback raw --classical-control `
+        --token-file "E:\apikey.json"
+
+  UTANA (a nyers fajlokbol a CPU-oldali dontes):
+
+    python scripts/replay_hardware_log.py
+    python scripts/control_comparison.py --seeds 200 --init-seeds 30 --init-noise-seeds 6
+
+--------------------------------------------------------------------------------
+6. AMIT A MERES UTAN KELL MEGIRNI
+--------------------------------------------------------------------------------
+
+  - a fokonkenti kvotatablazat (a loop_summary usage_before/usage_after
+    blokkja maga is a fokot mutatja);
+  - az uj 100 iteracios modsorozat a true_residual_permuted savhoz
+    kepest (M1, M2);
+  - a dontes a QPU-RUN-DECISION-RULE.txt 4. pontja szerint.
+
+================================================================================

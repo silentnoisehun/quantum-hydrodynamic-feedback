@@ -3,7 +3,72 @@ A QPU-FUTTATAS ELOZETES JOVAHAGYASI SZABALYA (ELORE ROGZITETT)
 Datum: 2026-11-01
 Allapot: ELOTTOROZVE, a fenti datumot megelozon egyetlen uj QPU-futast sem
          inditottunk.
+
+MÓDOSÍTÁS (2026-11-02, a tervezett futás előtt):
+  Az alábbi 0. pont a 3. pont a) bekezdését MÓDOSÍTTA: a futás a regisztrált
+  20-30 iteráció MELLÉTT egy 100 iterációs futást is elvégezhet.
+  A modsitas indoka es a hatara a 0. pontban van. Nincs uj QPU-futas a
+  modsitas pillanataig.
+
+MODOSITAS (2026-11-02, a tervezett futas elott, masodik):
+  A 0. pont HATARAI valtozatlanok; csak a futo FIOK es a datum rogzult.
+  - A 100 iteracios futas a "hope" fiokon (E:\apikey.json) fut, nem a
+    SILENT konton: a hope fiokon 2026-11-02-EN 600 s szabad (0 mp
+    fogyasztott), a SILENT-en a szukseges keret csak nov 6-tol all
+    rendelkezre.
+  - A futas 2026-11-02-AN indulhat (nem nov 6-ig halasztva).
+  - A PROTOKOLL valtozatlan: 100 iteracio (296 s QPU-ido), a 20
+    iteracios regisztralt kontrollfutassal egyutt 356 s, 244 s
+    tartalekkal.
+  - A HARDVER ugyanaz (ibm_fez); a kulcs nem valtoztatja a meres
+    tartalman.
+  - A DONTO KOMPARATOR NEM VALTOZOTT: a scripts/control_comparison.py
+    hossz-orbje a true_residual_permuted agat mindig helyesen vede. A
+    javitott ag a hardware_permuted volt (nem a donto komparator), ez a
+    javitas tehát a dontest nem befolyasolja.
+  - A CPU oldali sav (measurement_cpu/control_comparison.json) a javitott
+    koddal ujra generalizalt; a dontes csak az UJ savon tortenik.
 ================================================================================
+
+--------------------------------------------------------------------------------
+0. A MÓDOSÍTÁS (2026-11-02) — MIÉRT, ÉS MEDDIG
+--------------------------------------------------------------------------------
+
+  A MODOSÍTOTT SZABÁLY: a 3. pont a) helyett:
+
+    a) ITERACIOK: a regisztralt 20-30, ES egy 100 iteracios futas.
+       A 100-as a 2026-10-27-i 68-as futas EREDETI TERVEZETT HOSSZA (a
+       RUNLOG-LOOP-68IT-20261027.txt "iter N/100" sorokat mutat, a futas
+       68-nal ALLT MEG), tehát nem egy uj protokoll, hanem a regi befejezése.
+
+  AZ INDOK (mindegyik pont MEGRMERT):
+    1. A trigger a 68 iteracios hardveres futason teljesult (M1=6.0,
+       M2=0.7206 a true_residual_permuted savon KIVUL). A 20 iteracios
+       esetek a savon BELUL vannak (20 iter: M1=3.0, M2=0.55/0.45).
+       => egy 20-30 iteracios futas NEM tudja ugyanazt a kerdest
+          megvalaszolni: a bemert eredmenye a savon belul van.
+    2. A 100 iteracio tobb statisztikai erot ad, es a 68-as eredmeny
+       reprodukalhato-e igaz, hogy a hossztol fugg-e.
+    3. A korlatas 90 mp-es QPU-keret a 30 iteraciora vonatkozott, NEM a
+       fogyasztasra: a fogyasztas a kulcs ablakaban van. A 100 iteracio
+       296 s QPU-ido, a harom fiok egyutt 1 800 s-ot bir (a gördulo
+       28 napos ablak; docs/QPU-QUOTA-20261102.txt).
+
+  A HATAR (a módosítás nem korlátlan):
+    - a futas a 3. pont b)-i) feltételeit TELJESULTETI (javitott solver,
+      f-normalizalas, nyers dekodolas, azonos seeddel klasszikus par,
+      1024 loves, horgony minden 5. iteraciora);
+    - a KVOTA-ELLENORZES BEKULDES ELOTT tortenik
+      (scripts/check_qpu_quota.py, a gate 0-s kilepes nelkul nem inditunk);
+    - a 100 iteracios futas OSSZESEN 296 s QPU-ido (a 20 iteracios
+      kontrollfutassal egyutt 356 s), a "hope" konton 600 s szabad
+      (a 2026-11-02-i masodik modsitas szerint);
+    - ha a gate 1-et ad, a futas NEM indul el — ekkor a 3. pont 4. pontja
+      szerint a "bizonyitas" megall, es a kovetkezo datumig(varakozas)
+      kell.
+
+  A MODOSITAS DATUMA ELOTTE van a futasnak: a futas 2026-11-06-RA van
+  tervezve, a modsitas 2026-11-02-én keszult.
 
 A SZABALY CELJA
   Hogy a "kvantum-visszacsatolas felel-e a modvaltasert" kerdesre a
@@ -78,6 +143,8 @@ A KIVETEL (a szabaly egyetlen kivétele, eloregisztralva):
   Egyetlen QPU-futast indokolt — a KOVETKEZO KORULKEZESEK KOTELESEK:
 
   a) ITERACIOK: 20-30. Nem 68, nem 100. (A 90 mp-os QPU-keret miatt.)
+     [MODOSITVA 2026-11-02, a 0. pont szerint: a 20-30 MELLETT egy 100
+      iteracios futas is elvegezheto, a 0. pontban megadott hatarokkal.]
   b) SOLVER: a JAVITOTT solver (scripts/quantum_loop_sim.py), NEM a legacy.
   c) F-NORMALIZALAS: a kodolas elott a f-et a 16 mod index-tartomanyara
      normalizalni kell (a 2026-10-27-i futasokban MINDEN iteracioban
@@ -94,6 +161,10 @@ A KIVETEL (a szabaly egyetlen kivétele, eloregisztralva):
   h) QPU-KERET: LEGFELJEBB 90 mp QPU-ido (30 iteracio x 3,00 mp/iter,
      a MERT 3,00 mp/iter alapjan). A kvota-ellenorzes BEKULDES ELOTT
      tortenik (a kimerult konton a job SOOSEM fut le).
+     [MODOSITVA 2026-11-02: a 90 mp-os keret a regi 30 iteracios futasra
+      vonatkozott. A 100 iteracios futas 296 s QPU-ido (a 20 iteracios
+      kontrollfutassal 356 s), a keretet a KVOTA (a gordulo 28 napos
+      ablak) adja, nem a fix ido limit — a hatar a 0. pont szerint.]
   i) A nyers fajlok a measurement_raw/ mappaba mennek, a cimke a
      futas cime legyen ("<UTC cimke>"), hogy a replay es a
      control_comparison utolag hozzaferjen.
@@ -115,6 +186,8 @@ A KIVETEL (a szabaly egyetlen kivétele, eloregisztralva):
 5. AHOZAMENET (PAPIROK)
 --------------------------------------------------------------------------------
 
+  - docs/QPU-QUOTA-20261102.txt: a mer fiokok, a gördulo 28 napos kvota-
+    ablak, a felszabulasi naptar es a futas-terv;
   - docs/MEASUREMENTS-HARDWARE-20261027.txt: a 2b. pont (a 20 iteracios
     futas) es a 6. pont (a kvota) atirasa a MERT szamokra;
   - docs/MEASUREMENTS-CPU-CONTROLS.txt: a CPU kontroll eredmenye;

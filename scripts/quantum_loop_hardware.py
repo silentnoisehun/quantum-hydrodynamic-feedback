@@ -132,6 +132,66 @@ def counts_to_cli(counts, nqubits):
     return ",".join(parts)
 
 
+# ── a job QPU-ideje ─────────────────────────────────────────────────────
+def _usage_seconds_once(job):
+    """A job QPU-ideje egy lehetséges forrasbol (0.0 ha egyik sem ad)."""
+    try:
+        u = job.usage()
+    except Exception:
+        u = None
+    if isinstance(u, dict):
+        for key in ("quantum_seconds", "qpu_charge_time_seconds", "qpu_seconds"):
+            if key in u:
+                try:
+                    return float(u[key])
+                except (TypeError, ValueError):
+                    return 0.0
+        return 0.0
+    if u is None:
+        return _usage_seconds_from_metrics(job)
+    try:
+        return float(u)
+    except (TypeError, ValueError):
+        return _usage_seconds_from_metrics(job)
+
+
+def _usage_seconds_from_metrics(job):
+    """A fallback: a job metrikai (a 2026-10-27-i futasokban innen jott a 3.0)."""
+    try:
+        m = job.metrics() or {}
+        usage = m.get("usage") or {}
+        for key in ("qpu_charge_time_seconds", "quantum_seconds"):
+            if key in usage:
+                return float(usage[key])
+        return float(m.get("run_time", 0.0) or 0.0)
+    except Exception:
+        return 0.0
+
+
+def job_qpu_seconds(job, timeout=60.0):
+    """A job QPU-idő másodpercben — VÁRHATÓ érték, nem siromás.
+
+    🧬 MIÉRT VÁR (2026-11-02): a `job.usage()` a `result()` visszatérése UTÁN
+    egy kis késéssel lesz elérhető. A 2 iterációs füstpróbában mindkét
+    iteráció 0-t adott, pedig a fiók kvótája pontosan 6,0 mp-et fogyott
+    (2 x 3,0 mp) — vagyis a 0 NEM a mérés eredménye, hanem az API
+    elérhetőségének pillanata. Ugyanaz a hiba az okt. 7-i 3 iterációs
+    megszakadt futásnál is látszik (ott 0,0 s szerepel a nyers fájlokban).
+    A mérés nyugtázhatósága miatt itt addig pollolunk, amíg nem jelenik meg
+    egy pozitív érték; a határidő lejárta után a mért érték (akár 0) a
+    rögzített, de ilyenkor a summary usage_before/usage_after blokkja adja
+    az ellenőrzést.
+    """
+    deadline = time.time() + timeout
+    while True:
+        qpu = _usage_seconds_once(job)
+        if qpu > 0:
+            return qpu
+        if time.time() >= deadline:
+            return qpu
+        time.sleep(2.0)
+
+
 # ── a hurok ────────────────────────────────────────────────────────────
 def run_hardware_loop(args, cli, qc, service, backend, sampler, raw_dir, tag):
     """A valódi hardveres hurok. Visszaadja az iterációs naplót."""
@@ -181,15 +241,7 @@ def run_hardware_loop(args, cli, qc, service, backend, sampler, raw_dir, tag):
             )
         wall = time.time() - t0
 
-        qpu = 0.0
-        try:
-            qpu = float(job.usage())
-        except Exception:
-            try:
-                m = job.metrics()
-                qpu = float(m.get("run_time", 0.0) or 0.0)
-            except Exception:
-                qpu = 0.0
+        qpu = job_qpu_seconds(job)
         total_qpu += qpu
         total_wall += wall
 
