@@ -28,6 +28,56 @@ MODOSITAS (2026-11-02, a tervezett futas elott, masodik):
     javitas tehát a dontest nem befolyasolja.
   - A CPU oldali sav (measurement_cpu/control_comparison.json) a javitott
     koddal ujra generalizalt; a dontes csak az UJ savon tortenik.
+
+MODOSITAS (2026-11-02, a futas befejezese ELOTT, harmadik):
+  A masodik modsitas UTAN, de a futas vege ELOTT: a javitott, 200
+  permutacios sav keszult el, es a trigger NEM teljesul. Ez a modsitas a
+  HELYZETET rogziti — a protokoll deviationt is — es NEM fordulja meg a
+  dontest. Az elemzesi terv RÖGZITETT, az eredmény ismerete ELOTT.
+
+  A MEREDT TENY (a javitott sav, 200 permutacio, 2026-11-02):
+    A commitolt sav a 4465ab9-ben 10 PERMUTACIOS volt, noha a szabaly 1.
+    pontja maga írja el a savrol: ">=200 futas per hardveres futas". A
+    10-meres sav ezert a szabaly KIVETEL-e alá esett: "ha a CPU kontroll
+    maga is bizonytalan (pl. a sav nincs rendben...), akkor a szabaly NEM
+    dont — a hiba elott nem szabad QPU-idot burnelni".
+    A javitott savban (200 permutacio) a 68-as futas:
+      M1 hardver=6.0       sav=(4.0, 6.0)             -> BELUL
+      M2 hardver=0.720588  sav=(0.4853, 0.7205882353) -> BELUL (pontosan
+                                                      a p95-n)
+    A HELYES permutacios p-ertek (a 200 elemi futasbol, NEM a savbol):
+      M1: 135/200 permutacio eleri vagy meghaladja -> p=0.675
+      M2:  11/200 permutacio eleri vagy meghaladja -> p=0.055
+      mindketto egyszerre: 3/200 -> p=0.015
+    A regi 10-meres sav M2 p95-e 0.6765 volt (a 10 meres alulbecsli a
+    95. percentilist); a 200-meres sav p95-e 0.7205882352941176, ami
+    PONTOSAN a hardver erteke. A trigger tehát a 10-mintás sav MULATEJA
+    volt, nem a hardveres mod-mintazat tulmagas tulzata.
+
+  A PROTOKOLL DEVIATION (nyilvan, a maga modsitasa reszekent):
+    A 100 iteracios futas 2026-11-02 13:07-kor lett benyujtva, MIELOTT a
+    javitott sav elkeszult volna (13:20). A hiba elott nem szabad
+    QPU-idot burnelni — ezt a sorrendet nem tartottuk be. A deviation
+    itt rogzittetett.
+
+  A FUTAS JELLEGE: EXPLORATOR, NEM TRIGGER-ALTAL AUTHORIZEZOTT.
+    A trigger nem teljesul, igy a 3. pont a 100 iteracios futast nem
+    authorizezza. A futas azonos kerdes magasabb statisztikai erot ado
+    valtozata (a 68-as hatarapon eredmeny a hossztol fugg-e), ezert a
+    masodik modsitas 2. pontja tovabbra is ervenyes — de az eredmeny
+    EXPLORATOR, es onmagaban nem fogadhat el a papir "a kvantum-csatorna
+    felel a modvaltasert" allitasat. Ahhoz uj, ELOREGISZTRALT megerosites
+    kell.
+
+  AZ ELEMZESI TERV (RÖGZITETT 2026-11-02, az eredmény ismerete ELOTT):
+    1. A 100 iteracios hardveres reziduum a true_residual_permuted savhoz
+       kepest, a SAJAT hosszanal (100 iter).
+    2. A dontes a szabaly 1. pontjanak sztandardja szerint: M1 es M2 a
+       5-95%-os savon KIVUL esik-e.
+    3. A HELYES permutacios p-ertek M1-re, M2-re es a ketto egyuttes
+       ertekere is.
+    4. A dontes az IGAZI sorrendrol szol, nem a permutalt armokrol.
+    5. BARMELYIK eredmeny ugyanugy lesz rogzitve.
 ================================================================================
 
 --------------------------------------------------------------------------------
@@ -133,8 +183,13 @@ A KIVETEL (a szabaly egyetlen kivétele, eloregisztralva):
       kimondani, a "kvantum felelős a módváltásért" állitás
       TORLENDÓ.
 
-  A meglévő nyers fajlok (measurement_raw/) elegendőek: nem kell
-  uj hardveres adat ahhoz, hogy ezt ki lehessen mondani.
+  A meglévő nyers fájlok (measurement_raw/) elegendőek: nem kell
+  új hardveres adat ahhoz, hogy ezt ki lehessen mondani.
+  [MEGJEGYZES 2026-11-02, a harmadik modsitas utan: a javitott,
+   200-permutacios savval a trigger NEM teljesul — egyik hardveres futas
+   sem esik kivul a savon. A 68-as futas a hatarapon van (M2 p=0.055,
+   a ketto metrikara egyuttesen p=0.015). A fenti dontes tehát a
+   PRE-REGISZTRALT analizisbol kovetkezik.]
 
 --------------------------------------------------------------------------------
 3. HA A FIRTEK TELJESUL (a hardver a zajsavon KIVUL van)
