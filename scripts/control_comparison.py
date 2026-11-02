@@ -61,7 +61,11 @@ HARDWARE_RUNS = [
 
 # A hardveres futasok hossza — a CPU-futások is EZEKKEL a hosszakkal futnak,
 # hogy a statisztikak osszehasonlithatoak legyenek.
-LENGTHS = [20, 68]
+# 100: a 2026-10-27-i 68-as futas 100-re volt tervezve (a RUNLOG "iter N/100"
+# sorokat mutat), es a 2026-11-02-i uj futas is 100 iteracios lesz. A CPU-oldali
+# savat (true_residual_permuted) 100 iteracion is ki kell szamolni, mert a
+# dontes a hardveres 100-as eredmenyet AZONOS hosszon hasonlitja.
+LENGTHS = [20, 68, 100]
 
 # A két kör. "fixed_init": a kezdeti állapot fix, a zaj seedje váltakozik
 # (ez a fő sáv). "varying_init": a kezdeti állapot is váltakozik — ez
@@ -221,6 +225,23 @@ def true_residual_feedback(prefix, solver_name):
 
 
 # ── egy futas ──────────────────────────────────────────────────────────
+def _require_length(values, iters, arm_id, prefix):
+    """A visszacsatolas-lista hossza legalabb az iterationk szama kell legyen.
+
+    🧬 A hossz-orb a build_tasks()-ban vedi a hardveres futasokat (egy futas
+    csak a sajat hosszanal fut), de egy hiba esetén a hurokon kivuli ag a
+    szulo hw-valtozot szuloenek, es a rovidebb lista IndexError-ral dobja el
+    a teljes futast. A lenyeg: a hiba NE IndexError legyen, hanem egy
+    olvashato, a hibara utalo uzenet, a kar megallasa elott.
+    """
+    if len(values) < iters:
+        raise ValueError(
+            f"a visszacsatolas-lista rovidebb, mint a futas: "
+            f"ag={arm_id} prefix={prefix} iters={iters} "
+            f"lista_hossz={len(values)}"
+        )
+
+
 def run_task(task):
     """Egy hurok-futas. A feladat egy tuple, hogy a ProcessPoolExecutor
     pickelhessen (a Windows-on a spawn miatt a modul szintjen kell lennie)."""
@@ -247,6 +268,7 @@ def run_task(task):
     elif kind == "hardware":
         if feedback_mode == "true_residual":
             residual = list(true_residual_feedback(prefix, solver_name))
+            _require_length(residual, iters, arm_id, prefix)
             if permute:
                 order = np.random.default_rng(noise_seed).permutation(len(residual))
                 residual = [residual[i] for i in order]
@@ -254,6 +276,7 @@ def run_task(task):
                                       solver=solver, residual_list=residual)
         else:
             feedback = list(recorded_feedback(prefix, feedback_mode, solver_name))
+            _require_length(feedback, iters, arm_id, prefix)
             if permute:
                 order = np.random.default_rng(noise_seed).permutation(len(feedback))
                 feedback = [feedback[i] for i in order]
@@ -358,7 +381,14 @@ def build_tasks(seeds, init_seeds, solvers, init_noise_seeds):
                                   iters, init_seed, init_seed, solver_name,
                                   hw["prefix"], hw["feedback"] + "_rescaled",
                                   False, "varying_init"))
-                for s in range(init_noise_seeds):
+                    # 🧬 A permutalt visszacsatolas a HURON BELUL kell legyen:
+                    # a hossz-orb (hw["length"] != iters) minden hardveres
+                    # futast csak a sajat hosszanal futtatja. KIVUL maradva
+                    # az elszivargo hw-valtozo (a lista utolso eleme) szuloenek,
+                    # es a 20-as szekcioban a 68-as futas visszacsatolasait
+                    # replayelte — hamis armot termelve, 100 iteracional pedig
+                    # IndexError-ral eldobta a teljes futast.
+                    for s in range(init_noise_seeds):
                         tasks.append(("hardware",
                                       f"hardware_permuted_{hw['prefix']}",
                                       0, None, iters, init_seed,
