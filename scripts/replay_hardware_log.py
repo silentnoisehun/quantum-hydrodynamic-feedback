@@ -34,21 +34,27 @@ import quantum_loop_sim as current  # noqa: E402
 RUNS_WITH_ARGMAX = ["20261027T010656Z", "20261027T015558Z"]
 # A 68 iterációs futás: az iterációs fájlokban nincs mode_argmax.
 RUN_WITHOUT_ARGMAX = "20261027T003737Z"
-# 🧬 A 2026-11-02-i 100 iterációs futás: a nyers fájljaiban VAN mode_argmax
-# (a hardveres script ma már kiírja), tehát a fenti listába kerül.
-RUN_20261102 = "20261102T120704Z"
+# 🧬 A 2026-11-02-i futások: a nyers fájljaikban VAN mode_argmax (a hardveres
+# script ma már kiírja), tehát a fenti listába kerülnek.
+# Az első (20261102T120704Z) a SOR megállása miatt 10 iterációnál megszakadt —
+# a megszakadás ELŐTTI 10 iterációja érvényes adat (a replay 10/10 igazolja).
+# A második (20261102T123717Z) a teljes 100 iteracios futas.
+RUN_20261102_ABORTED = "20261102T120704Z"
+RUN_20261102 = "20261102T123717Z"
+RUNS_WITH_ARGMAX.append(RUN_20261102_ABORTED)
 RUNS_WITH_ARGMAX.append(RUN_20261102)
 
 # 🧬 MELYIK SOLVER VISSZAADJA A NAPLÓT? (futasonkent) — ez a gate maga.
 # A 2026-10-27-i futasok a LEGACY solverrel keszultek (a javitas ELOTT), ezert
 # a legacy solvernek pontosan vissza kell adnia a naplót, a javitottnak NEM.
-# A 2026-11-02-i futas a JAVITOTT solverrel keszult (a javitott
+# A 2026-11-02-i futasok a JAVITOTT solverrel keszultek (a javitott
 # quantum_loop_hardware.py script), ezert pont az ellenkezo igaz: a javitott
 # solver adja vissza pontosan a naplót, a legacy nem.
 RUN_SOLVER_THAT_MUST_MATCH = {
     "20261027T010656Z": "legacy",
     "20261027T015558Z": "legacy",
     "20261027T003737Z": "legacy",
+    RUN_20261102_ABORTED: "current",
     RUN_20261102: "current",
 }
 
@@ -62,6 +68,7 @@ RUN_FEEDBACK = {
     "20261027T003737Z": "corrected",
     "20261027T010656Z": "raw",
     "20261027T015558Z": "raw",
+    RUN_20261102_ABORTED: "raw",
     RUN_20261102: "raw",
 }
 
@@ -80,6 +87,7 @@ RUN_SEED = {
     "20261027T003737Z": 20261026,
     "20261027T010656Z": 20261026,
     "20261027T015558Z": 20261027,
+    RUN_20261102_ABORTED: 20261026,
     RUN_20261102: 20261026,
 }
 
