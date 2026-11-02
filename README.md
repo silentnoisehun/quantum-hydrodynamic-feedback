@@ -1,5 +1,12 @@
 # Quantum Organic Intelligence
 
+> ### 📄 Scientific Manuscript Available
+> - **LaTeX Manuscript:** [rxiv/gpe_closed_loop_benchmark.tex](arxiv/gpe_closed_loop_benchmark.tex)
+> - **Title:** *Closed-Loop Dynamical Feedback Between a Two-Dimensional Gross–Pitaevskii Condensate and a 156-Qubit Superconducting Transmon Processor: Attractor Dynamics and Empirical Bounds*
+> - **Target Venue:** *EPJ Quantum Technology* / *Physical Review Applied*
+> - **Key Empirical Finding:** Closed-loop coupling on ibm_marrakesh (80 iterations, 240s QPU time) achieves discrete bimodal mode stabilization (normalized entropy H/Hmax = 0.3727 in the 3.0th percentile of randomized permutation benchmarks, p = 0.030), demonstrating transmon readout drift stabilization.
+
+
 A Gross-Pitaevskii fluid, a quantum bridge whose encoding and decoding are verified against recorded hardware measurements, and the measurements that document — and limit — the system's dynamical behaviour. This repository rests on three measurable components:
 
 * `crates/fluid-stratos`: a GPE fluid solver for 16 cognitive modes, with a real split-step Fourier kinetic step.
