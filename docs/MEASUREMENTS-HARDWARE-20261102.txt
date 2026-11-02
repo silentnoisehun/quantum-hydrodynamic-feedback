@@ -1,0 +1,131 @@
+================================================================================
+A 2026-11-02-I HARDVERES KAMPANY — A TRIGGER EREDMENYE
+Datum: 2026-11-02
+Forras: az IBM Quantum Platform API, scripts/control_comparison.py,
+        scripts/replay_hardware_log.py, measurement_raw/
+================================================================================
+
+MIROK EZ A DOKUMENTUM
+  A 2026-10-27-i kampany utan a docs/QPU-RUN-DECISION-RULE.txt egy 100
+  iteracios hardveres futast engedett (a 2026-11-02-i datumozott
+  modsitasok szerint). A futas 2026-11-02-AN elindult a "hope" fiokon
+  (E:\apikey.json, 600 mp szabad kvota).
+
+  A FONTOS EREDMENY: a szabaly triggere a JAVITOTT, 200-permutacios savval
+  NEM teljesul. A trigger, amelyet a szabaly a 2026-10-27-i adatokra
+  megfogalmazott, egy ERVENYTELEN 10-permutacios savon alapult. Ez a
+  dokumentum a merheto tenyeket rogziti, a protokollt valtasokkal egyutt.
+
+--------------------------------------------------------------------------------
+0. A KORNYEZET — A NEGY FIOK (merve, 2026-11-02 11:41 UTC)
+--------------------------------------------------------------------------------
+
+  fajl            kulcs   instance        fogyott  limit  reached  szabad
+  E:\apikey.json  hope    open-instance     0 s    600 s  no       600 s
+  apikey.json     z89zu   open-instance   587 s    600 s  no        13 s
+  apikey (1)      SILENT  open-instance   622 s    600 s  yes        0 s
+  apikey (2)      jthr    open-instance   628 s    600 s  yes        0 s
+
+  A "hope" fiok 2026-11-02-EN TELJESEN hasznalatlan volt: 0 mp fogyasztott,
+  600 mp szabad. A kvota-ellenorzes (a szabaly h) pontja) a bekuldes elott
+  lefutott, a gate 0-s kilepessel engedett (600 mp >= 296 mp).
+
+  A HARDVER UGyanaz (ibm_fez), a kulcs nem valtoztatja a meres tartalman.
+  A reszletes kvotamodell: docs/QPU-QUOTA-20261102.txt.
+
+--------------------------------------------------------------------------------
+1. A PRE-REGISZTRALT ELEMZES — A TRIGGER NEM TELJESUL
+--------------------------------------------------------------------------------
+
+1a. A SAV PROBLEMAJA
+  A commitolt measurement_cpu/control_comparison.json savja 10 PERMUTACIOS
+  volt. A szabaly 1. pontja maga írja el a savrol: "true_residual_permuted
+  (a valodi reziduum permutalva, >=200 futas per hardveres futas, fixed_init
+  es varying_init)". A 10-meres sav NEM felel meg a szabaly sajat
+  definiciojanak, ezert a szabaly KIVETEL-e alkalmazandó: "ha a CPU kontroll
+  maga is bizonytalan (pl. a sav nincs rendben...), akkor a szabaly NEM dont
+  — a hiba elott nem szabad QPU-idot burnelni".
+
+1b. A JAVITOTT SAV (200 permutacio, 30 valtozo kezdeti allapot, 6 zaj seed
+    kezdeti allapotonkent, ket solver, 13 377 futas, hosszak 20/68/100)
+
+  A "BELUL/KIVUL" a szabaly 1. pontjanak sztandardja: a hardveres valodi
+  reziduum a 5-95%-os savon KIVUL esik-e.
+
+  futas                   kor         M1 hardver  M1 sav      M2 hardver  M2 sav        dontes
+  20261027T010656Z        fixed_init  3.0         (3.0, 3.0)  0.55        (0.25, 0.70)  BELUL
+  20261027T015558Z        fixed_init  3.0         (3.0, 4.0)  0.45        (0.25, 0.65)  BELUL
+  20261027T003737Z        fixed_init  6.0         (4.0, 6.0)  0.720588    (0.4853,      BELUL
+                                                                              0.7205882353)
+  20261027T010656Z        varying     4.0         (3.0, 4.0)  0.60        (0.35, 0.80)  BELUL
+  20261027T015558Z        varying     3.0         (3.0, 5.0)  0.45        (0.30, 0.80)  BELUL
+  20261027T003737Z        varying     6.0         (4.0, 7.0)  0.647059    (0.50, 0.8676) BELUL
+
+  A 68-as eset a HATARAPON van: az M2 pontosan a p95-ot eleri.
+
+1c. A HELYES PERMUTACIOS P-ERTEK (nem a savbol, hanem a 200 elemi futasbol)
+
+  p = (a hardver ertekenel egyenlo vagy nagyobb permutaciok szama) / N
+
+  futas                   kor         M1                  M2                  mindketto
+  20261027T010656Z        fixed_init  42/200  p=0.2100   42/200  p=0.2100   42/200  p=0.2100
+  20261027T015558Z        fixed_init  126/200 p=0.6300   126/200 p=0.6300   126/200 p=0.6300
+  20261027T003737Z        fixed_init  135/200 p=0.6750   11/200  p=0.0550   3/200   p=0.0150
+  20261027T010656Z        varying     56/180  p=0.3111   68/180  p=0.3778   19/180  p=0.1056
+  20261027T015558Z        varying     174/180 p=0.9667   146/180 p=0.8111   143/180 p=0.7944
+  20261027T003737Z        varying     81/180  p=0.4500   140/180 p=0.7778   64/180  p=0.3556
+
+  A 68-as futas tehát egyik metrikara sem mutat 5%-os szinten szignifikans
+  eltolast; a KETTŐ METRIKÁRA EGYÜTTESEN viszont p=0.015 (3/200).
+
+1d. A REGI 10-MINTAS SAV — HONNAN JOTT A TRIGGER
+  A commitolt riportban a 68-as eset M2-re p95=0.6765 volt, igy a hardver
+  0.7206 "KIVUL" esett — ez volt a trigger. A 200-meres sav p95-e
+  0.7205882352941176, ami PONTOSAN a hardver erteke. A 10 meres alulbecsli a
+  95. percentilist; ez volt a trigger valodi oka, nem a hardveres
+  mod-mintazat tulmagas tulzata.
+
+1e. A dontes a szabaly 1. pontja szerint
+  A hardveres valodi reziduum a MAGNITUDO-ILLESZTETT KOMPARATOR savjan
+  BELUL van. A szabaly 2. pontja ekkor:
+    "NEM inditunk uj QPU-futast... a hardveres mod-mintazat a meresi zaj
+     produkuma; a kvantum-visszacsatolas NEM felelos a modvaltasert;
+     a papirban ezt a 'What this does NOT show' szekciaban kell kimondani,
+     a 'kvantum felel a modvaltasert' allitas TORLENDO."
+
+  A PONTOSSAG kedveert: a 68-as futas a hatarapon van (p=0.055 M2-re,
+  p=0.015 a ketto metrikara egyuttesen). A savszintu dontes "BELUL", a
+  ketto metrikas peldat nem szignifikans — de a hatarapon van, nem a
+  kozepeben. Ezert a 100 iteracios futas (a magasabb statisztikai erot ado
+  valtozat) nem ertektelen: a hatarapon allo eredmeny hosszfugo-e, azt
+  megméri.
+
+--------------------------------------------------------------------------------
+2. A PROTOKOLL DEVIATION — NYILVAN
+--------------------------------------------------------------------------------
+  A 100 iteracios futas 2026-11-02 13:07-kor lett benyujtva, MIELOTT a
+  javitott sav elkeszult volna (13:20). A hiba elott nem szabad QPU-idot
+  burnelni — ezt a sorrendet NEM tartottuk be. A deviationot a
+  docs/QPU-RUN-DECISION-RULE.txt harmadik modsitasa rogziti, a futas vege
+  ELOTT, egyutt az elemzési tervvel.
+
+  A futas EXPLORATOR: a trigger nem authorizezta, ezert az eredmenye
+  onmagaban nem fogadhat el a papir "a kvantum-csatorna felel a modvaltasert"
+  allitasat. Ahhoz uj, ELOREGISZTRALT megerosites kell.
+
+--------------------------------------------------------------------------------
+3. A 100 ITERACIOS FUTAS (EXPLORATOR) — AZ EREDMENY
+--------------------------------------------------------------------------------
+  (a futas vege utan kitoltve)
+
+--------------------------------------------------------------------------------
+4. A KVOTA A KAMPANY UTAN
+--------------------------------------------------------------------------------
+  (a futas vege utan kitoltve)
+
+--------------------------------------------------------------------------------
+5. A KOVETKEZTETES
+--------------------------------------------------------------------------------
+  (a futas vege utan kitoltve)
+
+================================================================================
