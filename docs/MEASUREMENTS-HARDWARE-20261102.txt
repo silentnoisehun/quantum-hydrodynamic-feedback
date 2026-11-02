@@ -203,3 +203,32 @@ MIROK EZ A DOKUMENTUM
   (a futas vege utan kitoltve — a 3. szekcioban)
 
 ================================================================================
+
+--------------------------------------------------------------------------------
+6. KRITIKUS KODHIBA AZ EXCITE() MODULBAN ES A JAVITOTT 80 ITERACIOS FUTAS
+--------------------------------------------------------------------------------
+  2026-11-02 14:25-kor azonosított es 14:40-kor CPU csereteszttel igazolt hiba:
+  A `scripts/quantum_loop_sim.py` `excite(psi, A, f, phi)` fuggvenyeben:
+    1. Az `f` frekvencia-koordinata nem volt [0, 1] tartomanyra normalizalva,
+       hanem a nyers modusindex [0, 15] szorzodott `RMAX`-szal (target_rad akar 120!).
+    2. A periodus-wrapping keplete `np.minimum(d, 2*pi - np.minimum(d, 2*pi))`
+       hibasan a mar kiszamolt euklideszi hypot-tavolsagra volt alkalmazva, nem
+       a szogkulonbsegre.
+  Kovetkezmeny: minden f > 1.5 eseten a tavolsag minden modusra 0.0000-ra
+  omlott ossze, igy az `np.argmin(d)` mindig a 0-s modust valasztotta. Az `f` es
+  `phi` kvantumcsatornak a folyadek szintjen LIKVIDALVA VOLTAK. A korabbi
+  futasok csak az `A` amplitudo csatornajat teszteltek!
+
+  A javitas:
+    - target_rad = (f / F_MODE_INDEX_MAX) * RMAX
+    - d_ang wrapping a hypot elott: d_ang = min(|d_ang|, 2*pi - |d_ang|)
+  CPU csereteszt (30 iteracio, azonos seed):
+    - f <-> phi csere: a hibas kod 3.3% elterest adott, a javitott 83.3%-ot!
+    - phi = 0 fagyasztas: a hibas kod 0.0% hatast mutatott (halott fazis), a javitott 33.3%-ot!
+    - Modusok lefedettsege: 4-rol 15 aktiv modusra nott.
+
+  A javitott eles QPU futas:
+    - 80 iteracio az ibm_fez processzoron a rendelkezesre allo 264 s keretbol (~237 s QPU ido, 27 s tartalek).
+    - Ez az elso olyan hardveres futas, ahol a teljes (A, f, phi) kvantum-visszacsatolasi hurok valoban el es hat a GPE folyadekra.
+
+================================================================================
