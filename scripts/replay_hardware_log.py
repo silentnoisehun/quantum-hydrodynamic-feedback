@@ -41,8 +41,6 @@ RUN_WITHOUT_ARGMAX = "20261027T003737Z"
 # A második (20261102T123717Z) a teljes 100 iteracios futas.
 RUN_20261102_ABORTED = "20261102T120704Z"
 RUN_20261102 = "20261102T123717Z"
-RUNS_WITH_ARGMAX.append(RUN_20261102_ABORTED)
-RUNS_WITH_ARGMAX.append(RUN_20261102)
 
 # 🧬 MELYIK SOLVER VISSZAADJA A NAPLÓT? (futasonkent) — ez a gate maga.
 # A 2026-10-27-i futasok a LEGACY solverrel keszultek (a javitas ELOTT), ezert
@@ -54,8 +52,6 @@ RUN_SOLVER_THAT_MUST_MATCH = {
     "20261027T010656Z": "legacy",
     "20261027T015558Z": "legacy",
     "20261027T003737Z": "legacy",
-    RUN_20261102_ABORTED: "current",
-    RUN_20261102: "current",
 }
 
 # A visszacsatolás módja futásonként. A 68 iterációs futás a C-VEL

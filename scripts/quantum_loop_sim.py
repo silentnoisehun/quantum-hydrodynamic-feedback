@@ -292,9 +292,11 @@ def excite(psi, A, f, phi):
     """A dekodolt (A, f, phi) visszatoltese a folyadékba:
        a 16 mod kozul a (f, phi) koordinatahoz legkozelebbi modo gerjesztese A erosseggel"""
     target_ang = phi * 2 * pi
-    target_rad = f * RMAX
-    d = np.hypot(MODE_ANGLES - target_ang, (MODE_RADII - target_rad) * 0.6)
-    d = np.minimum(d, 2*pi - np.minimum(d, 2*pi))
+    target_rad = (f / F_MODE_INDEX_MAX) * RMAX
+    d_ang = np.abs(MODE_ANGLES - target_ang) % (2 * pi)
+    d_ang = np.minimum(d_ang, 2 * pi - d_ang)
+    d_rad = (MODE_RADII - target_rad) * 0.6
+    d = np.hypot(d_ang, d_rad)
     m = int(np.argmin(d))
     mx, my = MODES[m]
     ii = np.arange(N)[:, None]; jj = np.arange(N)[None, :]
