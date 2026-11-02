@@ -218,27 +218,41 @@ def run_hardware_loop(args, cli, qc, service, backend, sampler, raw_dir, tag):
         isa = qc.transpile(circs, backend, optimization_level=1, seed_transpiler=42)
 
         t0 = time.time()
-        job = sampler.run([(c,) for c in isa], shots=args.shots)
-        # 🧬 A HATÁRIDŐ KELL: ha a kontó kvótája elfogyott, a platform
-        # ELFOGADJA a jobot, de az SOOSEM fut le — a `result()` végtelenül
-        # blokkolna. A timeout ez helyett hibát dob. A zsúfolt sorban is
-        # ez a védelem: a job nem indult el a határidőn belül.
-        try:
-            result = job.result(timeout=args.job_timeout)
-        except Exception as exc:
-            if type(exc).__name__ != "RuntimeJobTimeoutError":
-                raise
+        # 🧬 AZ ATMENETI PLATFORMAHIBA (2026-11-02): a 100 iteracios futas az
+        # 54. iteraciora "Error code 9703: Failed to execute program:
+        # Temporary Internal Error"-ral megszakadt — ez IBM oldali atmeneti
+        # hiba, NEM a mi hibank, es a kvotat nem fogyasztja (a fogyasztott
+        # kvota 195 mp volt: 6 + 30 + 53 x 3,0, a hibaval zart job nelkul).
+        # A megoldas: a jobot UJRA be kell nyujtani. A timeout (a kulcs
+        # kvotaja elfogyott) tovabbra is hardverzasi hiba, azt nem retry-zuk.
+        result = None
+        last_exc = None
+        attempts = 0
+        while True:
+            attempts += 1
+            job = sampler.run([(c,) for c in isa], shots=args.shots)
             try:
-                job.cancel()
-            except Exception:
-                pass
-            raise SystemExit(
-                f"\nA JOB NEM INDULT EL {args.job_timeout:.0f} MPEN BELÜL "
-                f"(job {job.job_id()}).\n"
-                f"  a backend: {getattr(backend, 'name', '?')} — a sor túl zsúfolt.\n"
-                f"  a kvótából nem fogyott semmi (a várakozás nem számít bele).\n"
-                "  a szabad backend vagy a sessionos (dedicated) csomag ezt megoldja."
-            )
+                result = job.result(timeout=args.job_timeout)
+                break
+            except Exception as exc:
+                if type(exc).__name__ == "RuntimeJobTimeoutError":
+                    try:
+                        job.cancel()
+                    except Exception:
+                        pass
+                    raise SystemExit(
+                        f"\nA JOB NEM INDULT EL {args.job_timeout:.0f} MPEN BELÜL "
+                        f"(job {job.job_id()}).\n"
+                        f"  a backend: {getattr(backend, 'name', '?')} — a sor túl zsúfolt.\n"
+                        f"  a kvótából nem fogyott semmi (a várakozás nem számít bele).\n"
+                        "  a szabad backend vagy a sessionos (dedicated) csomag ezt megoldja."
+                    )
+                last_exc = exc
+                if attempts > args.job_retries:
+                    raise
+                print(f"  ! a job hibaval zart ({type(exc).__name__}: "
+                      f"{str(exc)[:120]}) -> ujrapozicio {attempts}/{args.job_retries}")
+                time.sleep(5.0)
         wall = time.time() - t0
 
         qpu = job_qpu_seconds(job)
@@ -410,6 +424,9 @@ def main():
                          "a kulcs nem kerül a parancssorba")
     ap.add_argument("--job-timeout", type=float, default=900.0,
                     help="a job eredményének várakozási határa mp-ben")
+    ap.add_argument("--job-retries", type=int, default=3,
+                    help="egy átmeneti platformhiba (pl. IBM 9703) után hányszor "
+                         "kell újra benyújtani a jobot")
     ap.add_argument("--out-dir", default=None)
     args = ap.parse_args()
 
