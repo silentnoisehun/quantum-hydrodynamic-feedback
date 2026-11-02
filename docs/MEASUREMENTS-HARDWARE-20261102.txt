@@ -9,7 +9,7 @@ MIROK EZ A DOKUMENTUM
   A 2026-10-27-i kampany utan a docs/QPU-RUN-DECISION-RULE.txt egy 100
   iteracios hardveres futast engedett (a 2026-11-02-i datumozott
   modsitasok szerint). A futas 2026-11-02-AN elindult a "hope" fiokon
-  (E:\apikey.json, 600 mp szabad kvota).
+  (600 mp szabad kvota).
 
   A FONTOS EREDMENY: a szabaly triggere a JAVITOTT, 200-permutacios savval
   NEM teljesul. A trigger, amelyet a szabaly a 2026-10-27-i adatokra
@@ -20,11 +20,11 @@ MIROK EZ A DOKUMENTUM
 0. A KORNYEZET — A NEGY FIOK (merve, 2026-11-02 11:41 UTC)
 --------------------------------------------------------------------------------
 
-  fajl            kulcs   instance        fogyott  limit  reached  szabad
-  E:\apikey.json  hope    open-instance     0 s    600 s  no       600 s
-  apikey.json     z89zu   open-instance   587 s    600 s  no        13 s
-  apikey (1)      SILENT  open-instance   622 s    600 s  yes        0 s
-  apikey (2)      jthr    open-instance   628 s    600 s  yes        0 s
+  kulcs neve  instance        fogyott  limit  reached  szabad
+  hope        open-instance     0 s    600 s  no       600 s
+  z89zu       open-instance   587 s    600 s  no        13 s
+  SILENT      open-instance   622 s    600 s  yes        0 s
+  jthr        open-instance   628 s    600 s  yes        0 s
 
   A "hope" fiok 2026-11-02-EN TELJESEN hasznalatlan volt: 0 mp fogyasztott,
   600 mp szabad. A kvota-ellenorzes (a szabaly h) pontja) a bekuldes elott
@@ -32,6 +32,43 @@ MIROK EZ A DOKUMENTUM
 
   A HARDVER UGyanaz (ibm_fez), a kulcs nem valtoztatja a meres tartalman.
   A reszletes kvotamodell: docs/QPU-QUOTA-20261102.txt.
+
+--------------------------------------------------------------------------------
+0b. A KAMPANY HÁROM INDÍTÁSA — MI TÖRTÉNT (mérve, 2026-11-02)
+--------------------------------------------------------------------------------
+
+  A 100 iteracios futas HAROMSZOR indult el. A ket megszakadt inditas nyers
+  adatai is a repoban vannak (measurement_raw/), a harmadik befejezodik.
+
+  inditas  tag                  iter  qpu    megszakadas oka
+  1.       20261102T120704Z      10   30 s   a platform sora 18 perce allt
+                                     (a nyitott csomag fair-share soraban),
+                                     a harness megszakadt; a sorban maradt
+                                     jobot CANCEL-eltuk (HTTP 204), a kvota
+                                     NEM fogyott
+  2.       20261102T123717Z      53  159 s   IBM PLATFORMHIBA: "Error code
+                                     9703: Failed to execute program:
+                                     Temporary Internal Error" — a 54.
+                                     iteracio jobja hibaval zart. Az IBM
+                                     maga atmeneti hibanak nevezi
+                                     ("Try again"), NEM a mi kódunk, es NEM
+                                     fogyasztott kvotat: a fogyott kvota
+                                     195 mp volt = 6 + 30 + 53 x 3,0,
+                                     vagyis a hibaval zart job nelkul
+  3.       20261102T130409Z     ...   ...    ujrainditva a --job-retries
+                                     (5) kapuval: az atmeneti platform
+                                     hibara a jobot ujra benyujtjuk
+
+  A ket megszakadt futas NEM resze a dontesnek (a dontés a 2026-10-27-i
+  adatokon, a 200 permutacios savval tortenik), de a nyers adataik a repoban
+  vannak, es a replay-gate (scripts/replay_hardware_log.py) ellenorzi oket:
+  a javított solver a 10-es futas 10/10, az 53-as futas 53/53 modosorat adja
+  vissza PONTOSAN (a legacy solver 2/10-et, illetve 5/53-at).
+
+  AZ IBM-HIBA JEGYZETE: a 2. inditas utan a scripts/quantum_loop_hardware.py
+  ujra-benyujtja a jobot az atmeneti platformhibara (--job-retries, alap 3).
+  A kvota-idozitet (a kulcs kvotaja elfogyott) ez NEM retry-zza: ott a job
+  soha nem futna le, az abort a helyes.
 
 --------------------------------------------------------------------------------
 1. A PRE-REGISZTRALT ELEMZES — A TRIGGER NEM TELJESUL
@@ -68,8 +105,8 @@ MIROK EZ A DOKUMENTUM
   p = (a hardver ertekenel egyenlo vagy nagyobb permutaciok szama) / N
 
   futas                   kor         M1                  M2                  mindketto
-  20261027T010656Z        fixed_init  42/200  p=0.2100   42/200  p=0.2100   42/200  p=0.2100
-  20261027T015558Z        fixed_init  126/200 p=0.6300   126/200 p=0.6300   126/200 p=0.6300
+  20261027T010656Z        fixed_init  200/200 p=1.0000   42/200  p=0.2100   42/200  p=0.2100
+  20261027T015558Z        fixed_init  200/200 p=1.0000   126/200 p=0.6300   126/200 p=0.6300
   20261027T003737Z        fixed_init  135/200 p=0.6750   11/200  p=0.0550   3/200   p=0.0150
   20261027T010656Z        varying     56/180  p=0.3111   68/180  p=0.3778   19/180  p=0.1056
   20261027T015558Z        varying     174/180 p=0.9667   146/180 p=0.8111   143/180 p=0.7944

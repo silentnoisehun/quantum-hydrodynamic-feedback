@@ -11,7 +11,7 @@ MIÉRT EZ A DOKUMENTUM
   kell számolni, hanem gördülő 28 napos ablakként — és a fiókokat
   külön-külön kell nézni.
 
-  A 2026-11-02-i állapot: NÉGY fiók, és az egyik (E:\apikey.json) TELJES
+  A 2026-11-02-i állapot: NÉGY fiók, és az egyik ("hope") TELJES
   kerettel, 0 mp fogyással áll rendelkezésre. Ezzel a futás NEM NOVEMBER 6-RA
   halasztandó, hanem 2026-11-02-án elindítható (lásd az 5. pont).
 
@@ -35,17 +35,17 @@ MIÉRT EZ A DOKUMENTUM
 2. A NEGY FIOK, A MERT ALLAPOTBAN (2026-11-02 11:41 UTC)
 --------------------------------------------------------------------------------
 
-  fajl            kulcs   instance        fogyott  limit  reached  szabad
-  E:\apikey.json  hope    open-instance     0 s    600 s  no       600 s
-  apikey.json     z89zu   open-instance   587 s    600 s  no        13 s
-  apikey (1)      SILENT  open-instance   622 s    600 s  yes        0 s
-  apikey (2)      jthr    open-instance   628 s    600 s  yes        0 s
+  kulcs neve  instance        fogyott  limit  reached  szabad
+  hope        open-instance     0 s    600 s  no       600 s
+  z89zu       open-instance   587 s    600 s  no        13 s
+  SILENT      open-instance   622 s    600 s  yes        0 s
+  jthr        open-instance   628 s    600 s  yes        0 s
 
   A fiókok KULON IBM Cloud fiókok (külön a/... azonosito, külön
   open-instance), tehát a kereteik NEM oszthatok egy futason belul, de a
   sorozat osztható több kulcsra.
 
-  A "hope" fiók (E:\apikey.json) 2026-11-02-én TELJESEN hasznalatlan: 0 mp
+  A "hope" fiók 2026-11-02-én TELJESEN hasznalatlan: 0 mp
   fogyasztott, 600 mp szabad, a limit nem elert. Ez a negyedik, korabban nem
   ismert fiók — a 2026-11-02-i napon kerult elő. A gate ezen a fiókon
   "CAN RUN"-t ad.
@@ -109,8 +109,7 @@ MIÉRT EZ A DOKUMENTUM
 --------------------------------------------------------------------------------
 
   A 100 iteracios diszkriminativ futas + a regisztralt 20 iteracios
-  kontrollfutas a HOPE fiókon (E:\apikey.json, 600 s szabad -> 356 s kell,
-  244 s tartaleknak).
+  kontrollfutas a HOPE fiókon (600 s szabad -> 356 s kell, 244 s tartaleknak).
 
   MIERT A HOPE FIOKON, ES MIERT NOVEMBER 2-AN:
     - a SILENT fiókon nov 6-ig nincs elég kvota (556 s csak nov 6-tól, a
@@ -125,10 +124,10 @@ MIÉRT EZ A DOKUMENTUM
 
     cd <repo>
     python scripts/check_qpu_quota.py `
-        --token-file "E:\apikey.json" `
-        --token-file "C:\Users\mater\Downloads\apikey (1).json" `
-        --token-file "C:\Users\mater\Downloads\apikey (2).json" `
-        --token-file "C:\Users\mater\Downloads\apikey.json" `
+        --token-file "<a hope kulcs json fajlja>" `
+        --token-file "<a SILENT kulcs json fajlja>" `
+        --token-file "<a jthr kulcs json fajlja>" `
+        --token-file "<a z89zu kulcs json fajlja>" `
         --need-iterations 100 --seconds-per-iteration 2.96
 
     A gate 0-s kilepessel csak akkor enged, ha valamelyik fokon elfer a
@@ -137,7 +136,7 @@ MIÉRT EZ A DOKUMENTUM
   A KULCS A KORNYEZETI VALTOZOBAN (SO SE fajlban, SO SE parancssorban):
 
     $env:IBM_QUANTUM_API_TOKEN = "<a kulcs>"
-    $env:SCS_QUANTUM_PATH = "C:\Users\mater\AppData\Roaming\Python\Python314\site-packages\python"
+    $env:SCS_QUANTUM_PATH = "<a scs_quantum python mappa>"   # a telepites helye
 
     A qiskit_ibm_runtime a peldanyt maga valasztja ki (open-instance, open
     csomag) — az IBM_QUANTUM_INSTANCE env-vart nem kell beallítani, ha a
@@ -148,14 +147,14 @@ MIÉRT EZ A DOKUMENTUM
     python scripts/quantum_loop_hardware.py --backend ibm_fez `
         --iterations 100 --shots 1024 --anchor-every 5 --seed 20261026 `
         --feedback raw --classical-control `
-        --token-file "E:\apikey.json"
+        --token-file "<a hope kulcs json fajlja>"
 
   A 20 ITERACIOS KONTROLLFUTAS (ugyanaz a seed, a klasszikus parral):
 
     python scripts/quantum_loop_hardware.py --backend ibm_fez `
         --iterations 20 --shots 1024 --anchor-every 5 --seed 20261026 `
         --feedback raw --classical-control `
-        --token-file "E:\apikey.json"
+        --token-file "<a hope kulcs json fajlja>"
 
   UTANA (a nyers fajlokbol a CPU-oldali dontes):
 

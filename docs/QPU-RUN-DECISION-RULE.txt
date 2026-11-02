@@ -12,8 +12,7 @@ MÓDOSÍTÁS (2026-11-02, a tervezett futás előtt):
 
 MODOSITAS (2026-11-02, a tervezett futas elott, masodik):
   A 0. pont HATARAI valtozatlanok; csak a futo FIOK es a datum rogzult.
-  - A 100 iteracios futas a "hope" fiokon (E:\apikey.json) fut, nem a
-    SILENT konton: a hope fiokon 2026-11-02-EN 600 s szabad (0 mp
+  - A 100 iteracios futas a "hope" fiokon fut, nem a SILENT konton: a hope fiokon 2026-11-02-EN 600 s szabad (0 mp
     fogyasztott), a SILENT-en a szukseges keret csak nov 6-tol all
     rendelkezre.
   - A futas 2026-11-02-AN indulhat (nem nov 6-ig halasztva).

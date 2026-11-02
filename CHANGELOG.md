@@ -30,10 +30,20 @@ authorised it. The audit changes the answer: **the trigger does not fire.**
   per-iteration QPU time stays traceable in the raw files.
 - **The replay gate assumed every run was made with the legacy solver**
   (`scripts/replay_hardware_log.py`): the expectation is now per run. The
-  three 2026-10-27 runs were made with the legacy solver, the 2026-11-02 run
-  with the corrected one. Measured on the new run's first 10 iterations: the
-  corrected solver reproduces the logged mode sequence **10/10**, the legacy
-  solver only 2/10.
+  three 2026-10-27 runs were made with the legacy solver, the 2026-11-02 runs
+  with the corrected one. Measured on the new runs: the corrected solver
+  reproduces the logged mode sequence **10/10** and **53/53**, the legacy
+  solver only 2/10 and 5/53.
+- **A transient platform failure killed the whole measurement**
+  (`scripts/quantum_loop_hardware.py`): the 100-iteration run stopped at
+  iteration 54 with an IBM platform error — "Error code 9703: Failed to
+  execute program: Temporary Internal Error". That is a transient failure on
+  IBM's side (IBM's own guidance: "Try again"), not in this code, and it does
+  not consume quota: the consumed quota was exactly 195 s = 6 + 30 + 53 × 3.0,
+  i.e. without the failed job. The job is now resubmitted up to
+  `--job-retries` times (default 3). The quota timeout keeps its old
+  behaviour (cancel + abort): on an exhausted account the job would never
+  run, so retrying it would be pointless.
 
 ### Changed
 
@@ -54,7 +64,7 @@ authorised it. The audit changes the answer: **the trigger does not fire.**
   does not fire at all.
   A second dated amendment (2026-11-02, also before the run) fixes only the
   **account and the date**: the run executes on the "hope" account
-  (`E:\apikey.json`, 600 s free) on 2026-11-02, because the 556 s on the
+  (600 s free) on 2026-11-02, because the 556 s on the
   SILENT account does not exist before 2026-11-06. The protocol itself is
   unchanged (100 iterations = 296 s of QPU time, 356 s with the 20-iteration
   control run), the hardware is the same (`ibm_fez`), and the decisive
@@ -108,7 +118,7 @@ authorised it. The audit changes the answer: **the trigger does not fire.**
   reset. `usage_consumed_seconds` is the trailing 28 days of QPU time,
   `time_available_at` is when the oldest usage rolls out of the window, and
   the free seconds therefore return gradually, one job at a time. A fourth
-  account (`E:\apikey.json`, "hope") was found on 2026-11-02 with **0 s
+  account (the "hope" key) was found on 2026-11-02 with **0 s
   consumed and 600 s free**, which is what makes the run possible on that day.
 - **`docs/MEASUREMENTS-HARDWARE-20261102.txt`** — the campaign report: the
   measured trigger result, the exact permutation p-values, the protocol
@@ -118,6 +128,14 @@ authorised it. The audit changes the answer: **the trigger does not fire.**
   for 100 iterations (the RUNLOG shows `iter N/100`; it stopped at 68), and
   the decision compares the hardware result against the magnitude-matched
   band **at the same length**, so the band has to exist for 100 iterations too.
+- **The raw data of the two aborted 2026-11-02 runs**
+  (`measurement_raw/loop_20261102T120704Z_*`, `loop_20261102T123717Z_*`):
+  the first attempt stopped at 10 iterations when the platform queue stalled
+  for 18 minutes (the leftover job was cancelled, HTTP 204, no quota
+  consumed), the second at 53 iterations on an IBM platform error (code 9703,
+  "Temporary Internal Error"). Both are committed and both are checked by the
+  replay gate. `docs/MEASUREMENTS-HARDWARE-20261102.txt` section 0b records
+  the three attempts with their measured causes.
 
 ## [0.2.2] — 2026-11-01
 
