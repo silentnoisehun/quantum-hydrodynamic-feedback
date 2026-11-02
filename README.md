@@ -199,3 +199,12 @@ If you are working in any of the following areas, I would welcome a conversation
 ## 5. License
 
 MIT license. The citation metadata is in `CITATION.cff`.
+
+---
+
+## 🤝 Contact & Research Collaboration
+
+- **Author:** Máté Róbert
+- **Email:** `materobi86@gmail.com`
+- **GitHub:** [`silentnoisehun`](https://github.com/silentnoisehun)
+- **Status:** **Open to research collaborations, academic partnerships, and joint QPU experimental campaigns** *(Nyitott vagyok kutatási együttműködésekre és közös publikációkra)*.
