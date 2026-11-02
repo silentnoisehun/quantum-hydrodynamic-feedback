@@ -1,11 +1,14 @@
 cff-version: 1.2.0
-title: "Quantum Organic Intelligence"
+title: "Quantum-Hydrodynamic Feedback (QHF)"
 message: "If you use this software or the measurements in docs/, please cite it as below."
 type: software
 authors:
-  - name: "Silent Noise"
+  - family-names: "Róbert"
+    given-names: "Máté"
+    email: "materobi86@gmail.com"
+    orcid: "https://orcid.org/0009-0003-3986-6039"
     website: "https://github.com/silentnoisehun"
-repository-code: "https://github.com/silentnoisehun/quantum-organic-intelligence"
+repository-code: "https://github.com/silentnoisehun/quantum-hydrodynamic-feedback"
 license: MIT
 version: "0.1.0"
 date-released: "2026-10-27"
@@ -24,8 +27,11 @@ keywords:
   - measurement methodology
 references:
   - type: standard
-    title: "Quantum Organic Intelligence"
+    title: "Quantum-Hydrodynamic Feedback (QHF)"
     authors:
-      - name: "Silent Noise"
+      - family-names: "Róbert"
+    given-names: "Máté"
+    email: "materobi86@gmail.com"
+    orcid: "https://orcid.org/0009-0003-3986-6039"
     year: 2026
-    repository-code: "https://github.com/silentnoisehun/quantum-organic-intelligence"
+    repository-code: "https://github.com/silentnoisehun/quantum-hydrodynamic-feedback"
