@@ -144,7 +144,13 @@ def instance_crn(bearer, name=DEFAULT_INSTANCE_NAME, timeout=60):
                            % resp.status_code)
     resources = resp.json().get("resources", [])
     if not resources:
-        raise RuntimeError("no %r instance is attached to this account" % name)
+        # Fallback: find any quantum computing instance regardless of name
+        resp_all = requests.get(RESOURCE_CONTROLLER, headers=bearer, timeout=timeout)
+        if resp_all.status_code == 200:
+            for r in resp_all.json().get("resources", []):
+                if r.get("resource_id") == "b6049020-80f4-11eb-a0f7-e35ec9b4054f" or "quantum" in r.get("crn", ""):
+                    return r["crn"]
+        raise RuntimeError("no %r or quantum instance is attached to this account" % name)
     return resources[0]["crn"]
 
 
