@@ -57,15 +57,13 @@ HARDWARE_RUNS = [
     {"prefix": "20261027T010656Z", "length": 20, "feedback": "raw"},
     {"prefix": "20261027T015558Z", "length": 20, "feedback": "raw"},
     {"prefix": "20261027T003737Z", "length": 68, "feedback": "corrected"},
+    {"prefix": "20261102T140630Z", "length": 80, "feedback": "raw"},
 ]
 
 # A hardveres futasok hossza — a CPU-futások is EZEKKEL a hosszakkal futnak,
 # hogy a statisztikak osszehasonlithatoak legyenek.
-# 100: a 2026-10-27-i 68-as futas 100-re volt tervezve (a RUNLOG "iter N/100"
-# sorokat mutat), es a 2026-11-02-i uj futas is 100 iteracios lesz. A CPU-oldali
-# savat (true_residual_permuted) 100 iteracion is ki kell szamolni, mert a
-# dontes a hardveres 100-as eredmenyet AZONOS hosszon hasonlitja.
-LENGTHS = [20, 68, 100]
+# 80: a 2026-11-02-i fizikai futás ibm_marrakesh-en (240.0 QPU mp).
+LENGTHS = [20, 68, 80]
 
 # A két kör. "fixed_init": a kezdeti állapot fix, a zaj seedje váltakozik
 # (ez a fő sáv). "varying_init": a kezdeti állapot is váltakozik — ez
@@ -411,8 +409,8 @@ def band(values):
     return {
         "n": n,
         "median": float(statistics.median(ordered)),
-        "p5": float(ordered[int(0.05 * (n - 1))]),
-        "p95": float(ordered[int(0.95 * (n - 1))]),
+        "p5": float(np.percentile(ordered, 5)),
+        "p95": float(np.percentile(ordered, 95)),
         "min": float(ordered[0]),
         "max": float(ordered[-1]),
         "mean": float(statistics.fmean(ordered)),

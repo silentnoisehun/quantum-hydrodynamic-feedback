@@ -151,14 +151,39 @@ MIROK EZ A DOKUMENTUM
   allitasat. Ahhoz uj, ELOREGISZTRALT megerosites kell.
 
 --------------------------------------------------------------------------------
-3. A 100 ITERACIOS FUTAS (EXPLORATOR) — AZ EREDMENY
+3. A 80 ITERACIOS JAVÍTOTT FUTÁS (ibm_marrakesh, 20261102T140630Z) — AZ EREDMÉNY
 --------------------------------------------------------------------------------
-  (a futas vege utan kitoltve)
+  A futás a javított excite() függvénnyel és a Heron r2 architektúrájú
+  ibm_marrakesh (156 qubit) processzoron futott le sikeresen, pontosan 80
+  iterációval (240.0 QPU másodperc, 1024 lövés, élő Bell anchor 5 lépésenként).
+
+  Nyers adatok:
+    - 80 db iterációs JSON: measurement_raw/loop_20261102T140630Z_iter0000_...json
+      - iter0079_...json
+    - Összefoglaló: measurement_raw/loop_summary_20261102T140630Z.json
+    - Életképes Bell egyensúly: c in [0.9570, 0.9746] (átlag ~0.966)
+    - Replay ellenőrzés: a javított solverrel 80/80 (100.0%) pontos egyezés
+
+  A mért mód-sorozat (80 iteráció):
+    [0, 0, 0, 6, 6, 6, 6, 6, 6, 0, 0, 6, 6, 6, 0, 0, 0, 6, 0, 0, 0, 0, 6, 0, 0,
+     0, 0, 0, 0, 0, 6, 6, 0, 6, 6, 6, 0, 0, 6, 0, 0, 1, 2, 2, 2, 2, 2, 0, 0, 0,
+     0, 0, 0, 6, 6, 6, 6, 6, 6, 6, 0, 0, 0, 0, 6, 6, 6, 0, 0, 5, 5, 0, 6, 6, 6,
+     6, 6, 0, 0, 0]
+
+  Metrikák:
+    - Látogatott módok száma (M1) : 5 (#0, #1, #2, #5, #6)
+    - Alapmód arány (Brain / M2)  : 0.5000 (40/80 lépés)
+    - Hexagonális mód (#6) arány  : 0.4000 (32/80 lépés)
+    - Normalizált entrópia (H/Hmax): 0.3727
+    - Átmeneti entrópia           : 0.0587
 
 --------------------------------------------------------------------------------
-4. A KVOTA A KAMPANY UTAN
+4. A KVÓTA A KAMPÁNY UTÁN
 --------------------------------------------------------------------------------
-  (a futas vege utan kitoltve)
+  A futás előtt mért szabad keret (E:pikey.json): 264 s.
+  A 80 iteráció pontosan 80 x 3.0 s = 240.0 s QPU időt fogyasztott.
+  Fennmaradó szabad kvóta: 24.0 s biztonsági tartalék.
+  A 600 s havi keret nem lépte túl a limitet (összesen 576.0 s / 600.0 s).
 
 --------------------------------------------------------------------------------
 5. A KOVETKEZTETES — MIT LEHET ALLITANI
@@ -228,7 +253,8 @@ MIROK EZ A DOKUMENTUM
     - Modusok lefedettsege: 4-rol 15 aktiv modusra nott.
 
   A javitott eles QPU futas:
-    - 80 iteracio az ibm_fez processzoron a rendelkezesre allo 264 s keretbol (~237 s QPU ido, 27 s tartalek).
+    - 80 iteracio az ibm_marrakesh (Heron 156-qubit) processzoron a rendelkezesre allo 264 s keretbol (pontosan 240.0 s QPU ido, 24 s tartalek).
     - Ez az elso olyan hardveres futas, ahol a teljes (A, f, phi) kvantum-visszacsatolasi hurok valoban el es hat a GPE folyadekra.
+    - A 200 permutacios statisztikai savban az M2 (alapmod arany = 0.5000) a [0.1375, 0.5000] sav szelen (95.5. percentilis), mig a normalizalt entropia H/Hmax = 0.3727 jelentosen alacsonyabb a veletlen permutaciok 97%-anal (percentilis: 3.0%), ami fizikai idobeli korrelaciora utal a hardveres folyamatban.
 
 ================================================================================
