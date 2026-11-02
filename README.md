@@ -1,4 +1,4 @@
-# Quantum Organic Intelligence
+# Quantum-Hydrodynamic Feedback (QHF)
 
 > ### 📄 Scientific Manuscript Available
 > - **LaTeX Manuscript:** [rxiv/gpe_closed_loop_benchmark.tex](arxiv/gpe_closed_loop_benchmark.tex)
@@ -192,7 +192,7 @@ If you are working in any of the following areas, I would welcome a conversation
 **ORCID:** 0009-0003-3986-6039  
 **Email:** materobi86@gmail.com  
 **Sponsor:** github.com/sponsors/silentnoisehun  
-**GitHub:** github.com/silentnoisehun/quantum-organic-intelligence
+**GitHub:** github.com/silentnoisehun/quantum-hydrodynamic-feedback
 
 ---
 

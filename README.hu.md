@@ -1,4 +1,4 @@
-﻿# Quantum Organic Intelligence
+﻿# Kvantum-Hidrodinamikai Visszacsatolás (QHF)
 
 A Gross-Pitaevskii folyadék, a quantumhíd, amelynek kódolását és dekódolását a rögzített hardvermérések igazolják, és a mérések, amelyek dokumentálják — és korlátozzák — a rendszer dinamikai viselkedését. Ez a repó három mérhető komponensen alapul:
 
