@@ -34,6 +34,23 @@ import quantum_loop_sim as current  # noqa: E402
 RUNS_WITH_ARGMAX = ["20261027T010656Z", "20261027T015558Z"]
 # A 68 iterációs futás: az iterációs fájlokban nincs mode_argmax.
 RUN_WITHOUT_ARGMAX = "20261027T003737Z"
+# 🧬 A 2026-11-02-i 100 iterációs futás: a nyers fájljaiban VAN mode_argmax
+# (a hardveres script ma már kiírja), tehát a fenti listába kerül.
+RUN_20261102 = "20261102T120704Z"
+RUNS_WITH_ARGMAX.append(RUN_20261102)
+
+# 🧬 MELYIK SOLVER VISSZAADJA A NAPLÓT? (futasonkent) — ez a gate maga.
+# A 2026-10-27-i futasok a LEGACY solverrel keszultek (a javitas ELOTT), ezert
+# a legacy solvernek pontosan vissza kell adnia a naplót, a javitottnak NEM.
+# A 2026-11-02-i futas a JAVITOTT solverrel keszult (a javitott
+# quantum_loop_hardware.py script), ezert pont az ellenkezo igaz: a javitott
+# solver adja vissza pontosan a naplót, a legacy nem.
+RUN_SOLVER_THAT_MUST_MATCH = {
+    "20261027T010656Z": "legacy",
+    "20261027T015558Z": "legacy",
+    "20261027T003737Z": "legacy",
+    RUN_20261102: "current",
+}
 
 # A visszacsatolás módja futásonként. A 68 iterációs futás a C-VEL
 # torzítástlanított dekódolást töltötte vissza (docs/MEASUREMENTS-HARDWARE
@@ -45,6 +62,7 @@ RUN_FEEDBACK = {
     "20261027T003737Z": "corrected",
     "20261027T010656Z": "raw",
     "20261027T015558Z": "raw",
+    RUN_20261102: "raw",
 }
 
 # A seed futásonként. 🧬 EZEK NEM FIKCIÓK: a mérésből határozták meg.
@@ -62,6 +80,7 @@ RUN_SEED = {
     "20261027T003737Z": 20261026,
     "20261027T010656Z": 20261026,
     "20261027T015558Z": 20261027,
+    RUN_20261102: 20261026,
 }
 
 # A RUNLOG fájl futásonként — a naplózott mode_argmax második forrása.
@@ -377,24 +396,29 @@ def main():
     failures = []
     for (prefix, label), (hits, total) in outcomes.items():
         flag = ""
-        if label.startswith("legacy"):
-            # 🧬 A CI-FELTÉTEL: a legacy solvernek VISSZA kell adnia a
-            # naplót. Ha nem, akkor a hardveres futások nem a legacy
-            # kóddal készültek, és a docs állítása hibás.
+        # 🧬 A CI-FELTÉTEL FUTASONKENT: az a solver, amivel a futas KESZULT,
+        # pontosan vissza kell adja a naplót, a masik nem. A 2026-10-27-i
+        # futasok a LEGACY solverrel keszultek (a javitas elott), a
+        # 2026-11-02-i futas a JAVITOTTAL.
+        expected = RUN_SOLVER_THAT_MUST_MATCH.get(prefix)
+        is_expected = (
+            (label.startswith("legacy") and expected == "legacy")
+            or (label.startswith("current") and expected == "current")
+        )
+        if is_expected:
             if hits == total:
-                flag = "  <- TELJES"
+                flag = "  <- TELJES (a varakozo solver)"
             else:
                 failures.append(
-                    f"{prefix}: a legacy solver csak {hits}/{total}-at adja "
-                    f"vissza (a futás nem a legacy kóddal készült)")
+                    f"{prefix}: a {label} solver csak {hits}/{total}-at adja "
+                    f"vissza, pedig a futas ezzel keszult")
                 flag = "  <- HIBA"
         else:
-            # a javított solvernek NEM szabad visszaadnia a naplót:
-            # ez bizonyítja, hogy a futások a javítás ELŐTTI kóddal
-            # készültek, és nem lehet őket a javított solverrel értelmezni
+            # a masik solvernek NEM szabad visszaadnia a naplót:
+            # ez bizonyítja, hogy a futás a másik kóddal készült
             if hits == total:
                 failures.append(
-                    f"{prefix}: a javított solver is visszaadja a naplót "
+                    f"{prefix}: a {label} solver is visszaadja a naplót "
                     f"({hits}/{total}) — ez ellentmond a dokumentált állításnak")
             else:
                 flag = f"  <- eltér ({100.0 * hits / total:.0f}%), ahogy várható"
@@ -405,9 +429,9 @@ def main():
         for item in failures:
             print(f"    - {item}")
         return 1
-    print("  IGAZOLT: a hardveres futások a legacy solverrel készültek")
-    print("  (a legacy solver mindhárom futásnál pontosan visszaadja a")
-    print("  naplózott mode_argmax-ot; a javított solver egyiket sem).")
+    print("  IGAZOLT: minden futas a hozzá rendelt solverrel készült")
+    print("  (a legacy solver a három 2026-10-27-i futást pontosan visszaadja,")
+    print("  a javított a 2026-11-02-i futást; a másik solver egyiket sem).")
     return 0
 
 
