@@ -1,0 +1,24 @@
+{
+  "title": "Quantum-Hydrodynamic Feedback (QHF): Gross-Pitaevskii Condensate Solver and Quantum Bridge",
+  "description": "Gross-Pitaevskii fluid solver with 16 cognitive modes, split-step Fourier kinetic step, and hardware-verified 2-qubit quantum bridge on 156-qubit superconducting QPUs. Contains the full measurement audit trail, replay gates, and classical reference suites.",
+  "keywords": [
+    "quantum computing",
+    "gross-pitaevskii equation",
+    "split-step fourier",
+    "quantum feedback",
+    "superconducting qubits",
+    "measurement audit"
+  ],
+  "license": "MIT",
+  "version": "1.0.1",
+  "publication_date": "2026-11-02",
+  "creators": [
+    {
+      "name": "Róbert, Máté",
+      "affiliation": "Independent Quantum Researcher, Silent Coder Lab",
+      "orcid": "0009-0003-3986-6039"
+    }
+  ],
+  "access_right": "open",
+  "upload_type": "software"
+}
