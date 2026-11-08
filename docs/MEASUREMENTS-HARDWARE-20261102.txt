@@ -26,6 +26,12 @@ MIROK EZ A DOKUMENTUM
   SILENT      open-instance   622 s    600 s  yes        0 s
   jthr        open-instance   628 s    600 s  yes        0 s
 
+  MEGFELELSÉGI MEGJEGYZÉS (2026-11-08): ez a táblázat a KÖRNYEZET MÉRÉSE,
+  nem a kvóta felhasználhatóságának engedélye. A négy fiók együttes használata
+  a 10 perces Open Plan keretet effectively megszorozza, amit az IBM
+  dokumentációja nem ír le engedélyezettnek. A részletek és a nyitott döntés:
+  docs/QPU-QUOTA-20261102.txt, 0. pont.
+
   A "hope" fiok 2026-11-02-EN TELJESEN hasznalatlan volt: 0 mp fogyasztott,
   600 mp szabad. A kvota-ellenorzes (a szabaly h) pontja) a bekuldes elott
   lefutott, a gate 0-s kilepessel engedett (600 mp >= 296 mp).

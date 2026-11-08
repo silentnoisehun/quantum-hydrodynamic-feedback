@@ -4,6 +4,52 @@ Datum: 2026-11-02 (a futás előtt, a futás előtti napon)
 Forras: a IBM Quantum Platform API, scripts/check_qpu_quota.py
 ================================================================================
 
+--------------------------------------------------------------------------------
+0. MEGFELELSÉGI ÁTTEKINTÉS A NÉGY FIÓKKAL (2026-11-08) — ELŐVÉTEL
+--------------------------------------------------------------------------------
+
+  KÉRDÉS: a négy Open Plan fiók használata megfelel-e az IBM feltételeinek?
+
+  A MÉRT TÉNYEK (a nyilvános IBM Quantum dokumentációból, 2026-11-08):
+    - az Open Plan kerete 10 perc QPU-idő / 28 napos gördülő ablak;
+    - a keret INSTANCE-HOZ kötött: "the jobs you run and the jobs run by
+      other collaborators in the same instance count toward the reported
+      usage for that instance";
+    - "You can have (or be part of) multiple IBM Cloud accounts" — ez a
+      regionális/instance-hozzáférésről szól (csak az us-east régióban
+      hozható létre Open instance), NEM a keret megduplázásáról;
+    - a 180 perces promóció EGYALAKI ajánlat 12 hónapra, a 10 perc/hó
+      keretre visszaállással; egy új fiókkal nem aktiválható újra.
+
+  A KÖVETKEZMÉNY (megfelelőségi kockázat — nem mérési hiba):
+    A "négy fiók + felszabadulási naptár" együtt OLVASTVA azt írja le, hogy
+    a 10 perces keretet NÉGY fiókon osztjuk szét, tehát a gördülő ablak
+    effektíven 4 x 10 perc (a naptár végén 2 400 s). Ez kvóta-megkerülésnek
+    tűnik: az Open Plan a keretet felhasználónként/instance-enként adja meg,
+    és a dokumentáció NEM írja le, hogy a keret több fiókon összeadható.
+    Ezért a jövőbeli futás-terv NEM támaszkodhat a fiókok közötti osztásra.
+
+  AMI TÉNYEZŐEN IGAZ ÉS NEM VÁLTOZIK:
+    - a scripts/check_qpu_quota.py NEM adja össze a fiókok keretét: a gate
+      akkor enged, ha EGY fiók önmagában fedezi a teljes futást
+      ("any account can cover"). Egy futás tehát sosem oszlik meg fiókok
+      között, és a kampány 2026-10-27-én (z89zu) és 2026-11-02-én (hope)
+      egy-egy fiókon futott.
+    - a négy fiók adatai itt a KÖRNYEZET MÉRÉSEKÉNT maradnak — ez tényként
+      helyes, és a nyilvánosság számára nem érzékeny (nincs benne fiók-azonosító
+      vagy kulcs).
+
+  AMI NYITOTT DÖNTÉS (a felhasználóra):
+    (a) SZIGORÚ: a teljes kampány QPU-idejét 600 s / 28 nap alatt kell
+        tartani, fióktól függetlenül — akkor a négy fiók csak a mérés
+        környezetének leírása marad;
+    (b) A JELENLEGI MŰKÖDÉS: a sorozat fiókokra osztható (ez jelenleg a
+        dokumentumban leírt állapot);
+    (c) KÖZTES: egy fiók = egy mérési kampány, de a kampányok között nincs
+        osztás.
+    Amíg ez nincs eldöntve, a fenti táblázat nem tekinthető a kvóta
+    felhasználhatóságának engedélyének — csak mérésnek.
+
 MIÉRT EZ A DOKUMENTUM
   A 2026-10-27-i mérés egyetlen konton futott, mert a másik kettőn ekkor
   már kimerült a kvóta (docs/MEASUREMENTS-HARDWARE-20261027.txt, 6. pont).
