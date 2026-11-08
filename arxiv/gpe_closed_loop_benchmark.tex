@@ -1,0 +1,64 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+
+\title{\textbf{Closed-Loop Dynamical Feedback Between a Two-Dimensional Gross--Pitaevskii Condensate and a 156-Qubit Superconducting Transmon Processor: Attractor Dynamics and Empirical Bounds}}
+
+\author{
+  \textbf{M\'at\'e R\'obert}\thanks{Corresponding author: \texttt{materobi86@gmail.com}. Open to research collaborations and academic partnerships.}\\
+  \textit{Independent Quantum Researcher, Silent Coder Lab}\\
+  \textit{Budapest, Hungary}
+}
+\date{November 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We report the design, execution, and statistical characterization of a closed hybrid feedback loop coupling a numerical two-dimensional Gross--Pitaevskii (GPE) superfluid simulation to a 156-qubit superconducting transmon processor (\texttt{ibm\_marrakesh}, Heron r2 architecture). Extracted modal observables $(A, f, \phi)$ from the fluid are mapped to unitary rotation circuits with live Bell anchor verification, measured via Qiskit Runtime primitives ($1024$ shots per step), and fed back to excite the condensate field. Across an 80-iteration physical QPU sequence ($240.0\,\text{s}$ total quantum processing time), the coupled system exhibited marked temporal clustering, occupying ground mode \#0 ($50\%$) and hexagonal mode \#6 ($40\%$). The observed normalized mode entropy ($H/H_{\text{max}} = 0.3727$) places the hardware execution in the $3.0\text{th}$ percentile ($p = 0.030$) against a $200$-permutation residual comparator, demonstrating significant divergence from uncorrelated noise. However, rigorous methodological accounting establishes that two-qubit encoding does not introduce quantum computational advantage: the probability law simplifies to single-qubit marginal projections, and the feedback acts as a classical non-linear attractor that stabilizes transmon readout-bias drift. We present complete replay ledgers, CPU control benchmarks, and pre-registered execution records.
+\end{abstract}
+
+\vspace{1em}
+\noindent \textbf{Keywords:} Hybrid quantum-classical computing, Gross--Pitaevskii equation, Transmon processors, Closed-loop control, Readout drift stabilization, Attractor dynamics.
+
+\section{Introduction}
+Interfacing non-linear classical dynamical systems with quantum processors represents an emerging paradigm for autonomous hardware stabilization and hybrid algorithmic design. In this work, we investigate a closed loop coupling a split-step Fourier Gross--Pitaevskii superfluid solver to a commercial superconducting quantum processor (\texttt{ibm\_marrakesh}).
+
+Our objectives are two-fold: (1) to measure whether physical quantum hardware execution produces reproducible dynamical attractors when driven in closed-loop feedback, and (2) to delineate strict boundaries separating classical numerical feedback effects from genuine quantum processing advantages.
+
+\section{System Architecture and Feedback Protocol}
+The closed-loop architecture integrates three distinct computational stages:
+\begin{enumerate}
+  \item \textbf{Fluid Evolution:} A 2D Gross--Pitaevskii field $\psi(\mathbf{r}, t)$ evolves under a split-step Fourier Strang-splitting integration ($50$ steps per iteration with interaction parameter $g = 50.0$).
+  \item \textbf{Modal Projection and Encoding:} Modal decomposition yields parameters $(A_{\text{fluid}}, f_{\text{fluid}}, \phi_{\text{fluid}})$ mapped to a 3-qubit parameterized transmon register with live Bell parity anchors.
+  \item \textbf{Decoded Feedback Excitation:} Computational-basis shot distributions ($1024$ shots) are decoded into physical observables $(A_q, f_q, \phi_q)$, exciting the next iteration of the condensate.
+\end{enumerate}
+
+\section{Empirical Hardware Findings on \texttt{ibm\_marrakesh}}
+An 80-iteration physical QPU sequence was executed on \texttt{ibm\_marrakesh} (Job tag \texttt{20261102T140630Z}, 240.0\,s execution time):
+\begin{itemize}
+  \item Live Bell anchor parity maintained high fidelity: $c \in [0.9570, 0.9746]$.
+  \item The system stabilized into a discrete bimodal state distribution, spending 50.0\% of iterations in ground mode \#0 and 40.0\% in hexagonal mode \#6.
+  \item Comparing the observed trajectory against $200$ randomized residual permutations across $14{,}672$ simulations reveals that the hardware normalized entropy ($H/H_{\text{max}} = 0.3727$) resides in the 3.0th percentile ($p = 0.030$).
+\end{itemize}
+
+\section{Methodological Limits and Non-Quantum Bounds}
+We emphasize key physical boundaries identified during verification:
+\begin{enumerate}
+  \item \textbf{Single-Qubit Equivalence:} The encoding circuits project according to $P(q_0=1) = \sin^2(\theta/2)$. Entangling CNOT gates copy the rotation without expanding the information capacity; the measurement is physically equivalent to single-qubit marginal sampling.
+  \item \textbf{Dynamical Stabilization over Drift:} The primary physical utility of the closed loop is engineering-based: the non-linear feedback loop locks transmon readout biases into a narrow homeostatic band, suppressing low-frequency drift.
+\end{enumerate}
+
+\section{Conclusion}
+Closed-loop GPE-QPU coupling provides an effective mechanism for suppressing readout drift and generating robust dynamical attractors. Transparent separation of classical non-linear feedback from quantum advantage ensures an accurate baseline for hybrid quantum-classical control.
+
+\section*{Data Availability}
+Complete job IDs, raw count JSON files, and replay scripts are available at: \url{https://github.com/silentnoisehun/quantum-hydrodynamic-feedback}.
+
+\end{document}

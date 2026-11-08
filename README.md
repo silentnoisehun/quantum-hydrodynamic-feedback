@@ -1,4 +1,11 @@
-# Quantum Organic Intelligence
+# Quantum-Hydrodynamic Feedback (QHF)
+
+> ### 📄 Scientific Manuscript Available
+> - **LaTeX Manuscript:** [rxiv/gpe_closed_loop_benchmark.tex](arxiv/gpe_closed_loop_benchmark.tex)
+> - **Title:** *Closed-Loop Dynamical Feedback Between a Two-Dimensional Gross–Pitaevskii Condensate and a 156-Qubit Superconducting Transmon Processor: Attractor Dynamics and Empirical Bounds*
+> - **Target Venue:** *EPJ Quantum Technology* / *Physical Review Applied*
+> - **Key Empirical Finding:** Closed-loop coupling on ibm_marrakesh (80 iterations, 240s QPU time) achieves discrete bimodal mode stabilization (normalized entropy H/Hmax = 0.3727 in the 3.0th percentile of randomized permutation benchmarks, p = 0.030), demonstrating transmon readout drift stabilization.
+
 
 A Gross-Pitaevskii fluid, a quantum bridge whose encoding and decoding are verified against recorded hardware measurements, and the measurements that document — and limit — the system's dynamical behaviour. This repository rests on three measurable components:
 
@@ -185,10 +192,19 @@ If you are working in any of the following areas, I would welcome a conversation
 **ORCID:** 0009-0003-3986-6039  
 **Email:** materobi86@gmail.com  
 **Sponsor:** github.com/sponsors/silentnoisehun  
-**GitHub:** github.com/silentnoisehun/quantum-organic-intelligence
+**GitHub:** github.com/silentnoisehun/quantum-hydrodynamic-feedback
 
 ---
 
 ## 5. License
 
 MIT license. The citation metadata is in `CITATION.cff`.
+
+---
+
+## 🤝 Contact & Research Collaboration
+
+- **Author:** Máté Róbert
+- **Email:** `materobi86@gmail.com`
+- **GitHub:** [`silentnoisehun`](https://github.com/silentnoisehun)
+- **Status:** **Open to research collaborations, academic partnerships, and joint QPU experimental campaigns** *(Nyitott vagyok kutatási együttműködésekre és közös publikációkra)*.
