@@ -1,37 +1,18 @@
 cff-version: 1.2.0
-title: "Quantum-Hydrodynamic Feedback (QHF)"
-message: "If you use this software or the measurements in docs/, please cite it as below."
-type: software
+message: "If you use this dataset or software, please cite it as below."
 authors:
-  - family-names: "Róbert"
-    given-names: "Máté"
-    email: "materobi86@gmail.com"
+  - family-names: "Máté"
+    given-names: "Róbert"
     orcid: "https://orcid.org/0009-0003-3986-6039"
-    website: "https://github.com/silentnoisehun"
-repository-code: "https://github.com/silentnoisehun/quantum-hydrodynamic-feedback"
-license: MIT
-version: "0.1.0"
-date-released: "2026-10-27"
-abstract: >-
-  A Gross-Pitaevskii fluid solver for 16 cognitive modes with a real
-  split-step Fourier kinetic step, a hardware-verified quantum bridge
-  (2 qubits, 3 separate measurements), and the measurement protocol that
-  compares them. Every claim in the README is backed by a measured
-  number; the section "Limits" states explicitly what the system does
-  not prove.
+    affiliation: "Independent researcher"
+title: "Quantum-Hydrodynamic Feedback (QHF): Gross-Pitaevskii Condensate Solver and Quantum Bridge"
+version: 1.1.0
+date-released: 2026-11-09
+url: "https://github.com/silentnoisehun/quantum-hydrodynamic-feedback"
 keywords:
-  - gross-pitaevskii equation
-  - split-step fourier method
-  - quantum-classical hybrid loop
-  - superconducting qubits
-  - measurement methodology
-references:
-  - type: standard
-    title: "Quantum-Hydrodynamic Feedback (QHF)"
-    authors:
-      - family-names: "Róbert"
-    given-names: "Máté"
-    email: "materobi86@gmail.com"
-    orcid: "https://orcid.org/0009-0003-3986-6039"
-    year: 2026
-    repository-code: "https://github.com/silentnoisehun/quantum-hydrodynamic-feedback"
+  - "quantum computing"
+  - "gross-pitaevskii equation"
+  - "quantum feedback"
+  - "superconducting qubits"
+  - "measurement audit"
+license: MIT

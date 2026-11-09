@@ -93,6 +93,36 @@ band, a new hardware run is not justified; that condition is fixed in advance in
 
 ---
 
+## 6. Active Quantum Zeno — Independent Validation (v1.3.3)
+
+A separate experimental campaign in the sister repository
+[quantum-active-space-memory](https://github.com/silentnoisehun/quantum-active-space-memory)
+tested the Active Quantum Zeno Effect on the same IBM Heron r2 processor
+(`ibm_marrakesh`, 156 qubits). This provides an independent hardware validation
+of the projective-measurement-based feedback principle that underlies the
+closed-loop coupling in this repository.
+
+**Preregistered gate (N=20, ΔF > 0.30, p < 10⁻⁶): PASSED**
+
+* **Active Zeno fidelity (N=20 cycles, 2000 shots):** 97.45% [96.66%, 98.06%] (Wilson 95% CI)
+* **Passive decay fidelity (N=20, 2000 shots):** 0.10% [0.03%, 0.36%] (Wilson 95% CI)
+* **Zeno advantage ΔF = +97.35 pp** [96.30%, 98.03%] (one-sided binomial p = 0.0)
+* **Readout calibration in-job:** p(0|1) = 0.45%, p(1|0) = 0.15% → ceiling = 99.55%
+* **Readout-corrected Q:** 97.89% (within Wilson CI of raw fidelity)
+* **All three preregistration gates satisfied:** ΔF > 0.30 ✓, N ≥ 20 ✓, p < 10⁻⁶ ✓
+
+The mid-cycle measurements (bits 0–18) average 92.65%, 4.8 pp below the final
+97.45%, consistent with projection-induced coherence recovery (Quantum Zeno
+dynamics). The passive arm confirms free decay to the mixed state (P ≈ 0.5 per
+cycle → ≈0.1% survival at N=20).
+
+This result demonstrates that **projective readout with real-time classical
+feedforward on IBM Heron r2 can stabilize a transmon qubit against free decay
+for 20 sequential cycles** — a measurable, hardware-verified Zeno protection
+effect with full calibration traceability.
+
+---
+
 ## 4. Usage
 
 Running the tests and the simulations from inside the repository:

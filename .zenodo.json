@@ -1,6 +1,6 @@
 {
   "title": "Quantum-Hydrodynamic Feedback (QHF): Gross-Pitaevskii Condensate Solver and Quantum Bridge",
-  "description": "Gross-Pitaevskii fluid solver with 16 cognitive modes, split-step Fourier kinetic step, and hardware-verified 2-qubit quantum bridge on 156-qubit superconducting QPUs. Contains the full measurement audit trail, replay gates, and classical reference suites.",
+  "description": "Gross-Pitaevskii fluid solver with 16 cognitive modes, split-step Fourier kinetic step, and hardware-verified 2-qubit quantum bridge on 156-qubit superconducting QPUs. Contains the full measurement audit trail, replay gates, and classical reference suites. Key result: 80-iteration closed-loop run on ibm_marrakesh (Heron r2) shows discrete bimodal stabilization (H/Hmax = 0.3727, p = 0.030); single-qubit equivalence proven; no quantum advantage detected.",
   "keywords": [
     "quantum computing",
     "gross-pitaevskii equation",
@@ -10,12 +10,12 @@
     "measurement audit"
   ],
   "license": "MIT",
-  "version": "1.0.1",
-  "publication_date": "2026-11-02",
+  "version": "1.1.0",
+  "publication_date": "2026-11-09",
   "creators": [
     {
-      "name": "Róbert, Máté",
-      "affiliation": "Independent Quantum Researcher, Silent Coder Lab",
+      "name": "Máté, Róbert",
+      "affiliation": "Independent researcher",
       "orcid": "0009-0003-3986-6039"
     }
   ],

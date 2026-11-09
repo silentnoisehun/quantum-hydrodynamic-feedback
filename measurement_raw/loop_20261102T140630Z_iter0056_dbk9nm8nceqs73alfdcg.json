@@ -7,6 +7,7 @@
  "qpu_seconds": 3.0,
  "wall_seconds": 7.8226847648620605,
  "c_live": 0.95703125,
+ "data_class": "qpu",
  "counts_raw": {
   "amplitude": {
    "1": 234,
